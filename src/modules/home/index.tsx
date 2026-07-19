@@ -14,6 +14,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
 import { ProductPreview } from "./components/product-preview";
 import { Features } from "./components/features";
+import { Secured } from "@/components/elements/secured";
 
 export function Home() {
   const [claiming, setClaiming] = useState(false);
@@ -172,6 +173,8 @@ export function Home() {
               </motion.div>
             </motion.div>
           </LayoutGroup>
+
+          <Secured text="Payments secured by" />
 
           <ProductPreview />
           <Features />
