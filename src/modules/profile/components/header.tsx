@@ -4,7 +4,7 @@ import { sampleCreator } from "@/data";
 
 export function Header() {
   return (
-    <header className="text-center">
+    <header className="text-center mx-auto max-w-130">
       <CreatorAvatar
         name={sampleCreator.name}
         photoUrl={sampleCreator.profilePhotoUrl}
