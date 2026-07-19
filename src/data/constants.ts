@@ -1,0 +1,4 @@
+const MINIMUM_TIP = 100;
+const MAXIMUM_TIP = 1_000_000;
+
+export { MAXIMUM_TIP, MINIMUM_TIP };
