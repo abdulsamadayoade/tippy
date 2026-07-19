@@ -5,12 +5,9 @@ export function Logo() {
     <div className="flex items-center gap-1">
       <TipIcon className="size-5" />
       <span
-        className="inline-flex text-lg leading-none font-medium tracking-[-0.02em] text-ink"
+        className="inline-flex text-lg leading-none font-medium tracking-[-0.02em] text-primary"
         aria-label="Tippy">
         tippy
-        <span className="text-brand-500" aria-hidden="true">
-          .
-        </span>
       </span>
     </div>
   );
