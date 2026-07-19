@@ -10,7 +10,11 @@ export function ProductPreview() {
         aria-label="Preview of the Tippy creator dashboard">
         <header className="flex items-center justify-between gap-3 px-2 py-1.5">
           <div className="flex min-w-0 items-center gap-2.5">
-            <CreatorAvatar size="small" />
+            <CreatorAvatar
+              size="small"
+              name={sampleCreator.name}
+              photoUrl={sampleCreator.profilePhotoUrl}
+            />
             <div className="min-w-0">
               <strong className="block truncate text-sm font-medium text-main-heading">
                 {sampleCreator.name}
