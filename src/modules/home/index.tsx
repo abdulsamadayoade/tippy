@@ -7,6 +7,7 @@ import {
   motion,
   useReducedMotion,
 } from "motion/react";
+import Link from "next/link";
 import { ArrowRightIcon } from "@/components/icons/arrow-right";
 import { CloseIcon } from "@/components/icons/close";
 import { Nav } from "@/components/layout/nav";
@@ -44,12 +45,25 @@ export function Home() {
 
   return (
     <>
-      <Nav />
+      <Nav>
+        <Link
+          className="bg-white px-3 py-0.5 items-center rounded-full text-sm font-medium text-main-heading"
+          href="/login">
+          Login
+        </Link>
+      </Nav>
 
       <main className="flex min-h-screen w-full max-w-full flex-col py-16">
         <section className="mx-auto flex w-full max-w-180 flex-1 flex-col items-center px-5 text-center">
           <h1 className="my-5 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-main-heading">
-            Get tipped by the people who love your work.
+            Get{" "}
+            <div className="inline-block bg-primary text-white px-2 py-0.5">
+              tipped
+            </div>{" "}
+            by the people who
+            <div className="inline-block bg-primary text-white px-2 py-0.5">
+              love your work.
+            </div>
           </h1>
           <p className="max-w-lg text-base font-medium leading-normal text-body-text/75 text-pretty">
             Tippy gives you one simple link to collect tips in naira — notes
@@ -173,9 +187,7 @@ export function Home() {
               </motion.div>
             </motion.div>
           </LayoutGroup>
-
           <Secured text="Payments secured by" />
-
           <ProductPreview />
           <Features />
         </section>

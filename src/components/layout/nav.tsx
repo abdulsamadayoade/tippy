@@ -1,17 +1,13 @@
 import Link from "next/link";
 import { Logo } from "../elements/logo";
 
-export function Nav() {
+export function Nav({ children }: { children?: React.ReactNode }) {
   return (
     <nav className="mx-auto flex w-full max-w-180 items-center justify-between px-5.5 py-5">
       <Link href="/">
         <Logo />
       </Link>
-      <Link
-        className="bg-white px-3 py-0.5 items-center rounded-full text-sm font-medium text-main-heading"
-        href="/login">
-        Login
-      </Link>
+      {children}
     </nav>
   );
 }
