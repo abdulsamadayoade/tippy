@@ -1,9 +1,7 @@
+import { cn } from "@/lib/cn";
 import type { ComponentProps } from "react";
 
-export function CheckBadgeIcon({
-  className,
-  ...props
-}: ComponentProps<"svg">) {
+export function CheckBadgeIcon({ className, ...props }: ComponentProps<"svg">) {
   return (
     <svg
       width="24"
@@ -11,9 +9,9 @@ export function CheckBadgeIcon({
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={cn(className)}
       {...props}>
-      <g filter="url(#filter0_d_197873_835)">
+      <g filter="url(#filter0_d_197874_689)">
         <path
           fillRule="evenodd"
           clipRule="evenodd"
@@ -22,7 +20,7 @@ export function CheckBadgeIcon({
         />
         <path
           d="M13.852 4.86891C13.7028 4.86891 13.5598 4.80965 13.4543 4.70416L12.0398 3.28963C11.8201 3.06996 11.4639 3.06996 11.2443 3.28963L9.82973 4.70416C9.72424 4.80965 9.58116 4.86891 9.43198 4.86891H7.43153C7.12087 4.86891 6.86903 5.12075 6.86903 5.43141V7.43186C6.86903 7.58104 6.80977 7.72412 6.70428 7.82961L5.28975 9.24414C5.07008 9.46381 5.07008 9.81996 5.28975 10.0396L6.70428 11.4542C6.80977 11.5596 6.86903 11.7027 6.86903 11.8519V13.8524C6.86903 14.163 7.12087 14.4149 7.43153 14.4149H9.43198C9.58116 14.4149 9.72424 14.4741 9.82973 14.5796L11.2443 15.9941C11.4639 16.2138 11.8201 16.2138 12.0398 15.9941L13.4543 14.5796C13.5598 14.4741 13.7028 14.4149 13.852 14.4149H15.8525C16.1631 14.4149 16.415 14.163 16.415 13.8524V11.8519C16.415 11.7027 16.4742 11.5596 16.5797 11.4542L17.9943 10.0396C18.2139 9.81996 18.2139 9.46381 17.9943 9.24414L16.5797 7.82961C16.4742 7.72412 16.415 7.58104 16.415 7.43186V5.43141C16.415 5.12075 16.1631 4.86891 15.8525 4.86891H13.852Z"
-          fill="var(--color-brand-500)"
+          fill="#47C2FF"
         />
         <path
           fillRule="evenodd"
@@ -33,7 +31,7 @@ export function CheckBadgeIcon({
       </g>
       <defs>
         <filter
-          id="filter0_d_197873_835"
+          id="filter0_d_197874_689"
           x="-1.35791"
           y="-1.35803"
           width="26"
@@ -56,12 +54,12 @@ export function CheckBadgeIcon({
           <feBlend
             mode="normal"
             in2="BackgroundImageFix"
-            result="effect1_dropShadow_197873_835"
+            result="effect1_dropShadow_197874_689"
           />
           <feBlend
             mode="normal"
             in="SourceGraphic"
-            in2="effect1_dropShadow_197873_835"
+            in2="effect1_dropShadow_197874_689"
             result="shape"
           />
         </filter>

@@ -1,15 +1,15 @@
-import { BankBuildingIcon } from "@/components/icons/bank-building";
-import { CopyIcon } from "@/components/icons/copy";
 import { MailIcon } from "@/components/icons/mail";
+import { LinkIcon } from "@/components/icons/link";
+import { PaySuccessIcon } from "@/components/icons/pay-success";
 
 const features = [
   {
-    icon: CopyIcon,
+    icon: LinkIcon,
     title: "Your own link",
     body: "Share tippy.cash/you anywhere and start collecting tips in minutes.",
   },
   {
-    icon: BankBuildingIcon,
+    icon: PaySuccessIcon,
     title: "Automatic payouts",
     body: "Money lands in your bank every Friday — no manual withdrawals.",
   },
