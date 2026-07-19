@@ -3,7 +3,7 @@ import { Logo } from "../elements/logo";
 
 export function Nav() {
   return (
-    <nav className="mx-auto flex w-full min-w-0 max-w-160 items-center justify-between px-5.5 py-5">
+    <nav className="mx-auto flex w-full max-w-180 items-center justify-between px-5.5 py-5">
       <Link href="/">
         <Logo />
       </Link>
