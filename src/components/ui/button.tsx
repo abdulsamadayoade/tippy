@@ -9,10 +9,12 @@ import { cn } from "@/lib/cn";
 const variants = {
   primary: "major-button bg-primary text-white",
   secondary: "bg-soft text-ink hover:bg-line",
+  ghost: "bg-transparent text-muted-text-2 disabled:opacity-45",
 } as const;
 
 const sizes = {
   default: "min-h-12 px-6",
+  sm: "min-h-10 px-4",
   xs: "h-6 px-3",
   icon: "size-9 min-h-9 p-0",
 } as const;
@@ -24,7 +26,11 @@ type ButtonStyleProps = {
   className?: string;
 };
 
-type ButtonProps = ComponentPropsWithoutRef<"button"> & ButtonStyleProps;
+type ButtonProps = ComponentPropsWithoutRef<"button"> &
+  ButtonStyleProps & {
+    loading?: boolean;
+    loadingText?: ReactNode;
+  };
 
 type ButtonLinkProps = ComponentPropsWithoutRef<typeof Link> &
   ButtonStyleProps & {
@@ -54,6 +60,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       fullWidth,
       className,
       type = "button",
+      loading = false,
+      loadingText,
+      disabled,
+      children,
       ...props
     },
     ref,
@@ -67,8 +77,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         fullWidth,
         className,
       })}
-      {...props}
-    />
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      {...props}>
+      {loading ? (
+        <>
+          <span
+            className="size-3.75 animate-spin rounded-full border-2 border-current/35 border-t-current"
+            aria-hidden="true"
+          />
+          {loadingText ?? children}
+        </>
+      ) : (
+        children
+      )}
+    </button>
   ),
 );
 
