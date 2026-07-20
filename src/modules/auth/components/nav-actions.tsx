@@ -8,7 +8,7 @@ export function AuthNavActions() {
 
   if (pathname.startsWith("/onboarding")) {
     return (
-      <ButtonLink variant="secondary" size="xs" href="/dashboard">
+      <ButtonLink variant="secondary" size="xs" href="/overview">
         Go to dashboard
       </ButtonLink>
     );
