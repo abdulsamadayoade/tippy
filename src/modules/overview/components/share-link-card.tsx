@@ -34,7 +34,7 @@ export function ShareLinkCard({ username }: { username: string }) {
   }, []);
 
   return (
-    <article className="mt-3 flex flex-wrap items-center justify-between gap-3.5 rounded-[14px] bg-white px-4.5 py-4 shadow-surface">
+    <article className="mt-3 flex flex-wrap items-center justify-between gap-3.5 rounded-surface bg-white px-4.5 py-4 shadow-surface">
       <div>
         <span className="block text-ui-sm text-muted-text">
           Share your tip link

@@ -4,17 +4,19 @@ import { useState } from "react";
 import { ChevronDownIcon } from "@/components/icons/chevron-down";
 import { cn } from "@/lib/cn";
 import { formatNaira } from "@/lib/utils";
-import type { Tip } from "@/store/types";
+import type { Tip } from "@/types";
 
 export function TipList({
   className,
   emptyMessage = "No tips yet. Share your link to receive your first one.",
+  footer,
   id,
   labelledBy,
   tips,
 }: {
   className?: string;
   emptyMessage?: string;
+  footer?: React.ReactNode;
   id?: string;
   labelledBy?: string;
   tips: Tip[];
@@ -22,7 +24,7 @@ export function TipList({
   return (
     <div
       className={cn(
-        "flex flex-col rounded-[14px] bg-white p-1 shadow-surface",
+        "flex flex-col rounded-surface bg-white p-1 shadow-surface",
         className,
       )}
       id={id}
@@ -34,6 +36,7 @@ export function TipList({
       ) : (
         <p className="px-4 py-8 text-center text-muted-text">{emptyMessage}</p>
       )}
+      {footer}
     </div>
   );
 }

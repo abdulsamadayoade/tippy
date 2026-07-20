@@ -1,4 +1,4 @@
-type TipPeriod = "day" | "week" | "month" | "year";
+import type { TipPeriod } from "@/types";
 
 type SummaryBannerProps = {
   total: number;
