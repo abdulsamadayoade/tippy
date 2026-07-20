@@ -119,7 +119,7 @@ export function Profile() {
           <ButtonLink
             variant="secondary"
             size="xs"
-            href={`${isLoggedInUser ? "/dashboard" : "/login"}`}>
+            href={`${isLoggedInUser ? "/overview" : "/login"}`}>
             {isLoggedInUser ? "Dashboard" : "Login"}
           </ButtonLink>
 
