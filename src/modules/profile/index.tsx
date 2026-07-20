@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Script from "next/script";
 import { useTips } from "@/store/providers";
 import { cn } from "@/lib/cn";
 import { Modal } from "@/components/ui/modal";
@@ -22,7 +23,7 @@ import { CheckoutPanel } from "./components/checkout-panel";
 import { Success } from "./components/success";
 import type { CheckoutResponse, Step } from "./types";
 
-export function Profile({ creator, viewerSignedIn }: ProfileProps) {
+export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
   const { addTip } = useTips();
   const [amount, setAmount] = useState(DEFAULT_TIP);
   const [message, setMessage] = useState("");
@@ -62,42 +63,147 @@ export function Profile({ creator, viewerSignedIn }: ProfileProps) {
     return () => window.cancelAnimationFrame(frame);
   }, [step]);
 
+  function releasePaying() {
+    payingRef.current = false;
+    setPaying(false);
+  }
+
+  function celebrateTip(paymentReference: string) {
+    addTip({
+      id: paymentReference,
+      name: anonymous ? "Anonymous" : "You",
+      amount,
+      note: message.trim(),
+      anonymous,
+      initial: anonymous ? "?" : "Y",
+      shade: "strong",
+      time: "just now",
+      createdAt: new Date().toISOString(),
+      reference: paymentReference,
+    });
+    releasePaying();
+    setCheckoutOpen(false);
+    setStep("success");
+  }
+
+  function failTip() {
+    releasePaying();
+    setPaymentError(
+      "Your payment didn’t complete, so no tip was sent. You can try again.",
+    );
+  }
+
+  /**
+   * The Monnify webhook settles the transaction; this only watches our own
+   * database for that settlement — Monnify's status API is never called
+   * from here.
+   */
+  async function confirmTip(paymentReference: string) {
+    for (let attempt = 0; attempt < 12; attempt++) {
+      let status = "pending";
+
+      try {
+        const response = await fetch(`/api/tips/${paymentReference}`);
+        const result = (await response.json()) as { status?: string };
+        status = result.status ?? "pending";
+      } catch {
+        // Transient network failure — keep watching.
+      }
+
+      if (status === "success") {
+        celebrateTip(paymentReference);
+        return;
+      }
+
+      if (status === "failed") {
+        failTip();
+        return;
+      }
+
+      await new Promise((resolve) => window.setTimeout(resolve, 2000));
+    }
+
+    releasePaying();
+    setPaymentError(
+      "We couldn’t confirm your payment yet. If you were debited, your tip will come through shortly.",
+    );
+  }
+
   async function submitTip() {
     if (paying) return;
+
+    if (!monnify) {
+      setPaymentError("Payments aren’t available right now. Try again later.");
+      return;
+    }
+
+    if (!window.MonnifySDK) {
+      setPaymentError(
+        "We couldn’t load the secure payment window. Check your connection and try again.",
+      );
+      return;
+    }
 
     payingRef.current = true;
     setPaying(true);
     setPaymentError("");
 
+    let checkout: CheckoutResponse;
+
     try {
       const response = await fetch("/api/tips", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, note: message, anonymous }),
+        body: JSON.stringify({
+          username: creator.username,
+          amount,
+          note: message,
+          anonymous,
+        }),
       });
 
       const result = (await response.json()) as
         | CheckoutResponse
         | { message?: string };
 
-      if (!response.ok || !("tip" in result)) {
+      if (!response.ok || !("paymentReference" in result)) {
         throw new Error("message" in result ? result.message : undefined);
       }
 
-      await new Promise((resolve) => window.setTimeout(resolve, 850));
-      addTip(result.tip);
-      setCheckoutOpen(false);
-      setStep("success");
+      checkout = result;
     } catch (error) {
       setPaymentError(
         error instanceof Error && error.message
           ? error.message
           : "We couldn’t start your payment. Check your connection and try again.",
       );
-    } finally {
-      payingRef.current = false;
-      setPaying(false);
+      releasePaying();
+      return;
     }
+
+    // Guards the race between onComplete and the onClose that follows it.
+    const settled = { current: false };
+
+    window.MonnifySDK.initialize({
+      amount: checkout.amount,
+      currency: "NGN",
+      reference: checkout.paymentReference,
+      customerFullName: checkout.customerFullName,
+      customerEmail: checkout.customerEmail,
+      apiKey: monnify.apiKey,
+      contractCode: monnify.contractCode,
+      paymentDescription: `Tip for ${creator.displayName}`,
+      onComplete: () => {
+        if (settled.current) return;
+        settled.current = true;
+        void confirmTip(checkout.paymentReference);
+      },
+      onClose: () => {
+        if (settled.current) return;
+        settled.current = true;
+        releasePaying();
+      },
+    });
   }
 
   function reset() {
@@ -111,6 +217,10 @@ export function Profile({ creator, viewerSignedIn }: ProfileProps) {
 
   return (
     <>
+      <Script
+        src="https://sdk.monnify.com/plugin/monnify.js"
+        strategy="afterInteractive"
+      />
       <div className="min-h-screen flex flex-col justify-between">
         <Nav>
           <div className="flex items-center gap-2">

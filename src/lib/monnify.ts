@@ -108,11 +108,20 @@ export async function getTransactionByPaymentReference(
     });
   }
 
-  if (!response.ok) return null;
+  if (response.status === 404) return null;
 
-  const payload = (await response.json().catch(() => null)) as
-    | MonnifyQueryResponse
-    | null;
+  if (!response.ok) {
+    const failure = (await response.json().catch(() => null)) as {
+      responseMessage?: string;
+    } | null;
+    throw new Error(
+      `Monnify transaction query failed (${response.status}): ${failure?.responseMessage ?? "unknown error"}`,
+    );
+  }
+
+  const payload = (await response
+    .json()
+    .catch(() => null)) as MonnifyQueryResponse | null;
   const body = payload?.responseBody;
 
   if (

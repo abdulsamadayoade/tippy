@@ -1,5 +1,4 @@
 import type { RefObject } from "react";
-import type { Tip } from "@/store/types";
 
 type PublicCreator = {
   displayName: string;
@@ -9,16 +8,24 @@ type PublicCreator = {
   avatarUrl: string | null;
 };
 
+type MonnifyClientConfig = {
+  apiKey: string;
+  contractCode: string;
+};
+
 type ProfileProps = {
   creator: PublicCreator;
   viewerSignedIn: boolean;
+  monnify: MonnifyClientConfig | null;
 };
 
 type Step = "form" | "success";
 
 type CheckoutResponse = {
   paymentReference: string;
-  tip: Tip;
+  amount: number;
+  customerFullName: string;
+  customerEmail: string;
 };
 
 type SuccessProps = {
@@ -46,6 +53,7 @@ type CheckoutPanelProps = {
 export type {
   PublicCreator,
   ProfileProps,
+  MonnifyClientConfig,
   Step,
   CheckoutResponse,
   SuccessProps,
