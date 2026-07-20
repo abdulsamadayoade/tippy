@@ -1,5 +1,3 @@
-import type { Tip } from "@/store/types";
-
 function formatNaira(amount: number) {
   return `₦${amount.toLocaleString("en-NG")}`;
 }
@@ -39,29 +37,4 @@ function formatRelativeTime(iso: string, now = new Date()) {
   return formatDate(iso.slice(0, 10), { day: "numeric", month: "short" });
 }
 
-function getTipSummary(tips: Tip[]) {
-  const total = tips.reduce((sum, tip) => sum + tip.amount, 0);
-  const largest = tips.reduce(
-    (currentLargest, tip) => Math.max(currentLargest, tip.amount),
-    0,
-  );
-  const supporters = new Set(
-    tips.map((tip) => (tip.anonymous ? tip.id : tip.name.toLowerCase())),
-  ).size;
-
-  return {
-    average: tips.length ? Math.round(total / tips.length) : 0,
-    count: tips.length,
-    largest,
-    supporters,
-    total,
-  };
-}
-
-export {
-  formatNaira,
-  maskAccountNumber,
-  formatDate,
-  formatRelativeTime,
-  getTipSummary,
-};
+export { formatNaira, maskAccountNumber, formatDate, formatRelativeTime };

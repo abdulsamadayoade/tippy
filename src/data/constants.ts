@@ -7,6 +7,8 @@ const NEXT_PAYOUT_DATE = "2026-07-24";
 
 const ACCOUNT_NUMBER_LENGTH = 10;
 
+const OVERVIEW_RECENT_TIPS = 5;
+
 const BANKS = [
   { name: "Access Bank", code: "044" },
   { name: "Ecobank", code: "050" },
@@ -34,5 +36,6 @@ export {
   MAXIMUM_NOTE_LENGTH,
   NEXT_PAYOUT_DATE,
   ACCOUNT_NUMBER_LENGTH,
+  OVERVIEW_RECENT_TIPS,
   BANKS,
 };
