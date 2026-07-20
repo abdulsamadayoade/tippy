@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Script from "next/script";
 import { useTips } from "@/store/providers";
+import Script from "next/script";
 import { cn } from "@/lib/cn";
 import { Modal } from "@/components/ui/modal";
-import type { ProfileProps } from "./types";
 import { MAXIMUM_TIP, MINIMUM_TIP } from "@/data/constants";
-import { DEFAULT_TIP, PRESETS } from "./data";
+import { DEFAULT_TIP, getPresets } from "./data";
 import { AnimatedNaira } from "./components/animated-naira";
 import { fireConfetti } from "./components/confetti";
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -22,7 +21,7 @@ import { Secured } from "@/components/elements/secured";
 import { Nav } from "@/components/layout/nav";
 import { CheckoutPanel } from "./components/checkout-panel";
 import { Success } from "./components/success";
-import type { CheckoutResponse, Step } from "./types";
+import type { CheckoutResponse, Step, ProfileProps } from "./types";
 
 export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
   const { addTip } = useTips();
@@ -266,7 +265,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
             <div
               className="mt-4 grid grid-cols-2 gap-2"
               aria-label="Tip amount presets">
-              {PRESETS.map((preset) => (
+              {getPresets(creator.categoryName).map((preset) => (
                 <AmountPreset
                   key={preset.amount}
                   amount={preset.amount}
