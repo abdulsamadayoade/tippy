@@ -1,6 +1,19 @@
 import type { RefObject } from "react";
 import type { Tip } from "@/store/types";
 
+type PublicCreator = {
+  displayName: string;
+  username: string;
+  categoryName: string;
+  bio: string | null;
+  avatarUrl: string | null;
+};
+
+type ProfileProps = {
+  creator: PublicCreator;
+  viewerSignedIn: boolean;
+};
+
 type Step = "form" | "success";
 
 type CheckoutResponse = {
@@ -9,7 +22,7 @@ type CheckoutResponse = {
 };
 
 type SuccessProps = {
-  creatorFirstName: string;
+  creatorName: string;
   confettiRef: RefObject<HTMLCanvasElement | null>;
   checkRef: RefObject<HTMLSpanElement | null>;
   checkState: "out" | "in";
@@ -30,4 +43,11 @@ type CheckoutPanelProps = {
   closeRef?: RefObject<HTMLButtonElement | null>;
 };
 
-export type { Step, CheckoutResponse, SuccessProps, CheckoutPanelProps };
+export type {
+  PublicCreator,
+  ProfileProps,
+  Step,
+  CheckoutResponse,
+  SuccessProps,
+  CheckoutPanelProps,
+};

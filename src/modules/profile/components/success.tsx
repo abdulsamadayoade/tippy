@@ -1,5 +1,4 @@
 import { formatNaira } from "@/lib/utils";
-import { sampleCreator } from "@/data";
 import { Button } from "@/components/ui/button";
 import type { SuccessProps } from "../types";
 
@@ -9,7 +8,7 @@ export function Success({
   checkState,
   amount,
   message,
-  creatorFirstName,
+  creatorName,
   reset,
 }: SuccessProps) {
   return (
@@ -54,7 +53,7 @@ export function Success({
           <strong className="font-semibold text-primary">
             {formatNaira(amount)}
           </strong>{" "}
-          tip is on its way to {sampleCreator.firstName}. Thanks for the
+          tip is on its way to {creatorName}. Thanks for the
           support.
         </p>
 
@@ -69,7 +68,7 @@ export function Success({
 
         <div className="mt-6">
           <Button className="w-full" onClick={reset}>
-            Tip {creatorFirstName} again
+            Tip {creatorName} again
           </Button>
         </div>
       </div>

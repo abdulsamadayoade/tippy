@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTips } from "@/store/providers";
 import { cn } from "@/lib/cn";
 import { Modal } from "@/components/ui/modal";
-import { sampleCreator } from "@/data";
+import type { ProfileProps } from "./types";
 import { MAXIMUM_TIP, MINIMUM_TIP } from "@/data/constants";
 import { DEFAULT_TIP, PRESETS } from "./data";
 import { AnimatedNaira } from "./components/animated-naira";
@@ -22,7 +22,7 @@ import { CheckoutPanel } from "./components/checkout-panel";
 import { Success } from "./components/success";
 import type { CheckoutResponse, Step } from "./types";
 
-export function Profile() {
+export function Profile({ creator, viewerSignedIn }: ProfileProps) {
   const { addTip } = useTips();
   const [amount, setAmount] = useState(DEFAULT_TIP);
   const [message, setMessage] = useState("");
@@ -109,29 +109,28 @@ export function Profile() {
     setStep("form");
   }
 
-  const isLoggedInUser = false;
-
   return (
     <>
       <div className="min-h-screen flex flex-col justify-between">
         <Nav>
           <div className="flex items-center gap-2">
-            {/* TODO: if there is a logged in user, let add a view my dashboard and if for normal user, let say, claim my tippy link */}
             <ButtonLink
               variant="secondary"
               size="xs"
-              href={`${isLoggedInUser ? "/overview" : "/login"}`}>
-              {isLoggedInUser ? "Dashboard" : "Login"}
+              href={viewerSignedIn ? "/overview" : "/login"}>
+              {viewerSignedIn ? "Dashboard" : "Login"}
             </ButtonLink>
 
-            <ButtonLink variant="secondary" size="xs" href="/test">
-              Claim my Link
-            </ButtonLink>
+            {viewerSignedIn ? null : (
+              <ButtonLink variant="secondary" size="xs" href="/register">
+                Claim my Link
+              </ButtonLink>
+            )}
           </div>
         </Nav>
 
         <main className="md:min-h-screen overflow-x-hidden pt-10 flex-1 flex flex-col justify-between">
-          <Header />
+          <Header creator={creator} />
 
           <section
             className={cn(
@@ -140,7 +139,7 @@ export function Profile() {
             )}>
             <div>
               <h2 className="text-base font-medium">
-                Support {sampleCreator.firstName}&apos;s next stream
+                Support {creator.displayName}&apos;s next stream
               </h2>
               <p className="text-[13px] text-muted-text">
                 Choose an amount and add a note if you&apos;d like.
@@ -179,7 +178,7 @@ export function Profile() {
 
             <TextArea
               containerClassName="mt-2.5"
-              label={`Add a note for ${sampleCreator.firstName}`}
+              label={`Add a note for ${creator.displayName}`}
               visuallyHideLabel
               showCount
               id="tip-message"
@@ -188,7 +187,7 @@ export function Profile() {
               maxLength={140}
               autoComplete="off"
               value={message}
-              placeholder={`Write ${sampleCreator.firstName} a note (optional)…`}
+              placeholder={`Write ${creator.displayName} a note (optional)…`}
               onChange={(event) => setMessage(event.target.value)}
             />
 
@@ -197,7 +196,7 @@ export function Profile() {
               checked={anonymous}
               onCheckedChange={setAnonymous}
               label="Tip privately"
-              description={`${sampleCreator.firstName} will see “Anonymous” instead of your name`}
+              description={`${creator.displayName} will see “Anonymous” instead of your name`}
             />
 
             <Button
@@ -208,7 +207,7 @@ export function Profile() {
                 <span className="inline-flex items-baseline gap-1">
                   <span>Send</span>
                   <AnimatedNaira value={amount} />
-                  <span>to {sampleCreator.firstName}</span>
+                  <span>to {creator.displayName}</span>
                 </span>
               ) : (
                 "Enter an amount"
@@ -219,7 +218,7 @@ export function Profile() {
 
           {step === "success" && (
             <Success
-              creatorFirstName={sampleCreator.firstName}
+              creatorName={creator.displayName}
               confettiRef={confettiRef}
               checkRef={checkRef}
               checkState={checkState}
@@ -242,8 +241,8 @@ export function Profile() {
         overlayClassName="z-40"
         className="max-h-[calc(100dvh-24px)] w-full max-w-130 overflow-y-auto overscroll-contain rounded-t-3xl bg-white px-5 pt-6 pb-[calc(24px+env(safe-area-inset-bottom))] shadow-[0_-16px_50px_-20px_rgba(0,0,0,0.3)]">
         <CheckoutPanel
-          creatorName={sampleCreator.name}
-          creatorPhotoUrl={sampleCreator.profilePhotoUrl}
+          creatorName={creator.displayName}
+          creatorPhotoUrl={creator.avatarUrl}
           amount={amount}
           message={message}
           paying={paying}
