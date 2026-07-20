@@ -181,7 +181,7 @@ export function Home() {
               </AnimatePresence>
 
               <motion.div layout="position" transition={layoutTransition}>
-                <ButtonLink variant="secondary" href="/abdulsamad">
+                <ButtonLink variant="secondary" href="/abdul">
                   See a sample page
                 </ButtonLink>
               </motion.div>

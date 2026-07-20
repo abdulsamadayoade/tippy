@@ -95,7 +95,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             ref={ref}
             id={textareaId}
             className={cn(
-              "block min-h-16.5 w-full resize-none rounded-xl border-0 bg-white px-3.5 pt-3 text-sm leading-[1.4] text-ink shadow-surface outline-none transition-shadow duration-150 ease-out placeholder:text-muted focus:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_rgba(6,78,91,0.12),0_4px_12px_rgba(6,78,91,0.08)] disabled:cursor-not-allowed disabled:opacity-60",
+              "block min-h-16.5 w-full resize-none rounded-xl border-0 bg-white px-3.5 pt-3 text-base sm:text-sm leading-[1.4] text-body-text shadow-surface outline-none transition-shadow duration-150 ease-out placeholder:text-muted-text focus:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_rgba(6,78,91,0.12),0_4px_12px_rgba(6,78,91,0.08)] disabled:cursor-not-allowed disabled:opacity-60",
               invalid &&
                 "shadow-[inset_0_0_0_1px_var(--color-danger)] focus:shadow-[inset_0_0_0_1px_var(--color-danger),0_0_0_4px_rgba(143,48,48,0.09),0_4px_12px_rgba(143,48,48,0.07)]",
               showCount ? "pb-5" : "pb-3",

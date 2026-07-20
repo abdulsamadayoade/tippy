@@ -50,6 +50,8 @@ type CheckoutPanelProps = {
   closeRef?: RefObject<HTMLButtonElement | null>;
 };
 
+type PresetLabels = [string, string, string, string];
+
 export type {
   PublicCreator,
   ProfileProps,
@@ -58,4 +60,5 @@ export type {
   CheckoutResponse,
   SuccessProps,
   CheckoutPanelProps,
+  PresetLabels,
 };
