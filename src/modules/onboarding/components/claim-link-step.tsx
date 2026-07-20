@@ -13,6 +13,8 @@ import type { ClaimLinkStepProps } from "../types";
 export function ClaimLinkStep({
   username,
   onUsernameChange,
+  serverError,
+  checking,
   onContinue,
 }: ClaimLinkStepProps) {
   const trimmedUsername = username.trim();
@@ -20,10 +22,13 @@ export function ClaimLinkStep({
     trimmedUsername.length > 0 && !USERNAME_PATTERN.test(trimmedUsername);
   const usernameIsValid =
     trimmedUsername.length >= USERNAME_MIN_LENGTH && !usernameHasInvalidChars;
+  const error = usernameHasInvalidChars
+    ? "Only letters, numbers, and underscores."
+    : (serverError ?? undefined);
 
   function submit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (usernameIsValid) onContinue();
+    if (usernameIsValid && !checking) onContinue();
   }
 
   return (
@@ -50,18 +55,16 @@ export function ClaimLinkStep({
           placeholder="yourname"
           value={username}
           hint="Letters, numbers, and underscores only."
-          error={
-            usernameHasInvalidChars
-              ? "Only letters, numbers, and underscores."
-              : undefined
-          }
+          error={error}
           onChange={(event) => onUsernameChange(event.target.value)}
         />
 
         <Button
           className="mt-5 w-full"
           type="submit"
-          disabled={!usernameIsValid}>
+          disabled={!usernameIsValid}
+          loading={checking}
+          loadingText="Checking availability…">
           Continue
         </Button>
       </form>

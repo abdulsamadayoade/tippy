@@ -5,30 +5,33 @@ import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
 import { TextArea } from "@/components/ui/text-area";
 import { Select } from "@/components/ui/select";
+import { ErrorMessage } from "@/components/elements/error-message";
 import { ArrowLeftIcon } from "@/components/icons/arrow-left";
 import { StepHeader } from "./step-header";
-import { BIO_MAX_LENGTH, CATEGORIES } from "../data";
+import { BIO_MAX_LENGTH } from "../data";
 import type { ProfileStepProps } from "../types";
 
 export function ProfileStep({
+  categories,
   displayName,
   onDisplayNameChange,
-  category,
-  onCategoryChange,
+  categoryId,
+  onCategoryIdChange,
   bio,
   onBioChange,
   photoUrl,
   onPhotoChange,
   finishing,
+  formError,
   onBack,
   onFinish,
 }: ProfileStepProps) {
   const photoInputRef = useRef<HTMLInputElement>(null);
-  const canFinish = displayName.trim().length > 0 && category !== "";
+  const canFinish = displayName.trim().length > 0 && categoryId !== "";
 
   function submit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (canFinish) onFinish();
+    if (canFinish && !finishing) onFinish();
   }
 
   return (
@@ -43,7 +46,7 @@ export function ProfileStep({
         <div className="flex items-center gap-4">
           <span className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-main-heading text-xl font-medium text-white">
             {photoUrl ? (
-              /* eslint-disable-next-line @next/next/no-img-element -- blob: preview URLs aren't supported by next/image */
+              /* eslint-disable-next-line @next/next/no-img-element*/
               <img
                 className="size-full object-cover"
                 src={photoUrl}
@@ -91,13 +94,13 @@ export function ProfileStep({
           <Select
             label="What do you create?"
             labelClassName="text-main-heading"
-            name="category"
+            name="categoryId"
             placeholder="Select a category"
-            value={category}
-            onChange={(event) => onCategoryChange(event.target.value)}>
-            {CATEGORIES.map((option) => (
-              <option key={option} value={option}>
-                {option}
+            value={categoryId}
+            onChange={(event) => onCategoryIdChange(event.target.value)}>
+            {categories.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.name}
               </option>
             ))}
           </Select>
@@ -120,6 +123,12 @@ export function ProfileStep({
             onChange={(event) => onBioChange(event.target.value)}
           />
         </div>
+
+        {formError ? (
+          <div className="mt-5">
+            <ErrorMessage>{formError}</ErrorMessage>
+          </div>
+        ) : null}
 
         <div className="mt-7 flex gap-3">
           <Button variant="secondary" className="px-5" onClick={onBack}>
