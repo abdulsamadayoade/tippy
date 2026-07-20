@@ -15,8 +15,8 @@ export function TipsSkeleton() {
               "rounded-[14px] bg-white p-4.5 shadow-surface",
               index === 0 && "max-dashboard:col-span-2 max-phone-sm:col-span-1",
             )}>
-            <Skeleton className="h-3.5 w-24 max-w-full" />
-            <Skeleton className="mt-3 h-6 w-28 max-w-full" />
+            <Skeleton className="h-4 w-24 max-w-full" />
+            <Skeleton className="mt-2.5 h-8 w-28 max-w-full" />
           </article>
         ))}
       </div>
