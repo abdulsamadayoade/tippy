@@ -1,14 +1,19 @@
 "use client";
 
 import { useEffect, useState, type SubmitEvent } from "react";
+import { useSearchParams } from "next/navigation";
 import { inboxUrl, isValidEmail, requestMagicLink } from "../utils";
 import Link from "next/link";
 import { Button, buttonClassName } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
+import { ErrorMessage } from "@/components/elements/error-message";
 import { MailIcon } from "@/components/icons/mail";
 import { RESEND_SECONDS } from "../data";
 
 export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
+  const searchParams = useSearchParams();
+  const claimUsername = searchParams.get("username");
+  const linkFailed = searchParams.get("error") === "link";
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
@@ -35,15 +40,26 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
     }
 
     setSending(true);
-    await requestMagicLink(email.trim());
+    const failure = await requestMagicLink(email.trim(), claimUsername);
     setSending(false);
+
+    if (failure) {
+      setError(failure);
+      return;
+    }
+
     setSecondsLeft(RESEND_SECONDS);
     setSent(true);
   }
 
   async function resend() {
     setSecondsLeft(RESEND_SECONDS);
-    await requestMagicLink(email.trim());
+    const failure = await requestMagicLink(email.trim(), claimUsername);
+
+    if (failure) {
+      setSent(false);
+      setError(failure);
+    }
   }
 
   function useDifferentEmail() {
@@ -120,6 +136,12 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
       </p>
 
       <form className="mt-8 text-left" noValidate onSubmit={submit}>
+        {linkFailed && !sent ? (
+          <ErrorMessage>
+            That sign-in link is invalid or has expired. Request a new one
+            below.
+          </ErrorMessage>
+        ) : null}
         <TextInput
           label="Email"
           labelClassName="text-main-heading"

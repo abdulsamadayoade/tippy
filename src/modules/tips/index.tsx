@@ -2,8 +2,8 @@
 
 import { useTips } from "@/store/providers";
 import { formatNaira, getTipSummary } from "@/lib/utils";
-import { MetricCard } from "@/modules/creator/metric-card";
-import { TipList } from "@/modules/creator/tip-list";
+import { MetricCard } from "@/modules/creator/components/metric-card";
+import { TipList } from "@/modules/creator/components/tip-list";
 import { SlidingTabs } from "@/components/ui/sliding-tabs";
 import { useTipFilter } from "./hooks/use-tip-filter";
 

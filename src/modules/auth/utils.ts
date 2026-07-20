@@ -1,3 +1,4 @@
+import { authClient } from "@/lib/auth-client";
 import { INBOX_PROVIDERS } from "./data";
 
 function inboxUrl(email: string) {
@@ -9,10 +10,19 @@ function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
-// Placeholder until better-auth's magic-link plugin + mailer are configured
-async function requestMagicLink(email: string) {
-  void email;
-  await new Promise((resolve) => window.setTimeout(resolve, 700));
+async function requestMagicLink(email: string, claimUsername?: string | null) {
+  const onboardingUrl = claimUsername
+    ? `/onboarding?username=${encodeURIComponent(claimUsername)}`
+    : "/onboarding";
+
+  const { error } = await authClient.signIn.magicLink({
+    email,
+    callbackURL: claimUsername ? onboardingUrl : "/overview",
+    newUserCallbackURL: onboardingUrl,
+    errorCallbackURL: "/login?error=link",
+  });
+
+  return error ? "We couldn’t send the link. Try again." : null;
 }
 
 export { inboxUrl, isValidEmail, requestMagicLink };
