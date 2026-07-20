@@ -11,7 +11,7 @@ export default function CreatorLayout({
     <main className="min-h-screen bg-white" id="main-content">
       <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-[10px]">
         <div className="mx-auto flex max-w-160 items-center gap-5.5 px-5.5 py-3 max-[680px]:flex-wrap max-[680px]:gap-2.5 max-[680px]:px-4 max-[680px]:pt-3 max-[680px]:pb-2.5">
-          <Link href="/">
+          <Link href="/overview">
             <Logo />
           </Link>
           <CreatorNavigation />
