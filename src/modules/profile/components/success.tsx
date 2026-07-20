@@ -58,7 +58,7 @@ export function Success({
         </p>
 
         {message.trim() && (
-          <blockquote className="mt-4.5 rounded-[14px] bg-soft px-4 py-3.25">
+          <blockquote className="mt-4.5 rounded-surface bg-soft px-4 py-3.25">
             “{message.trim()}”
             <span className="mt-1.25 block text-xs text-muted-text-2">
               Your note was sent too

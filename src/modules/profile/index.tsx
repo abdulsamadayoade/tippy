@@ -290,21 +290,28 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               onChange={(event) => setMessage(event.target.value)}
             />
 
-            {anonymous ? null : (
-              <TextInput
-                containerClassName="mt-2.5"
-                label="Your name"
-                visuallyHideLabel
-                id="tipper-name"
-                name="tipperName"
-                type="text"
-                autoComplete="name"
-                maxLength={50}
-                placeholder="Your name (optional)"
-                value={tipperName}
-                onChange={(event) => setTipperName(event.target.value)}
-              />
-            )}
+            <div
+              className="t-acc -mx-1.25 -mb-1.25"
+              data-open={anonymous ? "false" : "true"}
+              inert={anonymous}>
+              <div className="t-acc-panel">
+                <div className="t-acc-panel-inner">
+                  <TextInput
+                    containerClassName="mt-2.5 px-1.25 pb-1.25"
+                    label="Your name"
+                    visuallyHideLabel
+                    id="tipper-name"
+                    name="tipperName"
+                    type="text"
+                    autoComplete="name"
+                    maxLength={50}
+                    placeholder="Your name (optional)"
+                    value={tipperName}
+                    onChange={(event) => setTipperName(event.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
 
             <Switch
               className="mt-3.5"
