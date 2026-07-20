@@ -80,7 +80,7 @@ export function Home() {
                   <motion.form
                     key="username-form"
                     layoutId="claim-control"
-                    className="w-88 max-w-full"
+                    className="w-72 max-w-full"
                     action="/login"
                     method="get"
                     autoComplete="off"

@@ -15,4 +15,6 @@ const PRESETS = [
   { amount: 5000, label: "Next upgrade", popular: false },
 ] as const;
 
-export { NUMBER_FLOW_OPACITY_TIMING, NUMBER_FLOW_TIMING, PRESETS };
+const DEFAULT_TIP = 1_000;
+
+export { NUMBER_FLOW_OPACITY_TIMING, NUMBER_FLOW_TIMING, PRESETS, DEFAULT_TIP };

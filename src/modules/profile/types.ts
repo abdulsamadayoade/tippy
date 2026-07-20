@@ -18,4 +18,16 @@ type SuccessProps = {
   reset: () => void;
 };
 
-export type { Step, CheckoutResponse, SuccessProps };
+type CheckoutPanelProps = {
+  creatorName: string;
+  creatorPhotoUrl?: string | null;
+  amount: number;
+  message: string;
+  paying: boolean;
+  error?: string;
+  onSubmit: () => void;
+  onClose: () => void;
+  closeRef?: RefObject<HTMLButtonElement | null>;
+};
+
+export type { Step, CheckoutResponse, SuccessProps, CheckoutPanelProps };
