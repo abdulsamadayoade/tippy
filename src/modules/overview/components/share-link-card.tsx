@@ -3,14 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { CheckIcon } from "@/components/icons/check";
 import { CopyIcon } from "@/components/icons/copy";
-import { sampleCreator } from "@/data";
 
-export function ShareLinkCard() {
+export function ShareLinkCard({ username }: { username: string }) {
   const [copied, setCopied] = useState(false);
   const copyTimer = useRef<number | undefined>(undefined);
 
   async function copyTipLink() {
-    const link = `${window.location.origin}/${sampleCreator.username}`;
+    const link = `${window.location.origin}/${username}`;
 
     try {
       await navigator.clipboard.writeText(link);
@@ -41,7 +40,7 @@ export function ShareLinkCard() {
           Share your tip link
         </span>
         <strong className="mt-0.75 block text-base font-medium text-main-heading">
-          {sampleCreator.tipUrl}
+          {`tippy.cash/${username}`}
         </strong>
       </div>
       <button

@@ -7,11 +7,16 @@ import { TipList } from "@/modules/creator/tip-list";
 import { formatNaira, getTipSummary } from "@/lib/utils";
 import { SummaryBanner } from "./components/summary-banner";
 import { ShareLinkCard } from "./components/share-link-card";
-import { sampleCreator } from "@/data";
 import { filterTipsByPeriod } from "./utils";
 import type { TipPeriod } from "./types";
 
-export function Overview() {
+export function Overview({
+  displayName,
+  username,
+}: {
+  displayName: string;
+  username: string;
+}) {
   const { tips } = useTips();
   const { account, autoPayout } = usePayoutAccount();
   const [period, setPeriod] = useState<TipPeriod>("month");
@@ -24,7 +29,7 @@ export function Overview() {
       id="creator-overview-panel"
       aria-labelledby="creator-overview-link">
       <p className="text-[13px] text-muted-text">
-        Good to see you, {sampleCreator.firstName}.
+        Good to see you, {displayName}.
       </p>
       <h1 className="mt-0.5 text-lg leading-[1.35] font-medium tracking-[-0.02em] text-main-heading">
         Here’s what your community sent.
@@ -48,7 +53,7 @@ export function Overview() {
         />
       </div>
 
-      <ShareLinkCard />
+      <ShareLinkCard username={username} />
 
       <section className="mt-7" aria-labelledby="recent-tips-heading">
         <h2
