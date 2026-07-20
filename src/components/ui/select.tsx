@@ -77,7 +77,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ref={ref}
             id={selectId}
             className={cn(
-              "min-h-12 min-w-0 flex-1 cursor-pointer appearance-none border-0 bg-transparent pr-10 pl-3.5 text-sm font-medium outline-none disabled:cursor-not-allowed",
+              "min-h-12 min-w-0 flex-1 cursor-pointer appearance-none rounded-[inherit] border-0 bg-transparent pr-10 pl-3.5 text-sm font-medium outline-none disabled:cursor-not-allowed",
               showingPlaceholder ? "text-muted-text" : "text-body-text",
               className,
             )}

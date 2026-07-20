@@ -134,7 +134,7 @@ export const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
             ref={setInputRef}
             id={inputId}
             className={cn(
-              "min-w-0 flex-1 border-0 bg-transparent py-3 text-lg font-medium tracking-[-0.02em] text-ink tabular-nums outline-none disabled:cursor-not-allowed",
+              "min-w-0 flex-1 rounded-[inherit] border-0 bg-transparent py-3 text-lg font-medium tracking-[-0.02em] text-ink tabular-nums outline-none disabled:cursor-not-allowed",
               className,
             )}
             type="text"
