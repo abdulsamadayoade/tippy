@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { usePayoutAccount, useTips } from "@/store/providers";
-import { MetricCard } from "@/modules/creator/metric-card";
-import { TipList } from "@/modules/creator/tip-list";
+import { MetricCard } from "@/modules/creator/components/metric-card";
+import { TipList } from "@/modules/creator/components/tip-list";
 import { formatNaira, getTipSummary } from "@/lib/utils";
 import { SummaryBanner } from "./components/summary-banner";
 import { ShareLinkCard } from "./components/share-link-card";
