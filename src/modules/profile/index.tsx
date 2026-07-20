@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useTips } from "@/store/providers";
 import Script from "next/script";
 import { cn } from "@/lib/cn";
 import { Modal } from "@/components/ui/modal";
@@ -24,7 +23,6 @@ import { Success } from "./components/success";
 import type { CheckoutResponse, Step, ProfileProps } from "./types";
 
 export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
-  const { addTip } = useTips();
   const [amount, setAmount] = useState(DEFAULT_TIP);
   const [message, setMessage] = useState("");
   const [tipperName, setTipperName] = useState("");
@@ -69,22 +67,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
     setPaying(false);
   }
 
-  function celebrateTip(paymentReference: string) {
-    const trimmedName = tipperName.trim();
-    const displayTipper = anonymous ? "Anonymous" : trimmedName || "You";
-
-    addTip({
-      id: paymentReference,
-      name: displayTipper,
-      amount,
-      note: message.trim(),
-      anonymous,
-      initial: anonymous ? "?" : displayTipper.charAt(0).toUpperCase(),
-      shade: "strong",
-      time: "just now",
-      createdAt: new Date().toISOString(),
-      reference: paymentReference,
-    });
+  function celebrateTip() {
     releasePaying();
     setCheckoutOpen(false);
     setStep("success");
@@ -115,7 +98,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
       }
 
       if (status === "success") {
-        celebrateTip(paymentReference);
+        celebrateTip();
         return;
       }
 

@@ -1,28 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { usePayoutAccount, useTips } from "@/store/providers";
 import { MetricCard } from "@/modules/creator/components/metric-card";
 import { TipList } from "@/modules/creator/components/tip-list";
 import { formatNaira, getTipSummary } from "@/lib/utils";
 import { SummaryBanner } from "./components/summary-banner";
 import { ShareLinkCard } from "./components/share-link-card";
 import { filterTipsByPeriod } from "./utils";
+import type { Tip } from "@/store/types";
 import type { TipPeriod } from "./types";
 
 export function Overview({
   displayName,
   username,
+  tips,
+  automaticPayoutActive,
 }: {
   displayName: string;
   username: string;
+  tips: Tip[];
+  automaticPayoutActive: boolean;
 }) {
-  const { tips } = useTips();
-  const { account, autoPayout } = usePayoutAccount();
   const [period, setPeriod] = useState<TipPeriod>("month");
   const summary = getTipSummary(tips);
   const periodSummary = getTipSummary(filterTipsByPeriod(tips, period));
-  const automaticPayoutActive = Boolean(account) && autoPayout;
 
   return (
     <section

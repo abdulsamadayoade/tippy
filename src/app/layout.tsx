@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
-import { AppProviders } from "@/store/providers";
 import "./globals.css";
 
 const geist = Geist({
@@ -32,9 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={geist.variable} data-scroll-behavior="smooth">
-      <body>
-        <AppProviders>{children}</AppProviders>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
