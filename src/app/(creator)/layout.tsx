@@ -1,12 +1,19 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Logo } from "@/components/elements/logo";
-import { CreatorAccountMenu } from "@/modules/creator/account-menu";
-import { CreatorNavigation } from "@/modules/creator/navigation";
+import { CreatorAccountMenu } from "@/modules/creator/components/account-menu";
+import { CreatorNavigation } from "@/modules/creator/components/navigation";
+import { getSessionCreator } from "@/lib/session";
 import type { ReactNode } from "react";
 
-export default function CreatorLayout({
+export default async function CreatorLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
+  const { session, creator } = await getSessionCreator();
+
+  if (!session) redirect("/login");
+  if (!creator) redirect("/onboarding");
+
   return (
     <main className="min-h-screen bg-white" id="main-content">
       <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-[10px]">
@@ -16,7 +23,11 @@ export default function CreatorLayout({
           </Link>
           <CreatorNavigation />
           <div className="ml-auto flex items-center gap-3.5">
-            <CreatorAccountMenu />
+            <CreatorAccountMenu
+              displayName={creator.displayName}
+              tipUrl={`tippy.cash/${creator.username}`}
+              avatarUrl={creator.avatarUrl}
+            />
           </div>
         </div>
       </header>

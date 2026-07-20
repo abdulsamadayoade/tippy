@@ -1,12 +1,11 @@
 import { Suspense } from "react";
 import { Tips } from "@/modules/tips";
 import { TipsSkeleton } from "@/modules/tips/components/skeleton";
-import { sampleCreator } from "@/data";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Tips received",
-  description: `Review every tip, supporter, and note ${sampleCreator.name} has received.`,
+  description: "Review every tip, supporter, and note you’ve received.",
 };
 
 export default function TipsPage() {

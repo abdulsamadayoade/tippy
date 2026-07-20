@@ -1,12 +1,16 @@
 import { Overview } from "@/modules/overview";
-import { sampleCreator } from "@/data";
+import { getSessionCreator } from "@/lib/session";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Creator overview",
-  description: `See ${sampleCreator.name}’s latest tips, monthly total, and upcoming payout.`,
+  description: "See your latest tips, monthly total, and upcoming payout.",
 };
 
-export default function OverviewPage() {
-  return <Overview />;
+export default async function OverviewPage() {
+  const { creator } = await getSessionCreator();
+
+  return (
+    <Overview displayName={creator!.displayName} username={creator!.username} />
+  );
 }
