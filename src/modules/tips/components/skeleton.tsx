@@ -7,13 +7,13 @@ export function TipsSkeleton() {
       <Skeleton className="mt-1 h-5 w-14" />
       <Skeleton className="mt-2.5 h-3.5 w-72 max-w-full" />
 
-      <div className="mt-5 grid grid-cols-3 gap-3 max-[680px]:grid-cols-2 max-[360px]:grid-cols-1">
+      <div className="mt-5 grid grid-cols-3 gap-3 max-dashboard:grid-cols-2 max-phone-sm:grid-cols-1">
         {[0, 1, 2].map((index) => (
           <article
             key={index}
             className={cn(
               "rounded-[14px] bg-white p-4.5 shadow-surface",
-              index === 0 && "max-[680px]:col-span-2 max-[360px]:col-span-1",
+              index === 0 && "max-dashboard:col-span-2 max-phone-sm:col-span-1",
             )}>
             <Skeleton className="h-3.5 w-24 max-w-full" />
             <Skeleton className="mt-3 h-6 w-28 max-w-full" />
@@ -27,7 +27,7 @@ export function TipsSkeleton() {
         {Array.from({ length: 4 }, (_, index) => (
           <div
             key={index}
-            className="flex min-h-16 items-start gap-3 px-3.5 py-3 max-[460px]:px-2.5">
+            className="flex min-h-16 items-start gap-3 px-3.5 py-3 max-phone:px-2.5">
             <Skeleton className="size-10 shrink-0 rounded-full" />
             <div className="min-w-0 flex-1">
               <Skeleton className="h-4 w-28 max-w-full" />

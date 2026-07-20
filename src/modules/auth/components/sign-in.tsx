@@ -169,7 +169,7 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
         </Button>
       </form>
 
-      <p className="mt-5 text-[13px] text-muted-text-2">
+      <p className="mt-5 text-ui-sm text-muted-text-2">
         By continuing you agree to Tippy&apos;s{" "}
         <Link
           className="font-medium text-main-heading hover:underline"

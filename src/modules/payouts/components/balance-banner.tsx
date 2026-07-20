@@ -19,12 +19,12 @@ export function BalanceBanner({
   });
 
   return (
-    <article className="creator-banner-grid mt-5 flex flex-wrap items-end justify-between gap-4 rounded-[18px] bg-primary p-6 text-white max-[460px]:p-5">
+    <article className="creator-banner-grid mt-5 flex flex-wrap items-end justify-between gap-4 rounded-[18px] bg-primary p-6 text-white max-phone:p-5">
       <div>
-        <p className="text-xs font-medium tracking-[0.03em] text-white/55 uppercase">
+        <p className="text-xs font-medium tracking-label text-white/55 uppercase">
           Available balance
         </p>
-        <strong className="mt-2.5 block text-2xl font-medium tracking-[-0.02em]">
+        <strong className="mt-2.5 block text-2xl font-medium tracking-display">
           {formatNaira(total)}
         </strong>
         <small className="mt-2.5 block text-xs text-white/50">
@@ -35,7 +35,7 @@ export function BalanceBanner({
       </div>
       {hasAccount ? (
         <button
-          className="major-button major-button-light inline-flex cursor-pointer items-center gap-1.75 rounded-full bg-white px-3.5 py-2 text-[13px] font-medium text-main-heading transition-transform duration-100 active:scale-[0.98] disabled:cursor-default disabled:opacity-70"
+          className="major-button major-button-light inline-flex cursor-pointer items-center gap-1.75 rounded-full bg-white px-3.5 py-2 text-ui-sm font-medium text-main-heading transition-transform duration-100 active:scale-[0.98] disabled:cursor-default disabled:opacity-70"
           type="button"
           data-no-hover
           disabled={!canWithdraw}

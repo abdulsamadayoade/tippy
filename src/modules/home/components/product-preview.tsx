@@ -27,9 +27,9 @@ export function ProductPreview() {
         </header>
 
         <div className="mt-2 grid min-w-0 grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-2 max-[560px]:grid-cols-1">
-          <section className="creator-banner-grid flex min-w-0 flex-col justify-between rounded-[18px] bg-primary p-5 text-white max-[460px]:min-h-51 max-[460px]:p-4.5 min-[461px]:min-h-56">
+          <section className="creator-banner-grid flex min-h-56 min-w-0 flex-col justify-between rounded-[18px] bg-primary p-5 text-white max-phone:min-h-51 max-phone:p-4.5">
             <div>
-              <p className="text-xs font-medium tracking-[0.04em] text-white/80 uppercase">
+              <p className="text-xs font-medium tracking-label text-white/80 uppercase">
                 Tips this week
               </p>
               <strong className="mt-2 block text-3xl leading-none font-medium tracking-[-0.035em]">

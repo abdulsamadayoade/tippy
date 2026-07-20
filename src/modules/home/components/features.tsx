@@ -15,7 +15,7 @@ export function Features() {
           <h2 className="mt-3.5 text-sm font-medium text-main-heading">
             {title}
           </h2>
-          <p className="mt-1 text-[13px] tracking-[0.005px] leading-normal text-muted-text">
+          <p className="mt-1 text-ui-sm leading-normal tracking-normal text-muted-text">
             {body}
           </p>
         </div>

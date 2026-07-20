@@ -28,14 +28,14 @@ export function Overview({
     <section
       id="creator-overview-panel"
       aria-labelledby="creator-overview-link">
-      <p className="text-[13px] text-muted-text">
+      <p className="text-ui-sm text-muted-text">
         Good to see you, {displayName}.
       </p>
-      <h1 className="mt-0.5 text-lg leading-[1.35] font-medium tracking-[-0.02em] text-main-heading">
+      <h1 className="mt-0.5 text-lg leading-page-heading font-medium tracking-display text-main-heading">
         Here’s what your community sent.
       </h1>
 
-      <div className="mt-5.5 grid grid-cols-3 gap-3 max-[680px]:grid-cols-2 max-[360px]:grid-cols-1">
+      <div className="mt-5.5 grid grid-cols-3 gap-3 max-dashboard:grid-cols-2 max-phone-sm:grid-cols-1">
         <SummaryBanner
           total={periodSummary.total}
           count={periodSummary.count}
@@ -47,7 +47,7 @@ export function Overview({
         <MetricCard label="Supporters" value={String(summary.supporters)} />
         <MetricCard label="Largest tip" value={formatNaira(summary.largest)} />
         <MetricCard
-          className="max-[680px]:col-span-2 max-[360px]:col-span-1"
+          className="max-dashboard:col-span-2 max-phone-sm:col-span-1"
           label="Average tip"
           value={formatNaira(summary.average)}
         />

@@ -87,7 +87,7 @@ export function PayoutAccountCard() {
         {account ? (
           <div className="flex items-center justify-between gap-3 px-4.5 py-4">
             <div className="min-w-0">
-              <span className="block text-[13px] text-muted-text">
+              <span className="block text-ui-sm text-muted-text">
                 Payout account
               </span>
               <strong className="mt-0.5 block truncate text-[15px] font-medium text-main-heading">
@@ -110,7 +110,7 @@ export function PayoutAccountCard() {
             <h3 className="text-[15px] font-medium text-main-heading">
               No payout account yet
             </h3>
-            <p className="mt-1 max-w-70 text-[13px] leading-normal text-muted-text">
+            <p className="mt-1 max-w-70 text-ui-sm leading-normal text-muted-text">
               Add a bank account so we can send your tips every Friday.
             </p>
             <Button size="sm" className="mt-4" onClick={openAdd}>
@@ -122,7 +122,7 @@ export function PayoutAccountCard() {
 
         <div className="flex items-center justify-between gap-3 border-t border-line px-4.5 py-4">
           <div className="min-w-0">
-            <span className="block text-[13px] text-muted-text">
+            <span className="block text-ui-sm text-muted-text">
               Automatic payout
             </span>
             <strong className="mt-0.5 block text-[15px] font-medium text-main-heading">
@@ -150,7 +150,7 @@ export function PayoutAccountCard() {
         initialFocusRef={bankFieldRef}
         className="w-full max-w-105 rounded-[20px] bg-white p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
         <h2
-          className="text-xl font-medium tracking-[-0.02em] text-main-heading"
+          className="text-xl font-medium tracking-display text-main-heading"
           id={`${uid}-form-title`}>
           {formMode === "add" ? "Add bank account" : "Edit bank account"}
         </h2>
@@ -251,7 +251,7 @@ export function PayoutAccountCard() {
           <TrashIcon className="size-5" />
         </span>
         <h2
-          className="mt-4 text-center text-xl font-medium tracking-[-0.02em] text-main-heading"
+          className="mt-4 text-center text-xl font-medium tracking-display text-main-heading"
           id={`${uid}-delete-title`}>
           Remove bank account?
         </h2>

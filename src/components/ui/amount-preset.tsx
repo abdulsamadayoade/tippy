@@ -34,7 +34,7 @@ export function AmountPreset({
         className,
       )}>
       <span className="flex w-full items-center justify-between gap-1.5">
-        <span className="text-lg font-medium tracking-[-0.02em]">
+        <span className="text-lg font-medium tracking-display">
           {formatNaira(amount)}
         </span>
         {popular && (

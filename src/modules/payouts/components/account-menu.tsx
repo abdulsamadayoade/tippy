@@ -79,7 +79,7 @@ export function AccountMenu({ onEdit, onRemove }: AccountMenuProps) {
           role="menuitem"
           type="button"
           onClick={() => select(onEdit)}
-          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-body-text transition-colors duration-100 hover:bg-soft">
+          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft">
           <EditIcon className="size-4" />
           Edit account
         </button>
@@ -87,7 +87,7 @@ export function AccountMenu({ onEdit, onRemove }: AccountMenuProps) {
           role="menuitem"
           type="button"
           onClick={() => select(onRemove)}
-          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-danger transition-colors duration-100 hover:bg-danger-soft">
+          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-ui-sm font-medium text-danger transition-colors duration-100 hover:bg-danger-soft">
           <TrashIcon className="size-4" />
           Remove
         </button>

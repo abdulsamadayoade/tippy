@@ -46,10 +46,10 @@ export function CheckoutPanel({
       </div>
 
       <div className="px-0 pt-6 pb-2 text-center">
-        <span className="block text-xs font-medium tracking-[0.006em] text-muted-text-2 uppercase">
+        <span className="block text-xs font-medium tracking-label text-muted-text-2 uppercase">
           You&apos;re sending
         </span>
-        <strong className="mt-1.5 block text-2xl font-medium tracking-[-0.02em] text-main-heading">
+        <strong className="mt-1.5 block text-2xl font-medium tracking-display text-main-heading">
           {formatNaira(amount)}
         </strong>
       </div>

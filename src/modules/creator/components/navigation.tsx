@@ -60,7 +60,7 @@ export function CreatorNavigation() {
 
   return (
     <nav
-      className="ml-1.5 text-[13px] font-medium max-[680px]:order-3 max-[680px]:ml-0 max-[680px]:w-full max-[680px]:text-center"
+      className="ml-1.5 text-ui-sm font-medium max-dashboard:order-3 max-dashboard:ml-0 max-dashboard:w-full max-dashboard:text-center"
       aria-label="Creator sections">
       <div className="relative inline-flex items-center gap-0.75 rounded-[48px] bg-(--color-6) p-0.75">
         <span

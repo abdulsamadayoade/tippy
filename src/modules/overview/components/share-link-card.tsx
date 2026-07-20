@@ -36,7 +36,7 @@ export function ShareLinkCard({ username }: { username: string }) {
   return (
     <article className="mt-3 flex flex-wrap items-center justify-between gap-3.5 rounded-[14px] bg-white px-4.5 py-4 shadow-surface">
       <div>
-        <span className="block text-[13px] text-muted-text">
+        <span className="block text-ui-sm text-muted-text">
           Share your tip link
         </span>
         <strong className="mt-0.75 block text-base font-medium text-main-heading">
@@ -44,7 +44,7 @@ export function ShareLinkCard({ username }: { username: string }) {
         </strong>
       </div>
       <button
-        className="major-button inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-2.5 py-1 text-[13px] font-medium text-white transition-[background-color,transform] duration-150 active:scale-[0.985]"
+        className="major-button inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-2.5 py-1 text-ui-sm font-medium text-white transition-[background-color,transform] duration-150 active:scale-[0.985]"
         type="button"
         onClick={copyTipLink}>
         {copied ? (

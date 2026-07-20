@@ -43,7 +43,7 @@ export function Success({
         </span>
 
         <h2
-          className="mt-5.5 text-2xl font-medium tracking-[-0.02em] text-main-heading"
+          className="mt-5.5 text-2xl font-medium tracking-display text-main-heading"
           id="success-title">
           Tip sent
         </h2>

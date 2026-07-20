@@ -64,7 +64,7 @@ export function ProfileStep({
               onClick={() => photoInputRef.current?.click()}>
               {photoUrl ? "Change photo" : "Add photo"}
             </Button>
-            <span className="text-[13px] text-muted-text">
+            <span className="text-ui-sm text-muted-text">
               Optional · a square image works best
             </span>
           </div>

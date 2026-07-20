@@ -20,7 +20,7 @@ export function PeriodMenu({ period, onPeriodChange }: PeriodMenuProps) {
     <div ref={containerRef} className="relative">
       <button
         ref={triggerRef}
-        className="flex cursor-pointer items-center gap-1 text-xs font-medium tracking-[0.03em] text-white/55 uppercase transition-colors duration-150 hover:text-white/85"
+        className="flex cursor-pointer items-center gap-1 text-xs font-medium tracking-label text-white/55 uppercase transition-colors duration-150 hover:text-white/85"
         type="button"
         aria-label="Change tips period"
         aria-haspopup="menu"
@@ -45,7 +45,7 @@ export function PeriodMenu({ period, onPeriodChange }: PeriodMenuProps) {
           return (
             <button
               className={cn(
-                "flex w-full cursor-pointer items-center justify-between gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium tracking-normal transition-colors duration-100 hover:bg-soft",
+                "flex w-full cursor-pointer items-center justify-between gap-2.5 rounded-xl px-3 py-2 text-left text-ui-sm font-medium tracking-normal transition-colors duration-100 hover:bg-soft",
                 selected ? "text-main-heading" : "text-body-text",
               )}
               key={value}

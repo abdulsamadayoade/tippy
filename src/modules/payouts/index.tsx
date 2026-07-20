@@ -24,10 +24,10 @@ export function Payouts() {
 
   return (
     <section id="creator-payouts-panel" aria-labelledby="creator-payouts-link">
-      <h1 className="mt-0.5 text-lg leading-[1.35] font-medium tracking-[-0.02em] text-main-heading">
+      <h1 className="mt-0.5 text-lg leading-page-heading font-medium tracking-display text-main-heading">
         Payouts
       </h1>
-      <p className="mt-0.5 text-[13px] text-muted-text">
+      <p className="mt-0.5 text-ui-sm text-muted-text">
         Track your available balance and payout history.
       </p>
 

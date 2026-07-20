@@ -60,13 +60,13 @@ function TipListRow({ tip }: { tip: Tip }) {
         {tip.note ? (
           <div id={noteId}>
             {expanded ? null : (
-              <p className="mt-px truncate text-[13px] leading-normal text-muted-text">
+              <p className="mt-px truncate text-ui-sm leading-normal text-muted-text">
                 {tip.note}
               </p>
             )}
             <div className="t-acc-panel">
               <div className="t-acc-panel-inner">
-                <p className="mt-px text-[13px] leading-normal whitespace-normal text-muted-text">
+                <p className="mt-px text-ui-sm leading-normal whitespace-normal text-muted-text">
                   {tip.note}
                 </p>
                 <p className="mt-1.5 text-xs break-all text-muted-text-2">
@@ -76,7 +76,7 @@ function TipListRow({ tip }: { tip: Tip }) {
             </div>
           </div>
         ) : (
-          <p className="mt-px truncate text-[13px] text-muted-text-2 italic">
+          <p className="mt-px truncate text-ui-sm text-muted-text-2 italic">
             No note
           </p>
         )}
@@ -103,7 +103,7 @@ function TipListRow({ tip }: { tip: Tip }) {
       data-open={tip.note && expanded ? "true" : "false"}>
       {tip.note ? (
         <button
-          className="flex min-h-16 w-full cursor-pointer items-start gap-3 rounded-[10px] px-3.5 py-3 text-left max-[460px]:px-2.5"
+          className="flex min-h-16 w-full cursor-pointer items-start gap-3 rounded-[10px] px-3.5 py-3 text-left max-phone:px-2.5"
           type="button"
           aria-controls={noteId}
           aria-expanded={expanded}
@@ -114,7 +114,7 @@ function TipListRow({ tip }: { tip: Tip }) {
           </span>
         </button>
       ) : (
-        <div className="flex min-h-16 items-start gap-3 px-3.5 py-3 max-[460px]:px-2.5">
+        <div className="flex min-h-16 items-start gap-3 px-3.5 py-3 max-phone:px-2.5">
           {content}
         </div>
       )}

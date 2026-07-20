@@ -52,7 +52,7 @@ export function WithdrawModal({
             <CheckIcon className="size-6" />
           </span>
           <h2
-            className="mt-4 text-center text-xl font-medium tracking-[-0.02em] text-main-heading"
+            className="mt-4 text-center text-xl font-medium tracking-display text-main-heading"
             id="withdrawal-dialog-title">
             Withdrawal requested
           </h2>
@@ -79,7 +79,7 @@ export function WithdrawModal({
       ) : (
         <>
           <h2
-            className="text-xl font-medium tracking-[-0.02em] text-main-heading"
+            className="text-xl font-medium tracking-display text-main-heading"
             id="withdrawal-dialog-title">
             Withdraw funds
           </h2>
@@ -92,7 +92,7 @@ export function WithdrawModal({
           <div className="mt-5">
             <div className="flex items-center justify-between">
               <label
-                className="text-[13px] font-medium text-copy"
+                className="text-ui-sm font-medium text-copy"
                 htmlFor="withdraw-amount">
                 Amount
               </label>
@@ -150,20 +150,20 @@ export function WithdrawModal({
 
           <dl className="mt-4 divide-y divide-line rounded-[14px] bg-soft px-4">
             <div className="flex items-start justify-between gap-4 py-3.5">
-              <dt className="text-[13px] text-muted-text">Account</dt>
-              <dd className="text-right text-[13px] font-medium text-main-heading">
+              <dt className="text-ui-sm text-muted-text">Account</dt>
+              <dd className="text-right text-ui-sm font-medium text-main-heading">
                 {account
                   ? `${account.bank} · ${maskAccountNumber(account.accountNumber)}`
                   : "—"}
               </dd>
             </div>
             <div className="flex items-start justify-between gap-4 py-3.5">
-              <dt className="text-[13px] text-muted-text">Transfer fee</dt>
-              <dd className="text-[13px] font-medium text-main-heading">₦0</dd>
+              <dt className="text-ui-sm text-muted-text">Transfer fee</dt>
+              <dd className="text-ui-sm font-medium text-main-heading">₦0</dd>
             </div>
             <div className="flex items-start justify-between gap-4 py-3.5">
-              <dt className="text-[13px] text-muted-text">Estimated arrival</dt>
-              <dd className="text-[13px] font-medium text-main-heading">
+              <dt className="text-ui-sm text-muted-text">Estimated arrival</dt>
+              <dd className="text-ui-sm font-medium text-main-heading">
                 Instant
               </dd>
             </div>

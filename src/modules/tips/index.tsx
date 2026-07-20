@@ -14,16 +14,16 @@ export function Tips() {
 
   return (
     <section id="creator-tips-panel" aria-labelledby="creator-tips-link">
-      <h1 className="mt-0.5 text-lg leading-[1.35] font-medium tracking-[-0.02em] text-main-heading">
+      <h1 className="mt-0.5 text-lg leading-page-heading font-medium tracking-display text-main-heading">
         Tips
       </h1>
-      <p className="mt-0.5 text-[13px] text-muted-text">
+      <p className="mt-0.5 text-ui-sm text-muted-text">
         See who tipped, what they sent, and the notes they left.
       </p>
 
-      <div className="mt-5 grid grid-cols-3 gap-3 max-[680px]:grid-cols-2 max-[360px]:grid-cols-1">
+      <div className="mt-5 grid grid-cols-3 gap-3 max-dashboard:grid-cols-2 max-phone-sm:grid-cols-1">
         <MetricCard
-          className="max-[680px]:col-span-2 max-[360px]:col-span-1"
+          className="max-dashboard:col-span-2 max-phone-sm:col-span-1"
           label="Total received"
           value={formatNaira(summary.total)}
         />
@@ -33,7 +33,7 @@ export function Tips() {
 
       <SlidingTabs
         idPrefix="tip-filter"
-        className="mt-5 text-[13px] font-medium"
+        className="mt-5 text-ui-sm font-medium"
         label="Filter tips"
         options={[
           { value: "all", label: "All" },
