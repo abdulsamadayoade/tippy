@@ -1,10 +1,21 @@
 import { NextResponse } from "next/server";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { db } from "@/lib/db";
+import { creator, tip } from "@/lib/db/schema";
 import {
   MAXIMUM_TIP,
   MINIMUM_TIP,
   MAXIMUM_NOTE_LENGTH,
 } from "@/data/constants";
 import { formatNaira } from "@/lib/utils";
+
+const tipRequestSchema = z.object({
+  username: z.string().trim().toLowerCase().min(1),
+  amount: z.number().int().min(MINIMUM_TIP).max(MAXIMUM_TIP),
+  note: z.string().trim().max(MAXIMUM_NOTE_LENGTH),
+  anonymous: z.boolean(),
+});
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -21,7 +32,9 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!isTipRequest(body)) {
+  const parsed = tipRequestSchema.safeParse(body);
+
+  if (!parsed.success) {
     return NextResponse.json(
       {
         message: `Choose an amount between ${formatNaira(MINIMUM_TIP)} and ${formatNaira(MAXIMUM_TIP)} and try again.`,
@@ -30,42 +43,35 @@ export async function POST(request: Request) {
     );
   }
 
-  const note = body.note.trim().slice(0, MAXIMUM_NOTE_LENGTH);
+  const tipCreator = await db.query.creator.findFirst({
+    where: eq(creator.username, parsed.data.username),
+    columns: { id: true },
+  });
+
+  if (!tipCreator) {
+    return NextResponse.json(
+      { message: "This creator’s page no longer exists." },
+      { status: 404 },
+    );
+  }
+
   const paymentReference = `TIPPY-${crypto.randomUUID()}`;
+
+  await db.insert(tip).values({
+    creatorId: tipCreator.id,
+    amount: parsed.data.amount,
+    note: parsed.data.note || null,
+    anonymous: parsed.data.anonymous,
+    paymentReference,
+  });
 
   return NextResponse.json(
     {
       paymentReference,
-      tip: {
-        id: crypto.randomUUID(),
-        name: body.anonymous ? "Anonymous" : "You",
-        amount: body.amount,
-        note,
-        anonymous: body.anonymous,
-        initial: body.anonymous ? "?" : "Y",
-        shade: "strong",
-        time: "just now",
-        createdAt: new Date().toISOString(),
-        reference: paymentReference,
-      },
+      amount: parsed.data.amount,
+      customerFullName: "Tippy Supporter",
+      customerEmail: `${paymentReference.toLowerCase()}@guest.tippy.cash`,
     },
     { status: 201 },
-  );
-}
-
-function isTipRequest(
-  value: unknown,
-): value is { amount: number; note: string; anonymous: boolean } {
-  if (!value || typeof value !== "object") return false;
-
-  const candidate = value as Record<string, unknown>;
-  return (
-    typeof candidate.amount === "number" &&
-    Number.isInteger(candidate.amount) &&
-    candidate.amount >= MINIMUM_TIP &&
-    candidate.amount <= MAXIMUM_TIP &&
-    typeof candidate.note === "string" &&
-    candidate.note.length <= MAXIMUM_NOTE_LENGTH &&
-    typeof candidate.anonymous === "boolean"
   );
 }

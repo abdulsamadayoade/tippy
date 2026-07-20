@@ -56,5 +56,18 @@ export default async function Page({ params }: PageProps) {
 
   const session = await getSession();
 
-  return <Profile creator={tipCreator} viewerSignedIn={Boolean(session)} />;
+  const monnifyApiKey = process.env.MONNIFY_API_KEY;
+  const monnifyContractCode = process.env.MONNIFY_CONTRACT_CODE;
+  const monnify =
+    monnifyApiKey && monnifyContractCode
+      ? { apiKey: monnifyApiKey, contractCode: monnifyContractCode }
+      : null;
+
+  return (
+    <Profile
+      creator={tipCreator}
+      viewerSignedIn={Boolean(session)}
+      monnify={monnify}
+    />
+  );
 }
