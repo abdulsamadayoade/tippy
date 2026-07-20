@@ -22,4 +22,24 @@ type WithdrawModalProps = {
   onConfirm: () => void;
 };
 
-export type { BalanceBannerProps, PastPayoutsProps, WithdrawModalProps };
+type AccountMenuProps = {
+  onEdit: () => void;
+  onRemove: () => void;
+};
+
+type FormMode = "add" | "edit";
+
+type FormErrors = {
+  bank?: string;
+  accountNumber?: string;
+  accountName?: string;
+};
+
+export type {
+  BalanceBannerProps,
+  PastPayoutsProps,
+  WithdrawModalProps,
+  AccountMenuProps,
+  FormErrors,
+  FormMode,
+};
