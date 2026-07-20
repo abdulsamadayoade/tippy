@@ -23,6 +23,22 @@ function formatDate(
   }).format(new Date(`${date}T12:00:00+01:00`));
 }
 
+function formatRelativeTime(iso: string, now = new Date()) {
+  const elapsedMs = now.getTime() - new Date(iso).getTime();
+  const minutes = Math.floor(elapsedMs / 60_000);
+
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+
+  return formatDate(iso.slice(0, 10), { day: "numeric", month: "short" });
+}
+
 function getTipSummary(tips: Tip[]) {
   const total = tips.reduce((sum, tip) => sum + tip.amount, 0);
   const largest = tips.reduce(
@@ -42,4 +58,10 @@ function getTipSummary(tips: Tip[]) {
   };
 }
 
-export { formatNaira, maskAccountNumber, formatDate, getTipSummary };
+export {
+  formatNaira,
+  maskAccountNumber,
+  formatDate,
+  formatRelativeTime,
+  getTipSummary,
+};
