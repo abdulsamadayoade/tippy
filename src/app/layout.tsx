@@ -11,11 +11,11 @@ const geist = Geist({
 
 export const metadata: Metadata = {
   title: {
-    default: "Tippy — Support creators directly",
+    default: "Tippy — Get tipped in naira with one link",
     template: "%s · Tippy",
   },
   description:
-    "Send secure tips and personal notes directly to the creators you value.",
+    "One simple link to collect tips in naira — notes from your fans, automatic payouts to your bank every Friday.",
   applicationName: "Tippy",
 };
 
