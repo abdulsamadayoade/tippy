@@ -27,7 +27,7 @@ export function AmountPreset({
       aria-pressed={selected}
       onClick={onSelect}
       className={cn(
-        "flex min-h-17.25 cursor-pointer flex-col items-start gap-0.5 rounded-[14px] px-3.5 py-3.25 text-left transition-[background-color,box-shadow,transform] duration-150 hover:-translate-y-px",
+        "flex min-h-17.25 cursor-pointer flex-col items-start gap-0.5 rounded-surface px-3.5 py-3.25 text-left transition-[background-color,box-shadow,transform] duration-150 hover:-translate-y-px",
         selected
           ? "bg-primary text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_6px_rgba(0,0,0,0.18)]"
           : "bg-white text-main-heading shadow-surface",
