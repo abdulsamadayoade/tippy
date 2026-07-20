@@ -1,0 +1,1 @@
+ALTER TABLE "creator" ADD COLUMN "auto_payout" boolean DEFAULT true NOT NULL;

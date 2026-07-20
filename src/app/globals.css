@@ -70,6 +70,7 @@
   --leading-page-heading: 1.35;
   --tracking-display: -0.02em;
   --tracking-label: 0.03em;
+  --radius-surface: 0.875rem;
   --breakpoint-phone-sm: 22.5rem;
   --breakpoint-phone: 28.75rem;
   --breakpoint-dashboard: 42.5rem;
@@ -151,16 +152,19 @@ select:-webkit-autofill {
   transition: background-color 9999999s ease-in-out;
 }
 
+/* No overflow clip — the period dropdown must escape the banner; the ::before
+   pattern rounds its own right corners instead. */
 @utility creator-banner-grid {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
 
   &::before {
     position: absolute;
     z-index: 0;
     inset: 0 0 0 auto;
     width: 58%;
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
