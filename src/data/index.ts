@@ -1,4 +1,4 @@
-import { BankAccount, Tip } from "@/store/types";
+import { BankAccount, Payout, Tip } from "@/store/types";
 
 const sampleCreator = {
   firstName: "Abdulsamad",
@@ -68,4 +68,28 @@ const initialTips: Tip[] = [
   },
 ];
 
-export { sampleCreator, initialPayoutAccount, initialTips };
+const initialPayouts: Payout[] = [
+  {
+    id: "payout-10-jul",
+    date: "2026-07-10",
+    amount: 42000,
+    status: "Paid",
+    reference: "MNFY·8830",
+  },
+  {
+    id: "payout-03-jul",
+    date: "2026-07-03",
+    amount: 38500,
+    status: "Paid",
+    reference: "MNFY·8127",
+  },
+  {
+    id: "payout-26-jun",
+    date: "2026-06-26",
+    amount: 51200,
+    status: "Paid",
+    reference: "MNFY·7740",
+  },
+];
+
+export { sampleCreator, initialPayoutAccount, initialTips, initialPayouts };
