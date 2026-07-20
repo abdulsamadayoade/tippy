@@ -12,6 +12,7 @@ import { AnimatedNaira } from "./components/animated-naira";
 import { fireConfetti } from "./components/confetti";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { TextArea } from "@/components/ui/text-area";
+import { TextInput } from "@/components/ui/text-input";
 import { AmountInput } from "@/components/ui/amount-input";
 import { AmountPreset } from "@/components/ui/amount-preset";
 import { Switch } from "@/components/ui/switch";
@@ -27,6 +28,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
   const { addTip } = useTips();
   const [amount, setAmount] = useState(DEFAULT_TIP);
   const [message, setMessage] = useState("");
+  const [tipperName, setTipperName] = useState("");
   const [anonymous, setAnonymous] = useState(false);
   const [step, setStep] = useState<Step>("form");
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -69,13 +71,16 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
   }
 
   function celebrateTip(paymentReference: string) {
+    const trimmedName = tipperName.trim();
+    const displayTipper = anonymous ? "Anonymous" : trimmedName || "You";
+
     addTip({
       id: paymentReference,
-      name: anonymous ? "Anonymous" : "You",
+      name: displayTipper,
       amount,
       note: message.trim(),
       anonymous,
-      initial: anonymous ? "?" : "Y",
+      initial: anonymous ? "?" : displayTipper.charAt(0).toUpperCase(),
       shade: "strong",
       time: "just now",
       createdAt: new Date().toISOString(),
@@ -159,6 +164,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
           amount,
           note: message,
           anonymous,
+          tipperName: anonymous ? "" : tipperName,
         }),
       });
 
@@ -209,6 +215,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
   function reset() {
     setAmount(DEFAULT_TIP);
     setMessage("");
+    setTipperName("");
     setAnonymous(false);
     setPaymentError("");
     setCheckState("out");
@@ -251,7 +258,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               <h2 className="text-base font-medium">
                 Support {creator.displayName}&apos;s next stream
               </h2>
-              <p className="text-[13px] text-muted-text">
+              <p className="text-ui-sm text-muted-text">
                 Choose an amount and add a note if you&apos;d like.
               </p>
             </div>
@@ -300,6 +307,22 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               placeholder={`Write ${creator.displayName} a note (optional)…`}
               onChange={(event) => setMessage(event.target.value)}
             />
+
+            {anonymous ? null : (
+              <TextInput
+                containerClassName="mt-2.5"
+                label="Your name"
+                visuallyHideLabel
+                id="tipper-name"
+                name="tipperName"
+                type="text"
+                autoComplete="name"
+                maxLength={50}
+                placeholder="Your name (optional)"
+                value={tipperName}
+                onChange={(event) => setTipperName(event.target.value)}
+              />
+            )}
 
             <Switch
               className="mt-3.5"

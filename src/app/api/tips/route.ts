@@ -15,6 +15,7 @@ const tipRequestSchema = z.object({
   amount: z.number().int().min(MINIMUM_TIP).max(MAXIMUM_TIP),
   note: z.string().trim().max(MAXIMUM_NOTE_LENGTH),
   anonymous: z.boolean(),
+  tipperName: z.string().trim().max(50).optional().default(""),
 });
 
 export async function POST(request: Request) {
@@ -57,11 +58,14 @@ export async function POST(request: Request) {
 
   const paymentReference = `TIPPY-${crypto.randomUUID()}`;
 
+  const tipperName = parsed.data.anonymous ? null : parsed.data.tipperName;
+
   await db.insert(tip).values({
     creatorId: tipCreator.id,
     amount: parsed.data.amount,
     note: parsed.data.note || null,
     anonymous: parsed.data.anonymous,
+    tipperName: tipperName || null,
     paymentReference,
   });
 
