@@ -27,4 +27,14 @@ type ProfileStepProps = {
   onFinish: () => void;
 };
 
-export type { CategoryOption, ClaimLinkStepProps, ProfileStepProps };
+type OnboardingError = {
+  field: "username" | "form";
+  message: string;
+};
+
+export type {
+  CategoryOption,
+  ClaimLinkStepProps,
+  ProfileStepProps,
+  OnboardingError,
+};
