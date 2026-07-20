@@ -1,15 +1,25 @@
 "use client";
 
-import { formatNaira, getTipSummary } from "@/lib/utils";
+import { formatNaira } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { SlidingTabs } from "@/components/ui/sliding-tabs";
 import { MetricCard } from "@/modules/creator/components/metric-card";
 import { TipList } from "@/modules/creator/components/tip-list";
-import { SlidingTabs } from "@/components/ui/sliding-tabs";
-import { useTipFilter } from "./hooks/use-tip-filter";
-import type { Tip } from "@/store/types";
+import { TipListSkeleton, TipRowSkeleton } from "./components/skeleton";
+import { useTipsFeed } from "./hooks/use-tips-feed";
+import type { TipsProps } from "./types";
 
-export function Tips({ tips }: { tips: Tip[] }) {
-  const { filter, setFilter, filteredTips } = useTipFilter(tips);
-  const summary = getTipSummary(tips);
+export function Tips({
+  initialFilter,
+  initialTips,
+  initialCursor,
+  summary,
+}: TipsProps) {
+  const { filter, setFilter, tips, status, retry, sentinelRef } = useTipsFeed({
+    initialFilter,
+    initialTips,
+    initialCursor,
+  });
 
   return (
     <section id="creator-tips-panel" aria-labelledby="creator-tips-link">
@@ -43,13 +53,47 @@ export function Tips({ tips }: { tips: Tip[] }) {
         onChange={setFilter}
       />
 
-      <TipList
-        className="mt-3.5"
-        emptyMessage="No tips in this view yet."
-        id={`tip-filter-${filter}-panel`}
-        labelledBy={`tip-filter-${filter}-tab`}
-        tips={filteredTips}
-      />
+      {status === "switching" ? (
+        <TipListSkeleton className="mt-3.5" />
+      ) : status === "switchError" ? (
+        <div className="mt-3.5 flex flex-col items-center rounded-surface bg-white px-4 py-8 text-center shadow-surface">
+          <p className="text-muted-text">
+            Couldn’t load tips. Check your connection and try again.
+          </p>
+          <Button size="sm" variant="secondary" className="mt-4" onClick={retry}>
+            Try again
+          </Button>
+        </div>
+      ) : (
+        <TipList
+          className="mt-3.5"
+          emptyMessage="No tips in this view yet."
+          id={`tip-filter-${filter}-panel`}
+          labelledBy={`tip-filter-${filter}-tab`}
+          tips={tips}
+          footer={
+            status === "loadingMore" ? (
+              <>
+                <TipRowSkeleton />
+                <TipRowSkeleton />
+                <span className="sr-only">Loading more tips…</span>
+              </>
+            ) : status === "moreError" ? (
+              <p className="flex items-center justify-center gap-1.5 px-4 py-4 text-center text-ui-sm text-muted-text">
+                Couldn’t load more tips.
+                <button
+                  className="cursor-pointer font-medium text-main-heading hover:underline"
+                  type="button"
+                  onClick={retry}>
+                  Try again
+                </button>
+              </p>
+            ) : null
+          }
+        />
+      )}
+
+      <div ref={sentinelRef} aria-hidden="true" />
     </section>
   );
 }

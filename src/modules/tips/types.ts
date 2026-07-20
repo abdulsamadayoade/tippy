@@ -1,3 +1,10 @@
-type TipFilter = "all" | "notes" | "anonymous";
+import type { Tip, TipCursor, TipFilter, TipSummary } from "@/types";
 
-export type { TipFilter };
+type TipsProps = {
+  initialFilter: TipFilter;
+  initialTips: Tip[];
+  initialCursor: TipCursor | null;
+  summary: TipSummary;
+};
+
+export type { TipFilter, TipsProps };

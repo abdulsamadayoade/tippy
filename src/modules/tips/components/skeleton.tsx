@@ -1,6 +1,42 @@
 import { cn } from "@/lib/cn";
 import { Skeleton } from "@/components/ui/skeleton";
 
+export function TipRowSkeleton() {
+  return (
+    <div className="flex min-h-16 items-start gap-3 px-3.5 py-3 max-phone:px-2.5">
+      <Skeleton className="size-10 shrink-0 rounded-full" />
+      <div className="min-w-0 flex-1">
+        <Skeleton className="h-4 w-28 max-w-full" />
+        <Skeleton className="mt-1.5 h-3.5 w-56 max-w-full" />
+      </div>
+      <div className="flex shrink-0 flex-col items-end">
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="mt-1.5 h-3 w-12" />
+      </div>
+    </div>
+  );
+}
+
+export function TipListSkeleton({
+  rows = 4,
+  className,
+}: {
+  rows?: number;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col rounded-surface bg-white p-1 shadow-surface",
+        className,
+      )}>
+      {Array.from({ length: rows }, (_, index) => (
+        <TipRowSkeleton key={index} />
+      ))}
+    </div>
+  );
+}
+
 export function TipsSkeleton() {
   return (
     <section role="status" aria-label="Loading tips">
@@ -12,7 +48,7 @@ export function TipsSkeleton() {
           <article
             key={index}
             className={cn(
-              "rounded-[14px] bg-white p-4.5 shadow-surface",
+              "rounded-surface bg-white p-4.5 shadow-surface",
               index === 0 && "max-dashboard:col-span-2 max-phone-sm:col-span-1",
             )}>
             <Skeleton className="h-4 w-24 max-w-full" />
@@ -23,23 +59,7 @@ export function TipsSkeleton() {
 
       <Skeleton className="mt-5 h-9 w-64 max-w-full rounded-full" />
 
-      <div className="mt-3.5 flex flex-col rounded-[14px] bg-white p-1 shadow-surface">
-        {Array.from({ length: 4 }, (_, index) => (
-          <div
-            key={index}
-            className="flex min-h-16 items-start gap-3 px-3.5 py-3 max-phone:px-2.5">
-            <Skeleton className="size-10 shrink-0 rounded-full" />
-            <div className="min-w-0 flex-1">
-              <Skeleton className="h-4 w-28 max-w-full" />
-              <Skeleton className="mt-1.5 h-3.5 w-56 max-w-full" />
-            </div>
-            <div className="flex shrink-0 flex-col items-end">
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="mt-1.5 h-3 w-12" />
-            </div>
-          </div>
-        ))}
-      </div>
+      <TipListSkeleton className="mt-3.5" />
 
       <span className="sr-only">Loading tips…</span>
     </section>
