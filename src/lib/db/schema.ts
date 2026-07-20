@@ -20,7 +20,7 @@ const payoutStatus = pgEnum("payout_status", [
 
 const category = pgTable("category", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
+  name: text("name").notNull().unique(),
 });
 
 const creator = pgTable(
@@ -33,7 +33,7 @@ const creator = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     categoryId: uuid("category_id")
       .notNull()
-      .references(() => category.id, { onDelete: "set null" }),
+      .references(() => category.id, { onDelete: "restrict" }),
     username: text("username").notNull().unique(),
     displayName: text("display_name").notNull(),
     bio: text("bio"),
