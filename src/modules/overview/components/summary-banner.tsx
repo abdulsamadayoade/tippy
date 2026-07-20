@@ -1,19 +1,20 @@
 import { MonnifyLogo } from "@/components/elements/monnify-logo";
 import { NEXT_PAYOUT_DATE } from "@/data/constants";
 import { formatDate, formatNaira } from "@/lib/utils";
+import { PeriodMenu } from "./period-menu";
 import type { SummaryBannerProps } from "../types";
 
 export function SummaryBanner({
   total,
   count,
   automaticPayoutActive,
+  period,
+  onPeriodChange,
 }: SummaryBannerProps) {
   return (
     <article className="creator-banner-grid col-span-full flex flex-wrap items-end justify-between gap-4 rounded-[18px] bg-primary p-6 text-white max-[460px]:p-5">
       <div>
-        <p className="text-xs font-medium tracking-[0.03em] text-white/55 uppercase">
-          Tips this month
-        </p>
+        <PeriodMenu period={period} onPeriodChange={onPeriodChange} />
         <strong className="mt-2.5 block text-2xl font-medium tracking-[-0.02em]">
           {formatNaira(total)}
         </strong>
