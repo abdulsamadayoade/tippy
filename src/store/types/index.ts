@@ -11,11 +11,13 @@ type Tip = {
   reference: string;
 };
 
+type PayoutStatus = "pending" | "processing" | "paid" | "failed";
+
 type Payout = {
   id: string;
   date: string;
   amount: number;
-  status: "Paid";
+  status: PayoutStatus;
   reference: string;
 };
 
@@ -27,4 +29,4 @@ type BankAccount = {
   accountNumber: string;
 };
 
-export type { Tip, Payout, TipDraft, BankAccount };
+export type { Tip, Payout, PayoutStatus, TipDraft, BankAccount };

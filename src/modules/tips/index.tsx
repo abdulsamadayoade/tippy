@@ -1,14 +1,13 @@
 "use client";
 
-import { useTips } from "@/store/providers";
 import { formatNaira, getTipSummary } from "@/lib/utils";
 import { MetricCard } from "@/modules/creator/components/metric-card";
 import { TipList } from "@/modules/creator/components/tip-list";
 import { SlidingTabs } from "@/components/ui/sliding-tabs";
 import { useTipFilter } from "./hooks/use-tip-filter";
+import type { Tip } from "@/store/types";
 
-export function Tips() {
-  const { tips } = useTips();
+export function Tips({ tips }: { tips: Tip[] }) {
   const { filter, setFilter, filteredTips } = useTipFilter(tips);
   const summary = getTipSummary(tips);
 
