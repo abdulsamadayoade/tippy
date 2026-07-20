@@ -16,7 +16,7 @@ export function Header() {
           <CheckBadgeIcon />
         </div>
       </div>
-      <p className="mt-0.7 mb-3 text-sm text-muted-text">
+      <p className="mt-0.7 mb-3 text-sm text-[#F5F7FA]">
         {sampleCreator.handle} <span aria-hidden="true">·</span>{" "}
         {sampleCreator.category}
       </p>
