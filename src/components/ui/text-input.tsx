@@ -99,7 +99,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             inputRef.current?.focus();
           }}>
           {leadingContent ? (
-            <div className="shrink-0 cursor-text pl-3.5 text-sm font-medium text-muted-text">
+            <div className="shrink-0 cursor-text pl-3.5 text-base sm:text-sm font-medium text-muted-text">
               {leadingContent}
             </div>
           ) : null}
@@ -108,7 +108,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             ref={setInputRef}
             id={inputId}
             className={cn(
-              "min-h-12 min-w-0 flex-1 rounded-[inherit] border-0 bg-transparent px-3.5 text-sm font-medium text-body-text outline-none placeholder:font-normal placeholder:text-muted-text disabled:cursor-not-allowed",
+              "min-h-12 min-w-0 flex-1 rounded-[inherit] border-0 bg-transparent px-3.5 text-base sm:text-sm font-medium text-body-text outline-none placeholder:font-normal placeholder:text-muted-text disabled:cursor-not-allowed",
               Boolean(leadingContent) && "pl-0.5",
               Boolean(trailingAction) && "pr-1.5",
               className,
