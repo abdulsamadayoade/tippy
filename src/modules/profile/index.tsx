@@ -113,121 +113,123 @@ export function Profile() {
 
   return (
     <>
-      <Nav>
-        <div className="flex items-center gap-2">
-          {/* TODO: if there is a logged in user, let add a view my dashboard and if for normal user, let say, claim my tippy link */}
-          <ButtonLink
-            variant="secondary"
-            size="xs"
-            href={`${isLoggedInUser ? "/overview" : "/login"}`}>
-            {isLoggedInUser ? "Dashboard" : "Login"}
-          </ButtonLink>
+      <div className="min-h-screen flex flex-col justify-between">
+        <Nav>
+          <div className="flex items-center gap-2">
+            {/* TODO: if there is a logged in user, let add a view my dashboard and if for normal user, let say, claim my tippy link */}
+            <ButtonLink
+              variant="secondary"
+              size="xs"
+              href={`${isLoggedInUser ? "/overview" : "/login"}`}>
+              {isLoggedInUser ? "Dashboard" : "Login"}
+            </ButtonLink>
 
-          <ButtonLink variant="secondary" size="xs" href="/test">
-            Claim my Link
-          </ButtonLink>
-        </div>
-      </Nav>
-
-      <main className="min-h-screen overflow-x-hidden py-10 lg:pb-16">
-        <Header />
-
-        <section
-          className={cn(
-            "bg-white shadow-surface mx-auto w-full max-w-130",
-            "mt-8 rounded-[18px] p-5 shadow-surface-raised",
-          )}>
-          <div>
-            <h2 className="text-base font-medium">
-              Support {sampleCreator.firstName}&apos;s next stream
-            </h2>
-            <p className="text-[13px] text-muted-text">
-              Choose an amount and add a note if you&apos;d like.
-            </p>
+            <ButtonLink variant="secondary" size="xs" href="/test">
+              Claim my Link
+            </ButtonLink>
           </div>
+        </Nav>
 
-          <div
-            className="mt-4 grid grid-cols-2 gap-2"
-            aria-label="Tip amount presets">
-            {PRESETS.map((preset) => (
-              <AmountPreset
-                key={preset.amount}
-                amount={preset.amount}
-                label={preset.label}
-                popular={preset.popular}
-                selected={amount === preset.amount}
-                onSelect={() => setAmount(preset.amount)}
-              />
-            ))}
-          </div>
+        <main className="md:min-h-screen overflow-x-hidden pt-10 flex-1 flex flex-col justify-between">
+          <Header />
 
-          <AmountInput
-            containerClassName="mt-4"
-            label="Other amount"
-            name="amount"
-            value={amount}
-            onValueChange={setAmount}
-            max={MAXIMUM_TIP}
-            error={
-              amountIsValid
-                ? undefined
-                : `Enter at least ${formatNaira(MINIMUM_TIP)}.`
-            }
-            hint={`Enter any amount up to ${formatNaira(MAXIMUM_TIP)}.`}
-          />
+          <section
+            className={cn(
+              "bg-white shadow-surface mx-auto w-full max-w-130",
+              "mt-8 rounded-t-[18px] p-5 shadow-surface-raised",
+            )}>
+            <div>
+              <h2 className="text-base font-medium">
+                Support {sampleCreator.firstName}&apos;s next stream
+              </h2>
+              <p className="text-[13px] text-muted-text">
+                Choose an amount and add a note if you&apos;d like.
+              </p>
+            </div>
 
-          <TextArea
-            containerClassName="mt-2.5"
-            label={`Add a note for ${sampleCreator.firstName}`}
-            visuallyHideLabel
-            showCount
-            id="tip-message"
-            name="message"
-            rows={2}
-            maxLength={140}
-            autoComplete="off"
-            value={message}
-            placeholder={`Write ${sampleCreator.firstName} a note (optional)…`}
-            onChange={(event) => setMessage(event.target.value)}
-          />
+            <div
+              className="mt-4 grid grid-cols-2 gap-2"
+              aria-label="Tip amount presets">
+              {PRESETS.map((preset) => (
+                <AmountPreset
+                  key={preset.amount}
+                  amount={preset.amount}
+                  label={preset.label}
+                  popular={preset.popular}
+                  selected={amount === preset.amount}
+                  onSelect={() => setAmount(preset.amount)}
+                />
+              ))}
+            </div>
 
-          <Switch
-            className="mt-3.5"
-            checked={anonymous}
-            onCheckedChange={setAnonymous}
-            label="Tip privately"
-            description={`${sampleCreator.firstName} will see “Anonymous” instead of your name`}
-          />
+            <AmountInput
+              containerClassName="mt-4"
+              label="Other amount"
+              name="amount"
+              value={amount}
+              onValueChange={setAmount}
+              max={MAXIMUM_TIP}
+              error={
+                amountIsValid
+                  ? undefined
+                  : `Enter at least ${formatNaira(MINIMUM_TIP)}.`
+              }
+              hint={`Enter any amount up to ${formatNaira(MAXIMUM_TIP)}.`}
+            />
 
-          <Button
-            className="w-full mt-4"
-            disabled={!amountIsValid}
-            onClick={openCheckout}>
-            {amountIsValid ? (
-              <span className="inline-flex items-baseline gap-1">
-                <span>Send</span>
-                <AnimatedNaira value={amount} />
-                <span>to {sampleCreator.firstName}</span>
-              </span>
-            ) : (
-              "Enter an amount"
-            )}
-          </Button>
-          <Secured />
-        </section>
+            <TextArea
+              containerClassName="mt-2.5"
+              label={`Add a note for ${sampleCreator.firstName}`}
+              visuallyHideLabel
+              showCount
+              id="tip-message"
+              name="message"
+              rows={2}
+              maxLength={140}
+              autoComplete="off"
+              value={message}
+              placeholder={`Write ${sampleCreator.firstName} a note (optional)…`}
+              onChange={(event) => setMessage(event.target.value)}
+            />
 
-        {step === "success" && (
-          <Success
-            creatorFirstName={sampleCreator.firstName}
-            confettiRef={confettiRef}
-            checkRef={checkRef}
-            checkState={checkState}
-            amount={amount}
-            message={message}
-            reset={reset}
-          />
-        )}
-      </main>
+            <Switch
+              className="mt-3.5"
+              checked={anonymous}
+              onCheckedChange={setAnonymous}
+              label="Tip privately"
+              description={`${sampleCreator.firstName} will see “Anonymous” instead of your name`}
+            />
+
+            <Button
+              className="w-full mt-4"
+              disabled={!amountIsValid}
+              onClick={openCheckout}>
+              {amountIsValid ? (
+                <span className="inline-flex items-baseline gap-1">
+                  <span>Send</span>
+                  <AnimatedNaira value={amount} />
+                  <span>to {sampleCreator.firstName}</span>
+                </span>
+              ) : (
+                "Enter an amount"
+              )}
+            </Button>
+            <Secured />
+          </section>
+
+          {step === "success" && (
+            <Success
+              creatorFirstName={sampleCreator.firstName}
+              confettiRef={confettiRef}
+              checkRef={checkRef}
+              checkState={checkState}
+              amount={amount}
+              message={message}
+              reset={reset}
+            />
+          )}
+        </main>
+      </div>
 
       <Modal
         open={checkoutOpen}
