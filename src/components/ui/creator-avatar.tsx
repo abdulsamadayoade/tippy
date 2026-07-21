@@ -16,10 +16,12 @@ export function CreatorAvatar({
   name,
   photoUrl,
   size = "large",
+  loading = "lazy",
 }: {
   name: string;
   photoUrl?: string | null;
   size?: AvatarSize;
+  loading?: "eager" | "lazy";
 }) {
   const [loadedUrl, setLoadedUrl] = useState<string | null>(null);
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
@@ -59,7 +61,8 @@ export function CreatorAvatar({
           width={pixels}
           height={pixels}
           sizes={`${pixels}px`}
-          priority={size === "large"}
+          loading={loading}
+          preload={loading === "eager"}
           onLoad={() => setLoadedUrl(src)}
           onError={() => setFailedUrl(src)}
         />

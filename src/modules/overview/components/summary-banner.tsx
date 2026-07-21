@@ -1,6 +1,5 @@
 import { MonnifyLogo } from "@/components/elements/monnify-logo";
-import { NEXT_PAYOUT_DATE } from "@/data/constants";
-import { formatDate, formatNaira } from "@/lib/utils";
+import { formatDate, formatNaira, getNextPayoutDate } from "@/lib/utils";
 import { PeriodMenu } from "./period-menu";
 import type { SummaryBannerProps } from "../types";
 
@@ -29,7 +28,7 @@ export function SummaryBanner({
           </span>
           <strong className="mt-0.75 block text-sm font-medium max-phone:mt-0">
             {automaticPayoutActive
-              ? formatDate(NEXT_PAYOUT_DATE, {
+              ? formatDate(getNextPayoutDate(), {
                   weekday: "short",
                   day: "numeric",
                   month: "short",
