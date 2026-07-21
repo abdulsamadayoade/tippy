@@ -1,12 +1,14 @@
 import { redirect } from "next/navigation";
 import { Payouts } from "@/modules/payouts";
 import { getPayoutData } from "@/lib/dashboard";
+import { reconcileStalePayouts } from "@/lib/payouts";
 import { getSessionCreator } from "@/lib/session";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Payouts",
-  description: "Track your available balance, payout account, and past payouts.",
+  description:
+    "Track your available balance, payout account, and past payouts.",
 };
 
 export default async function PayoutsPage() {
@@ -14,6 +16,8 @@ export default async function PayoutsPage() {
 
   if (!session) redirect("/login");
   if (!creator) redirect("/onboarding");
+
+  await reconcileStalePayouts(creator.id);
 
   const { balance, account, payouts } = await getPayoutData(creator.id);
 
