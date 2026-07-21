@@ -80,9 +80,6 @@ const tip = pgTable(
     paymentReference: text("payment_reference").notNull().unique(),
     providerReference: text("provider_reference"),
     status: tipStatus("status").default("pending").notNull(),
-    payoutId: uuid("payout_id").references(() => payout.id, {
-      onDelete: "set null",
-    }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -91,7 +88,6 @@ const tip = pgTable(
   },
   (t) => [
     index("tip_creator_id_idx").on(t.creatorId),
-    index("tip_payout_id_idx").on(t.payoutId),
     index("tip_status_idx").on(t.status),
   ],
 );

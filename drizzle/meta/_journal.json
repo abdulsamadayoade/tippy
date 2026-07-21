@@ -29,6 +29,13 @@
       "when": 1784583726856,
       "tag": "0003_auto_payout",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1784619193997,
+      "tag": "0004_flippant_deathstrike",
+      "breakpoints": true
     }
   ]
 }
