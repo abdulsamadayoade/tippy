@@ -1,4 +1,11 @@
-import type { BankAccount, Payout } from "@/store/types";
+import type { BankAccount, Payout } from "@/types";
+
+type PayoutsProps = {
+  balance: number;
+  account: BankAccount | null;
+  autoPayout: boolean;
+  payouts: Payout[];
+};
 
 type BalanceBannerProps = {
   total: number;
@@ -18,8 +25,11 @@ type WithdrawModalProps = {
   onClose: () => void;
   balance: number;
   account: BankAccount | null;
-  requested: boolean;
-  onConfirm: () => void;
+};
+
+type PayoutAccountCardProps = {
+  account: BankAccount | null;
+  autoPayout: boolean;
 };
 
 type AccountMenuProps = {
@@ -36,9 +46,11 @@ type FormErrors = {
 };
 
 export type {
+  PayoutsProps,
   BalanceBannerProps,
   PastPayoutsProps,
   WithdrawModalProps,
+  PayoutAccountCardProps,
   AccountMenuProps,
   FormErrors,
   FormMode,

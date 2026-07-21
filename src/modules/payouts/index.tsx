@@ -1,21 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { usePayoutAccount, useTips } from "@/store/providers";
-import { initialPayouts } from "@/data";
-import { getTipSummary } from "@/lib/utils";
 import { BalanceBanner } from "./components/balance-banner";
 import { PastPayouts } from "./components/past-payouts";
 import { PayoutAccountCard } from "./components/payout-account-card";
 import { WithdrawModal } from "./components/withdraw-modal";
+import type { PayoutsProps } from "./types";
 
-export function Payouts() {
-  const { tips } = useTips();
-  const { account, autoPayout } = usePayoutAccount();
-  const balance = getTipSummary(tips).total;
+export function Payouts({ balance, account, autoPayout, payouts }: PayoutsProps) {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
-  const [withdrawalRequested, setWithdrawalRequested] = useState(false);
-  const canWithdraw = balance > 0 && Boolean(account) && !withdrawalRequested;
+  const canWithdraw = balance > 0 && Boolean(account);
+  const hasReservedWithdrawal = payouts.some(
+    ({ status }) => status === "pending" || status === "processing",
+  );
 
   function openWithdraw() {
     if (!canWithdraw) return;
@@ -36,21 +33,19 @@ export function Payouts() {
         hasAccount={Boolean(account)}
         autoPayout={autoPayout}
         canWithdraw={canWithdraw}
-        withdrawalRequested={withdrawalRequested}
+        withdrawalRequested={balance === 0 && hasReservedWithdrawal}
         onWithdraw={openWithdraw}
       />
 
-      <PayoutAccountCard />
+      <PayoutAccountCard account={account} autoPayout={autoPayout} />
 
-      <PastPayouts payouts={initialPayouts} />
+      <PastPayouts payouts={payouts} />
 
       <WithdrawModal
         open={withdrawOpen}
         onClose={() => setWithdrawOpen(false)}
         balance={balance}
         account={account}
-        requested={withdrawalRequested}
-        onConfirm={() => setWithdrawalRequested(true)}
       />
     </section>
   );

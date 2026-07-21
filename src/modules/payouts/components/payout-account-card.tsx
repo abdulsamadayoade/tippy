@@ -1,7 +1,6 @@
 "use client";
 
 import { useId, useRef, useState, type SubmitEvent } from "react";
-import { usePayoutAccount } from "@/store/providers";
 import { TrashIcon } from "@/components/icons/trash";
 import { PlusIcon } from "@/components/icons/plus";
 import { Modal } from "@/components/ui/modal";
@@ -12,8 +11,13 @@ import { TextInput } from "@/components/ui/text-input";
 import { AccountMenu } from "./account-menu";
 import { maskAccountNumber } from "@/lib/utils";
 import { ACCOUNT_NUMBER_LENGTH, BANKS } from "@/data/constants";
-import type { BankAccount } from "@/store/types";
-import type { FormErrors, FormMode } from "../types";
+import {
+  removePayoutAccount,
+  savePayoutAccount,
+  setAutoPayout,
+} from "../actions";
+import type { BankAccount } from "@/types";
+import type { FormErrors, FormMode, PayoutAccountCardProps } from "../types";
 
 const EMPTY_FORM: BankAccount = {
   bank: "",
@@ -37,26 +41,36 @@ function validate(values: BankAccount): FormErrors {
   return errors;
 }
 
-export function PayoutAccountCard() {
-  const { account, saveAccount, removeAccount, autoPayout, setAutoPayout } =
-    usePayoutAccount();
+export function PayoutAccountCard({
+  account,
+  autoPayout,
+}: PayoutAccountCardProps) {
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<FormMode>("add");
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [values, setValues] = useState<BankAccount>(EMPTY_FORM);
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [serverErrors, setServerErrors] = useState<FormErrors>({});
+  const [saving, setSaving] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  // Mirrors the switch while its server action settles and props refresh.
+  const [pendingAuto, setPendingAuto] = useState<boolean | null>(null);
 
   const uid = useId();
   const bankFieldRef = useRef<HTMLSelectElement>(null);
   const cancelDeleteRef = useRef<HTMLButtonElement>(null);
 
-  const errors = validate(values);
-  const hasErrors = Object.keys(errors).length > 0;
+  const clientErrors = validate(values);
+  const errors: FormErrors = submitAttempted
+    ? { ...clientErrors, ...serverErrors }
+    : {};
+  const autoPayoutShown = pendingAuto ?? (Boolean(account) && autoPayout);
 
   function openAdd() {
     setFormMode("add");
     setValues(EMPTY_FORM);
     setSubmitAttempted(false);
+    setServerErrors({});
     setFormOpen(true);
   }
 
@@ -65,25 +79,52 @@ export function PayoutAccountCard() {
     setFormMode("edit");
     setValues(account);
     setSubmitAttempted(false);
+    setServerErrors({});
     setFormOpen(true);
   }
 
-  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitAttempted(true);
-    if (hasErrors) return;
-    saveAccount(values);
+    setServerErrors({});
+    if (Object.keys(clientErrors).length > 0 || saving) return;
+
+    setSaving(true);
+    const result = await savePayoutAccount({
+      bank: values.bank,
+      accountNumber: values.accountNumber,
+      accountName: values.accountName.trim(),
+    });
+    setSaving(false);
+
+    if (result.errors) {
+      setServerErrors(result.errors);
+      return;
+    }
+
     setFormOpen(false);
   }
 
-  function confirmDelete() {
-    removeAccount();
+  async function confirmDelete() {
+    if (removing) return;
+    setRemoving(true);
+    await removePayoutAccount();
+    setRemoving(false);
     setDeleteOpen(false);
+  }
+
+  async function toggleAutoPayout(enabled: boolean) {
+    setPendingAuto(enabled);
+    const result = await setAutoPayout(enabled);
+    // Revalidated props take over; on failure this reverts to the DB value.
+    setPendingAuto(null);
+
+    if (result.error) console.error(result.error);
   }
 
   return (
     <>
-      <article className="mt-4 rounded-[14px] bg-white shadow-surface">
+      <article className="mt-4 rounded-surface bg-white shadow-surface">
         {account ? (
           <div className="flex items-center justify-between gap-3 px-4.5 py-4">
             <div className="min-w-0">
@@ -128,15 +169,15 @@ export function PayoutAccountCard() {
             <strong className="mt-0.5 block text-[15px] font-medium text-main-heading">
               {!account
                 ? "Add an account to enable"
-                : autoPayout
+                : autoPayoutShown
                   ? "Every Friday · automatic"
                   : "Off · withdraw manually"}
             </strong>
           </div>
           <Switch
-            checked={Boolean(account) && autoPayout}
-            onCheckedChange={setAutoPayout}
-            disabled={!account}
+            checked={autoPayoutShown}
+            onCheckedChange={toggleAutoPayout}
+            disabled={!account || pendingAuto !== null}
             aria-label="Automatic weekly payout"
           />
         </div>
@@ -145,6 +186,7 @@ export function PayoutAccountCard() {
       <Modal
         open={formOpen}
         onClose={() => setFormOpen(false)}
+        dismissible={!saving}
         labelledBy={`${uid}-form-title`}
         describedBy={`${uid}-form-desc`}
         initialFocusRef={bankFieldRef}
@@ -170,16 +212,16 @@ export function PayoutAccountCard() {
             label="Bank"
             placeholder="Select bank"
             value={values.bank}
-            error={submitAttempted ? errors.bank : undefined}
+            error={errors.bank}
             onChange={(event) =>
               setValues((current) => ({
                 ...current,
                 bank: event.target.value,
               }))
             }>
-            {BANKS.map((bank) => (
-              <option key={bank} value={bank}>
-                {bank}
+            {BANKS.map(({ name }) => (
+              <option key={name} value={name}>
+                {name}
               </option>
             ))}
           </Select>
@@ -195,7 +237,7 @@ export function PayoutAccountCard() {
             placeholder="10-digit account number"
             maxLength={ACCOUNT_NUMBER_LENGTH}
             value={values.accountNumber}
-            error={submitAttempted ? errors.accountNumber : undefined}
+            error={errors.accountNumber}
             onChange={(event) =>
               setValues((current) => ({
                 ...current,
@@ -215,7 +257,7 @@ export function PayoutAccountCard() {
             placeholder="Name on the account"
             maxLength={80}
             value={values.accountName}
-            error={submitAttempted ? errors.accountName : undefined}
+            error={errors.accountName}
             onChange={(event) =>
               setValues((current) => ({
                 ...current,
@@ -228,10 +270,15 @@ export function PayoutAccountCard() {
             <Button
               variant="secondary"
               className="min-h-11"
+              disabled={saving}
               onClick={() => setFormOpen(false)}>
               Cancel
             </Button>
-            <Button className="min-h-11" type="submit">
+            <Button
+              className="min-h-11"
+              type="submit"
+              loading={saving}
+              loadingText="Saving…">
               {formMode === "add" ? "Add account" : "Save changes"}
             </Button>
           </div>
@@ -241,6 +288,7 @@ export function PayoutAccountCard() {
       <Modal
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}
+        dismissible={!removing}
         labelledBy={`${uid}-delete-title`}
         describedBy={`${uid}-delete-desc`}
         initialFocusRef={cancelDeleteRef}
@@ -267,14 +315,16 @@ export function PayoutAccountCard() {
             ref={cancelDeleteRef}
             variant="secondary"
             className="min-h-11"
+            disabled={removing}
             onClick={() => setDeleteOpen(false)}>
             Cancel
           </Button>
           <button
-            className="major-button major-button-danger inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-danger px-4 py-3 text-sm font-medium text-white"
+            className="major-button major-button-danger inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-danger px-4 py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-70"
             type="button"
+            disabled={removing}
             onClick={confirmDelete}>
-            Remove
+            {removing ? "Removing…" : "Remove"}
           </button>
         </div>
       </Modal>
