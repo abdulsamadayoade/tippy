@@ -1,16 +1,39 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { ButtonLink } from "@/components/ui/button";
+import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Button, ButtonLink } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 export function AuthNavActions() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [signingOut, setSigningOut] = useState(false);
+
+  async function signOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+
+    const { error } = await authClient.signOut();
+    if (error) {
+      setSigningOut(false);
+      return;
+    }
+
+    router.push("/login");
+    router.refresh();
+  }
 
   if (pathname.startsWith("/onboarding")) {
     return (
-      <ButtonLink variant="secondary" size="xs" href="/overview">
-        Go to dashboard
-      </ButtonLink>
+      <Button
+        variant="secondary"
+        size="xs"
+        loading={signingOut}
+        loadingText="Signing out…"
+        onClick={signOut}>
+        Log out
+      </Button>
     );
   }
 
