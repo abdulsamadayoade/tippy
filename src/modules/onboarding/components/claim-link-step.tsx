@@ -1,5 +1,4 @@
 import type { SubmitEvent } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
 import { StepHeader } from "./step-header";
@@ -68,13 +67,6 @@ export function ClaimLinkStep({
           Continue
         </Button>
       </form>
-
-      <p className="mt-5 text-center text-sm text-muted-text">
-        Already have a page?{" "}
-        <Link className="font-semibold text-main-heading" href="/overview">
-          Go to dashboard
-        </Link>
-      </p>
     </section>
   );
 }
