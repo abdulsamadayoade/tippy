@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tippy
 
-## Getting Started
+Tipping for Nigerian creators. Claim `tippy.cash/yourname`, share it, get tipped in naira through [Monnify](https://monnify.com), withdraw to your bank account.
 
-First, run the development server:
+Built for the Monnify hackathon.
+
+## Features
+
+- Public tip page per creator: presets by category, custom amounts, notes, anonymous tipping, Monnify inline checkout
+- Dashboard with totals by day/week/month/year, an infinite tip feed with filters, and payout management
+- Bank accounts are verified with Monnify name enquiry before they can receive payouts
+- Withdraw any amount, or enable automatic full-balance payouts every Friday (Vercel cron)
+- Magic-link sign in (better-auth + Resend), terms and privacy pages
+
+## Stack
+
+Next.js 16 (App Router, server actions), React 19, TypeScript, Tailwind v4, Drizzle ORM, Postgres, Vercel.
+
+## Running it
 
 ```bash
+npm install
+cp .env.example .env   # then fill in the values below
+npm run db:migrate
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable                                                           | Purpose                                                            |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| `DATABASE_URL`                                                     | Postgres connection string                                         |
+| `BETTER_AUTH_SECRET` / `BETTER_AUTH_URL`                           | Auth session signing and base URL                                  |
+| `RESEND_API_KEY` / `EMAIL_FROM`                                    | Sign-in link emails                                                |
+| `BLOB_STORE_ID` / `BLOB_READ_WRITE_TOKEN`                          | Avatar uploads (Vercel Blob)                                       |
+| `MONNIFY_API_KEY` / `MONNIFY_SECRET_KEY` / `MONNIFY_CONTRACT_CODE` | Monnify credentials                                                |
+| `MONNIFY_BASE_URL`                                                 | `https://sandbox.monnify.com` (default) or the live URL            |
+| `MONNIFY_SOURCE_ACCOUNT_NUMBER`                                    | Wallet account number that funds disbursements                     |
+| `CRON_SECRET`                                                      | Bearer token for `/api/cron/payouts`. Vercel sends it on cron runs |
 
-## Learn More
+### Monnify setup
 
-To learn more about Next.js, take a look at the following resources:
+1. Create a sandbox account and grab the API key, secret and contract code from the dashboard.
+2. Set up the wallet under Transfers on the dashboard and put its account number in `MONNIFY_SOURCE_ACCOUNT_NUMBER`.
+3. Email Monnify support to disable transfer OTP for the account. Automated disbursements can't answer an emailed OTP.
+4. Point the Transaction Completion and Disbursement webhook URLs at `<your-url>/api/webhooks/monnify`. Locally you'll need a tunnel like ngrok. Without webhooks things still settle through reconciliation, just slower.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Database
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run db:generate   # new migration after schema changes
+npm run db:migrate    # apply migrations
+npm run db:studio     # browse data
+```
 
-## Deploy on Vercel
+## How the money moves
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Tips are inserted as `pending` and only marked successful by the signed transaction webhook, or by Monnify's query API when the webhook can't be verified. The available balance is settled tips minus non-failed payouts, computed in SQL.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+A withdrawal inserts a `pending` payout inside a transaction that locks the creator row, so the balance check can't be raced. Then the Monnify single transfer API is called with a unique `TIPPY-PO-` reference, which doubles as an idempotency key. Disbursement webhooks move the payout to `paid` or `failed`, and a reconciliation pass on the payouts page re-checks anything stale. A transfer that never reached Monnify gets failed after a grace period, which releases the reserved amount back to the balance.
+
+## Layout
+
+```
+src/
+  app/           # routes: (auth), (creator) dashboard, (legal), [username], api/
+  modules/       # feature slices: profile, overview, tips, payouts, auth, legal
+  lib/           # db, monnify client, payout orchestration, session, queries
+  components/    # shared UI, icons, layout
+  data/          # constants: presets, banks, limits
+```
