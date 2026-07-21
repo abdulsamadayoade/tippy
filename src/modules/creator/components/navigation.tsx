@@ -62,10 +62,10 @@ export function CreatorNavigation() {
     <nav
       className="ml-1.5 text-ui-sm font-medium max-dashboard:order-3 max-dashboard:ml-0 max-dashboard:w-full max-dashboard:text-center"
       aria-label="Creator sections">
-      <div className="relative inline-flex items-center gap-0.75 rounded-[48px] bg-(--color-6) p-0.75">
+      <div className="relative inline-flex items-center gap-0.75 rounded-[48px] bg-line p-0.75">
         <span
           ref={pillRef}
-          className="pointer-events-none absolute top-0.75 left-0 z-0 h-7.5 w-0 rounded-[48px] bg-white transition-[transform,width] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[transform,width] motion-reduce:transition-none"
+          className="pointer-events-none absolute top-0.75 left-0 z-0 h-7.5 w-0 rounded-[48px] bg-white transition-[transform,width] duration-250 ease-(--ease-smooth) will-change-[transform,width] motion-reduce:transition-none"
           aria-hidden="true"
         />
         {links.map(({ href, label }) => {
@@ -78,7 +78,7 @@ export function CreatorNavigation() {
                 else linkRefs.current.delete(href);
               }}
               className={cn(
-                "relative z-1 h-7.5 cursor-pointer rounded-[48px] px-3 pt-1.5 pb-1 text-center text-body-text/80 transition-colors duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-main-heading motion-reduce:transition-none",
+                "relative z-1 h-7.5 cursor-pointer rounded-[48px] px-3 pt-1.5 pb-1 text-center text-body-text/80 transition-colors duration-250 ease-(--ease-smooth) hover:text-main-heading motion-reduce:transition-none",
                 active && "text-main-heading",
               )}
               href={href}

@@ -100,7 +100,7 @@ export function SlidingTabs<Value extends string>({
     <div
       ref={barRef}
       className={cn(
-        "relative inline-flex items-center gap-0.75 rounded-[48px] bg-(--color-6) p-0.75",
+        "relative inline-flex items-center gap-0.75 rounded-[48px] bg-line p-0.75",
         className,
       )}
       role="tablist"
@@ -108,7 +108,7 @@ export function SlidingTabs<Value extends string>({
       aria-orientation="horizontal">
       <span
         ref={pillRef}
-        className="pointer-events-none absolute top-0.75 left-0 z-0 h-7.5 w-0 rounded-[48px] bg-white transition-[transform,width] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[transform,width] motion-reduce:transition-none"
+        className="pointer-events-none absolute top-0.75 left-0 z-0 h-7.5 w-0 rounded-[48px] bg-white transition-[transform,width] duration-250 ease-(--ease-smooth) will-change-[transform,width] motion-reduce:transition-none"
         aria-hidden="true"
       />
       {options.map((option, index) => {
@@ -121,7 +121,7 @@ export function SlidingTabs<Value extends string>({
               else tabRefs.current.delete(option.value);
             }}
             id={`${idPrefix}-${option.value}-tab`}
-            className="relative z-1 h-7.5 cursor-pointer appearance-none rounded-[48px] bg-transparent px-3 py-1 text-body-text/80 transition-colors duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-main-heading aria-selected:text-main-heading motion-reduce:transition-none"
+            className="relative z-1 h-7.5 cursor-pointer appearance-none rounded-[48px] bg-transparent px-3 py-1 text-body-text/80 transition-colors duration-250 ease-(--ease-smooth) hover:text-main-heading aria-selected:text-main-heading motion-reduce:transition-none"
             key={option.value}
             type="button"
             role="tab"

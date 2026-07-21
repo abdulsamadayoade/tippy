@@ -63,7 +63,7 @@ export function Switch({
         className={cn(
           "t-toggle relative h-6 w-12 shrink-0 rounded-full",
           interacted && "is-init",
-          checked ? "bg-primary" : "bg-(--color-6)",
+          checked ? "bg-primary" : "bg-line",
         )}
         data-on={checked ? "true" : "false"}
         aria-hidden="true">

@@ -119,7 +119,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           />
 
           {showCount ? (
-            <span className="pointer-events-none absolute right-2.75 bottom-1.75 text-[10px] text-[#a4a4a4] transition-colors duration-150 ease-out group-focus-within/textarea:text-muted">
+            <span className="pointer-events-none absolute right-2.75 bottom-1.75 text-[10px] text-[#a4a4a4] transition-colors duration-150 ease-out group-focus-within/textarea:text-muted-text-2">
               {count}
               {maxLength ? `/${maxLength}` : null}
             </span>

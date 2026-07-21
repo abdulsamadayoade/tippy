@@ -1,20 +1,26 @@
 @import "tailwindcss";
 
 :root {
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.35, 0.64, 1);
+
   --dropdown-open-dur: 250ms;
   --dropdown-close-dur: 150ms;
   --dropdown-pre-scale: 0.97;
   --dropdown-closing-scale: 0.99;
-  --dropdown-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dropdown-ease: var(--ease-smooth);
+
   --panel-open-dur: 400ms;
   --panel-close-dur: 350ms;
   --panel-translate-y: calc(187px * 0.5);
   --panel-blur: 2px;
-  --panel-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --panel-ease: var(--ease-smooth);
+
   --acc-expand: 250ms;
   --acc-collapse: 250ms;
   --acc-chevron: 250ms;
-  --acc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --acc-ease: var(--ease-smooth);
+
   --check-opacity-dur: 500ms;
   --check-rotate-dur: 500ms;
   --check-rotate-from: 80deg;
@@ -24,47 +30,50 @@
   --check-blur-from: 10px;
   --check-path-dur: 500ms;
   --check-path-delay: 80ms;
-  --check-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --check-ease-rotate: cubic-bezier(0.22, 1, 0.36, 1);
-  --check-ease-bob: cubic-bezier(0.34, 1.35, 0.64, 1);
-  --check-ease-path: cubic-bezier(0.22, 1, 0.36, 1);
+  --check-ease-out: var(--ease-smooth);
+  --check-ease-rotate: var(--ease-smooth);
+  --check-ease-bob: var(--ease-spring);
+  --check-ease-path: var(--ease-smooth);
+
   --modal-open-dur: 250ms;
   --modal-close-dur: 150ms;
   --modal-scale: 0.96;
   --modal-scale-close: 0.96;
-  --modal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --modal-ease: var(--ease-smooth);
+
   --toggle-dur: 350ms;
   --toggle-travel: 16px;
   --toggle-ov1: 1px;
   --toggle-ov2: 0px;
   --toggle-track: 0ms;
-  --toggle-ease: cubic-bezier(0.34, 1.35, 0.64, 1);
-
-  --color-1: #064e5b;
-  --color-2: #0b2239;
-  --color-3: #274c5e;
-  --color-4: #5b7280;
-  --color-6: #f2f2f2;
-  --color-7: #7f7f7f;
-  --color-8: #f5f5f5;
-  --color-9: #8f3030;
-  --color-10: #29612d;
+  --toggle-ease: var(--ease-spring);
 }
 
 @theme inline {
+  --color-primary: #064e5b;
+  --color-main-heading: #0b2239;
+  --color-body-text: #274c5e;
+  --color-muted-text: #5b7280;
+  --color-muted-text-2: #7f7f7f;
+
   --color-ink: #292929;
   --color-copy: #5d5d5d;
-  --color-muted: #7f7f7f;
   --color-line: #f2f2f2;
+  --color-soft: #f5f5f5;
+
+  --color-success: #29612d;
   --color-success-soft: oklch(0.97 0.03 145);
   --color-warning: #8a5b18;
   --color-warning-soft: #fff7e8;
+  --color-danger: #8f3030;
   --color-danger-soft: #fff1f1;
+
   --font-sans: var(--font-geist), system-ui, sans-serif;
   --text-ui-sm: 0.8125rem;
   --leading-page-heading: 1.35;
   --tracking-display: -0.02em;
   --tracking-label: 0.03em;
+
   --radius-surface: 0.875rem;
   --breakpoint-phone-sm: 22.5rem;
   --breakpoint-phone: 28.75rem;
@@ -75,16 +84,15 @@
   --shadow-surface-raised:
     inset 0 0 0 1px rgba(255, 255, 255, 0.65), 0 0 0 1px rgba(0, 0, 0, 0.04),
     0 2px 4px rgba(0, 0, 0, 0.04);
-  --animate-rise-in: rise-in 260ms ease both;
 
-  --color-primary: var(--color-1);
-  --color-main-heading: var(--color-2);
-  --color-body-text: var(--color-3);
-  --color-muted-text: var(--color-4);
-  --color-muted-text-2: var(--color-7);
-  --color-soft: var(--color-8);
-  --color-danger: var(--color-9);
-  --color-success: var(--color-10);
+  --animate-rise-in: rise-in 260ms ease both;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 }
 
 @layer base {
@@ -100,10 +108,10 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
-    color: var(--color-3);
+    color: var(--color-body-text);
     font-family: var(--font-sans);
     font-size: 14px;
-    letter-spacing: -0.02em;
+    letter-spacing: var(--tracking-display);
     line-height: 1.45;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -145,8 +153,6 @@ select:-webkit-autofill {
   transition: background-color 9999999s ease-in-out;
 }
 
-/* No overflow clip — the period dropdown must escape the banner; the ::before
-   pattern rounds its own right corners instead. */
 @utility creator-banner-grid {
   position: relative;
   isolation: isolate;
@@ -181,7 +187,6 @@ select:-webkit-autofill {
   }
 }
 
-/* rgb(18, 48, 74) */
 @utility major-button {
   --button-shadow-ring: rgba(18, 48, 74, 0.8);
   position: relative;
@@ -224,15 +229,13 @@ select:-webkit-autofill {
   }
 }
 
-/* Loading placeholder with a soft shimmer sweep. The global reduced-motion
-   block caps the animation, leaving a static block. */
 @utility skeleton {
-  background-color: var(--color-6);
+  background-color: var(--color-line);
   background-image: linear-gradient(
     90deg,
-    var(--color-6) 25%,
+    var(--color-line) 25%,
     #e9e9e9 37%,
-    var(--color-6) 63%
+    var(--color-line) 63%
   );
   background-size: 400% 100%;
   animation: skeleton-shimmer 1.4s ease infinite;
@@ -260,7 +263,6 @@ select:-webkit-autofill {
 .t-dropdown[data-origin="top-right"] {
   transform-origin: top right;
 }
-
 .t-dropdown.is-open {
   transform: scale(1);
   opacity: 1;
@@ -297,8 +299,14 @@ select:-webkit-autofill {
     filter var(--panel-open-dur) var(--panel-ease);
 }
 
-/* grid-template-rows 0fr → 1fr gives a clean height animation
-   with no JS measurement; the inner element clips overflow. */
+@starting-style {
+  .t-panel-slide[data-open="true"] {
+    transform: translateY(var(--panel-translate-y));
+    opacity: 0;
+    filter: blur(var(--panel-blur));
+  }
+}
+
 .t-acc-panel {
   display: grid;
   grid-template-rows: 0fr;
@@ -334,14 +342,6 @@ select:-webkit-autofill {
 }
 .t-acc[data-open="true"] .t-acc-chevron {
   transform: scaleY(-1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .t-acc-panel,
-  .t-acc-panel-inner,
-  .t-acc-chevron {
-    transition: none !important;
-  }
 }
 
 .t-success-check {
@@ -408,32 +408,23 @@ select:-webkit-autofill {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .t-success-check {
-    animation: none !important;
-    opacity: 1;
-  }
-  .t-success-check svg path {
-    animation: none !important;
-    stroke-dashoffset: 0 !important;
-  }
-}
-
 .t-toggle {
   transition: background-color var(--toggle-track) var(--toggle-ease);
 }
+
 .t-toggle-thumb {
   translate: 0 0;
   will-change: translate;
 }
+
 .t-toggle[data-on="true"] .t-toggle-thumb {
   translate: var(--toggle-travel) 0;
 }
-/* .is-init gates the keyframes so the "off" animation doesn't play on mount;
-   flipping data-on swaps the animation, restarting the double-bounce travel. */
+
 .t-toggle.is-init[data-on="true"] .t-toggle-thumb {
   animation: t-toggle-on var(--toggle-dur) var(--toggle-ease) both;
 }
+
 .t-toggle.is-init[data-on="false"] .t-toggle-thumb {
   animation: t-toggle-off var(--toggle-dur) var(--toggle-ease) both;
 }
@@ -467,20 +458,6 @@ select:-webkit-autofill {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .t-toggle-thumb {
-    animation: none !important;
-  }
-}
-
-@starting-style {
-  .t-panel-slide[data-open="true"] {
-    transform: translateY(var(--panel-translate-y));
-    opacity: 0;
-    filter: blur(var(--panel-blur));
-  }
-}
-
 .t-modal {
   transform-origin: center;
   transform: scale(var(--modal-scale));
@@ -505,8 +482,6 @@ select:-webkit-autofill {
     opacity var(--modal-close-dur) var(--modal-ease);
 }
 
-/* Newly-inserted elements have no before-change style, so without a
-   @starting-style the open transition never runs on mount. */
 @starting-style {
   .t-modal.is-open {
     transform: scale(var(--modal-scale));
@@ -518,21 +493,17 @@ select:-webkit-autofill {
   opacity: 0;
   transition: opacity var(--modal-close-dur) var(--modal-ease);
 }
-
 .dialog-overlay.is-open {
   opacity: 1;
   transition-duration: var(--modal-open-dur);
 }
-
 .dialog-overlay.is-closing {
   opacity: 0;
   pointer-events: none;
 }
-
 .dialog-overlay.dialog-overlay-panel {
   transition-duration: var(--panel-close-dur);
 }
-
 .dialog-overlay.dialog-overlay-panel.is-open {
   transition-duration: var(--panel-open-dur);
 }
@@ -543,26 +514,32 @@ select:-webkit-autofill {
   }
 }
 
-@keyframes rise-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .t-dropdown,
-  .t-panel-slide {
-    transition: none !important;
-  }
-
-  .t-modal,
-  .dialog-overlay {
-    transition: none !important;
-  }
-
   html {
     scroll-behavior: auto;
+  }
+
+  .t-dropdown,
+  .t-panel-slide,
+  .t-modal,
+  .dialog-overlay,
+  .t-acc-panel,
+  .t-acc-panel-inner,
+  .t-acc-chevron {
+    transition: none !important;
+  }
+
+  .t-success-check {
+    animation: none !important;
+    opacity: 1;
+  }
+  .t-success-check svg path {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .t-toggle-thumb {
+    animation: none !important;
   }
 
   *,

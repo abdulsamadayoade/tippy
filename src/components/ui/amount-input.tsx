@@ -124,7 +124,7 @@ export const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
           }}>
           {currencySymbol ? (
             <span
-              className="mr-1 text-lg font-medium text-muted"
+              className="mr-1 text-lg font-medium text-muted-text-2"
               aria-hidden="true">
               {currencySymbol}
             </span>
@@ -152,7 +152,7 @@ export const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
           />
 
           {currencyCode ? (
-            <span className="ml-2 text-xs font-medium text-muted">
+            <span className="ml-2 text-xs font-medium text-muted-text-2">
               {currencyCode}
             </span>
           ) : null}
@@ -162,7 +162,7 @@ export const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
           <p
             className={cn(
               "mt-1.75 text-xs",
-              error ? "text-danger" : "text-muted",
+              error ? "text-danger" : "text-muted-text-2",
             )}
             id={messageId}
             aria-live={error ? "polite" : undefined}>
