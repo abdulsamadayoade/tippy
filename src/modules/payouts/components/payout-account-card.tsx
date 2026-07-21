@@ -1,6 +1,13 @@
 "use client";
 
-import { useId, useRef, useState, type SubmitEvent } from "react";
+import {
+  useId,
+  useOptimistic,
+  useRef,
+  useState,
+  useTransition,
+  type SubmitEvent,
+} from "react";
 import { TrashIcon } from "@/components/icons/trash";
 import { PlusIcon } from "@/components/icons/plus";
 import { Modal } from "@/components/ui/modal";
@@ -53,8 +60,13 @@ export function PayoutAccountCard({
   const [serverErrors, setServerErrors] = useState<FormErrors>({});
   const [saving, setSaving] = useState(false);
   const [removing, setRemoving] = useState(false);
-  // Mirrors the switch while its server action settles and props refresh.
-  const [pendingAuto, setPendingAuto] = useState<boolean | null>(null);
+  // Holds the optimistic switch value until the action's revalidated props
+  // land, so the switch never flashes back to the stale value; reverts
+  // automatically if the action fails.
+  const [autoPayoutShown, setOptimisticAutoPayout] = useOptimistic(
+    Boolean(account) && autoPayout,
+  );
+  const [autoPayoutPending, startAutoPayoutTransition] = useTransition();
 
   const uid = useId();
   const bankFieldRef = useRef<HTMLSelectElement>(null);
@@ -64,7 +76,6 @@ export function PayoutAccountCard({
   const errors: FormErrors = submitAttempted
     ? { ...clientErrors, ...serverErrors }
     : {};
-  const autoPayoutShown = pendingAuto ?? (Boolean(account) && autoPayout);
 
   function openAdd() {
     setFormMode("add");
@@ -113,13 +124,12 @@ export function PayoutAccountCard({
     setDeleteOpen(false);
   }
 
-  async function toggleAutoPayout(enabled: boolean) {
-    setPendingAuto(enabled);
-    const result = await setAutoPayout(enabled);
-    // Revalidated props take over; on failure this reverts to the DB value.
-    setPendingAuto(null);
-
-    if (result.error) console.error(result.error);
+  function toggleAutoPayout(enabled: boolean) {
+    startAutoPayoutTransition(async () => {
+      setOptimisticAutoPayout(enabled);
+      const result = await setAutoPayout(enabled);
+      if (result.error) console.error(result.error);
+    });
   }
 
   return (
@@ -177,7 +187,7 @@ export function PayoutAccountCard({
           <Switch
             checked={autoPayoutShown}
             onCheckedChange={toggleAutoPayout}
-            disabled={!account || pendingAuto !== null}
+            disabled={!account || autoPayoutPending}
             aria-label="Automatic weekly payout"
           />
         </div>
