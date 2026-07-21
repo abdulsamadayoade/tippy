@@ -5,7 +5,11 @@ import type { PublicCreator } from "../types";
 export function Header({ creator }: { creator: PublicCreator }) {
   return (
     <header className="text-center mx-auto max-w-130">
-      <CreatorAvatar name={creator.displayName} photoUrl={creator.avatarUrl} />
+      <CreatorAvatar
+        name={creator.displayName}
+        photoUrl={creator.avatarUrl}
+        loading="eager"
+      />
       <div className="mt-4 flex items-center justify-center">
         <h1 className="text-lg font-medium">{creator.displayName}</h1>
 

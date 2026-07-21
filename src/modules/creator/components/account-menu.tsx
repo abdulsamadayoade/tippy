@@ -44,7 +44,12 @@ export function CreatorAccountMenu({
         aria-haspopup="menu"
         aria-expanded={state === "open"}
         onClick={toggle}>
-        <CreatorAvatar size="small" name={displayName} photoUrl={avatarUrl} />
+        <CreatorAvatar
+          size="small"
+          name={displayName}
+          photoUrl={avatarUrl}
+          loading="eager"
+        />
       </button>
 
       <div
