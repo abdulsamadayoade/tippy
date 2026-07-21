@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { ClaimLinkStep } from "./components/claim-link-step";
 import { ProfileStep } from "./components/profile-step";
 import { checkUsernameAvailability, completeOnboarding } from "./actions";
+import { compressAvatar } from "./utils";
 import type { CategoryOption } from "./types";
 
 export function Onboarding({ categories }: { categories: CategoryOption[] }) {
@@ -36,8 +37,11 @@ export function Onboarding({ categories }: { categories: CategoryOption[] }) {
 
   function choosePhoto(file: File | undefined) {
     if (!file) return;
-    setPhotoFile(file);
-    setPhotoUrl(URL.createObjectURL(file));
+    void (async () => {
+      const compressed = await compressAvatar(file);
+      setPhotoFile(compressed);
+      setPhotoUrl(URL.createObjectURL(compressed));
+    })();
   }
 
   async function continueToProfile() {
