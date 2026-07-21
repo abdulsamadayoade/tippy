@@ -8,23 +8,15 @@ const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 type ModalProps = {
-  /** Desired visibility. The dialog stays mounted through its exit transition. */
   open: boolean;
-  /** Requested when the user dismisses via Escape or the backdrop. */
   onClose: () => void;
   labelledBy?: string;
   describedBy?: string;
-  /** "center" scales, "sheet" slides briefly, and "panel" uses the full reveal motion. */
-  variant?: "center" | "sheet" | "panel";
-  /** When false, Escape and backdrop clicks do not close (e.g. mid-request). */
+  variant?: "center" | "panel";
   dismissible?: boolean;
-  /** When false, focus is not returned to the opener on close. */
   restoreFocus?: boolean;
-  /** Focused when the dialog opens; falls back to the dialog itself. */
   initialFocusRef?: React.RefObject<HTMLElement | null>;
-  /** Classes for the dialog panel. */
   className?: string;
-  /** Classes for the backdrop (e.g. a custom z-index). */
   overlayClassName?: string;
   children: ReactNode;
 };
@@ -137,7 +129,7 @@ export function Modal({
     <div
       className={cn(
         "dialog-overlay fixed inset-0 z-50 flex bg-ink/40",
-        variant === "sheet" || panelReveal
+        panelReveal
           ? "items-end justify-center overflow-hidden"
           : "items-center justify-center p-4",
         panelReveal && "dialog-overlay-panel",
@@ -153,7 +145,6 @@ export function Modal({
         ref={dialogRef}
         className={cn(
           panelReveal ? "t-panel-slide" : "t-modal",
-          variant === "sheet" && "t-modal-sheet",
           !panelReveal && phaseClass,
           className,
         )}

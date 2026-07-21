@@ -47,6 +47,8 @@ Then open [http://localhost:3000](http://localhost:3000).
 3. Email Monnify support to disable transfer OTP for the account. Automated disbursements can't answer an emailed OTP.
 4. Point the Transaction Completion and Disbursement webhook URLs at `<your-url>/api/webhooks/monnify`. Locally you'll need a tunnel like ngrok. Without webhooks things still settle through reconciliation, just slower.
 
+To complete a test tip payment in sandbox, use Monnify's simulated banking app: [https://websim.sdk.monnify.com/?#/bankingapp](https://websim.sdk.monnify.com/?#/bankingapp). Sandbox charges no real card or bank account — pay through the simulator to mark a transaction as successful.
+
 ### Database
 
 ```bash

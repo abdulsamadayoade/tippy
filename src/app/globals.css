@@ -32,7 +32,6 @@
   --modal-close-dur: 150ms;
   --modal-scale: 0.96;
   --modal-scale-close: 0.96;
-  --modal-sheet-offset: 18px;
   --modal-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --toggle-dur: 350ms;
   --toggle-travel: 16px;
@@ -45,7 +44,6 @@
   --color-2: #0b2239;
   --color-3: #274c5e;
   --color-4: #5b7280;
-  --color-5: #d94f45;
   --color-6: #f2f2f2;
   --color-7: #7f7f7f;
   --color-8: #f5f5f5;
@@ -58,12 +56,9 @@
   --color-copy: #5d5d5d;
   --color-muted: #7f7f7f;
   --color-line: #f2f2f2;
-  /* --color-soft: #f5f5f5; */
-  --color-success: oklch(0.44 0.1 145);
   --color-success-soft: oklch(0.97 0.03 145);
   --color-warning: #8a5b18;
   --color-warning-soft: #fff7e8;
-  /* --color-danger: #8f3030; */
   --color-danger-soft: #fff1f1;
   --font-sans: var(--font-geist), system-ui, sans-serif;
   --text-ui-sm: 0.8125rem;
@@ -81,14 +76,12 @@
     inset 0 0 0 1px rgba(255, 255, 255, 0.65), 0 0 0 1px rgba(0, 0, 0, 0.04),
     0 2px 4px rgba(0, 0, 0, 0.04);
   --animate-rise-in: rise-in 260ms ease both;
-  --animate-pop-in: pop-in 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
 
   --color-primary: var(--color-1);
   --color-main-heading: var(--color-2);
   --color-body-text: var(--color-3);
   --color-muted-text: var(--color-4);
   --color-muted-text-2: var(--color-7);
-  --color-accent-text: var(--color-5);
   --color-soft: var(--color-8);
   --color-danger: var(--color-9);
   --color-success: var(--color-10);
@@ -266,18 +259,6 @@ select:-webkit-autofill {
 }
 .t-dropdown[data-origin="top-right"] {
   transform-origin: top right;
-}
-.t-dropdown[data-origin="top-center"] {
-  transform-origin: top center;
-}
-.t-dropdown[data-origin="bottom-left"] {
-  transform-origin: bottom left;
-}
-.t-dropdown[data-origin="bottom-center"] {
-  transform-origin: bottom center;
-}
-.t-dropdown[data-origin="bottom-right"] {
-  transform-origin: bottom right;
 }
 
 .t-dropdown.is-open {
@@ -533,24 +514,6 @@ select:-webkit-autofill {
   }
 }
 
-/* Bottom-sheet variant: same timing and phases, slides instead of scales. */
-.t-modal.t-modal-sheet {
-  transform: translateY(var(--modal-sheet-offset));
-}
-.t-modal.t-modal-sheet.is-open {
-  transform: translateY(0);
-}
-.t-modal.t-modal-sheet.is-closing {
-  transform: translateY(var(--modal-sheet-offset));
-}
-
-@starting-style {
-  .t-modal.t-modal-sheet.is-open {
-    transform: translateY(var(--modal-sheet-offset));
-    opacity: 0;
-  }
-}
-
 .dialog-overlay {
   opacity: 0;
   transition: opacity var(--modal-close-dur) var(--modal-ease);
@@ -584,13 +547,6 @@ select:-webkit-autofill {
   from {
     opacity: 0;
     transform: translateY(6px);
-  }
-}
-
-@keyframes pop-in {
-  from {
-    opacity: 0;
-    transform: scale(0.7);
   }
 }
 
