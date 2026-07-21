@@ -1,7 +1,6 @@
 import { CheckIcon } from "@/components/icons/check";
 import { BankBuildingIcon } from "@/components/icons/bank-building";
-import { NEXT_PAYOUT_DATE } from "@/data/constants";
-import { formatDate, formatNaira } from "@/lib/utils";
+import { formatDate, formatNaira, getNextPayoutDate } from "@/lib/utils";
 import type { BalanceBannerProps } from "../types";
 
 export function BalanceBanner({
@@ -12,7 +11,7 @@ export function BalanceBanner({
   withdrawalRequested,
   onWithdraw,
 }: BalanceBannerProps) {
-  const nextPayoutDate = formatDate(NEXT_PAYOUT_DATE, {
+  const nextPayoutDate = formatDate(getNextPayoutDate(), {
     weekday: "short",
     day: "numeric",
     month: "short",
