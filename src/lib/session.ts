@@ -9,12 +9,6 @@ const getSession = cache(async () => {
   return auth.api.getSession({ headers: await headers() });
 });
 
-/**
- * Deliberately NOT wrapped in cache(): server actions mutate the creator row
- * and then render the redirect target (or revalidated pages) within the same
- * request, so a cached pre-mutation read would serve a stale creator to that
- * render. The session lookup above stays cached — actions never mutate it.
- */
 const getSessionCreator = async () => {
   const session = await getSession();
 
