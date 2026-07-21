@@ -25,6 +25,7 @@ export default async function CreatorLayout({
           <div className="ml-auto flex items-center gap-3.5">
             <CreatorAccountMenu
               displayName={creator.displayName}
+              username={creator.username}
               tipUrl={`tippy.cash/${creator.username}`}
               avatarUrl={creator.avatarUrl}
             />
