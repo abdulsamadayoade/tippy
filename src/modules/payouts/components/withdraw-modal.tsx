@@ -6,6 +6,7 @@ import { CheckIcon } from "@/components/icons/check";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { formatNaira, maskAccountNumber } from "@/lib/utils";
+import { requestWithdrawal } from "../actions";
 import type { WithdrawModalProps } from "../types";
 
 export function WithdrawModal({
@@ -13,22 +14,28 @@ export function WithdrawModal({
   onClose,
   balance,
   account,
-  requested,
-  onConfirm,
 }: WithdrawModalProps) {
   const [amountValue, setAmountValue] = useState("");
   const [wasOpen, setWasOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [requested, setRequested] = useState(false);
+  const [serverError, setServerError] = useState("");
   const doneRef = useRef<HTMLButtonElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
 
   if (open !== wasOpen) {
     setWasOpen(open);
-    if (open) setAmountValue(String(balance));
+    if (open) {
+      setAmountValue(String(balance));
+      setRequested(false);
+      setServerError("");
+    }
   }
 
   const amountNumber = Number(amountValue || 0);
   const overBalance = amountNumber > balance;
-  const canConfirm = amountNumber > 0 && !overBalance;
+  const canConfirm = amountNumber > 0 && !overBalance && !submitting;
+  const hintIsError = Boolean(serverError) || overBalance;
 
   useEffect(() => {
     if (!open || !requested) return;
@@ -36,12 +43,29 @@ export function WithdrawModal({
     return () => window.cancelAnimationFrame(frame);
   }, [open, requested]);
 
+  async function confirm() {
+    if (!canConfirm) return;
+
+    setSubmitting(true);
+    setServerError("");
+    const result = await requestWithdrawal(amountNumber);
+    setSubmitting(false);
+
+    if (result.error) {
+      setServerError(result.error);
+      return;
+    }
+
+    setRequested(true);
+  }
+
   return (
     <Modal
       open={open}
       onClose={onClose}
       labelledBy="withdrawal-dialog-title"
       describedBy="withdrawal-dialog-description"
+      dismissible={!submitting}
       initialFocusRef={requested ? doneRef : amountRef}
       className="w-full max-w-105 rounded-[20px] bg-white p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
       {requested ? (
@@ -67,7 +91,7 @@ export function WithdrawModal({
             <strong className="font-semibold text-main-heading">
               {account?.bank}
             </strong>{" "}
-            account. It should arrive instantly.
+            account shortly.
           </p>
           <Button
             ref={doneRef}
@@ -125,9 +149,10 @@ export function WithdrawModal({
                     ? ""
                     : Number(amountValue).toLocaleString("en-NG")
                 }
-                onChange={(event) =>
-                  setAmountValue(event.target.value.replace(/\D/g, ""))
-                }
+                onChange={(event) => {
+                  setAmountValue(event.target.value.replace(/\D/g, ""));
+                  if (serverError) setServerError("");
+                }}
               />
               <button
                 className="absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer rounded-full bg-soft px-3 py-1.5 text-xs font-medium text-main-heading transition-colors duration-150 hover:bg-line"
@@ -139,16 +164,17 @@ export function WithdrawModal({
             <p
               className={cn(
                 "mt-1.5 text-xs",
-                overBalance ? "text-danger" : "text-muted-text",
+                hintIsError ? "text-danger" : "text-muted-text",
               )}
               id="withdraw-amount-hint">
-              {overBalance
-                ? "Amount exceeds your available balance."
-                : "Enter an amount or tap Max to withdraw everything."}
+              {serverError ||
+                (overBalance
+                  ? "Amount exceeds your available balance."
+                  : "Enter an amount or tap Max to withdraw everything.")}
             </p>
           </div>
 
-          <dl className="mt-4 divide-y divide-line rounded-[14px] bg-soft px-4">
+          <dl className="mt-4 divide-y divide-line rounded-surface bg-soft px-4">
             <div className="flex items-start justify-between gap-4 py-3.5">
               <dt className="text-ui-sm text-muted-text">Account</dt>
               <dd className="text-right text-ui-sm font-medium text-main-heading">
@@ -164,19 +190,25 @@ export function WithdrawModal({
             <div className="flex items-start justify-between gap-4 py-3.5">
               <dt className="text-ui-sm text-muted-text">Estimated arrival</dt>
               <dd className="text-ui-sm font-medium text-main-heading">
-                Instant
+                Within minutes
               </dd>
             </div>
           </dl>
 
           <div className="mt-5 grid grid-cols-2 gap-2.5">
-            <Button variant="secondary" className="min-h-11" onClick={onClose}>
+            <Button
+              variant="secondary"
+              className="min-h-11"
+              disabled={submitting}
+              onClick={onClose}>
               Cancel
             </Button>
             <Button
               className="min-h-11"
               disabled={!canConfirm}
-              onClick={onConfirm}>
+              loading={submitting}
+              loadingText="Requesting…"
+              onClick={confirm}>
               Confirm
             </Button>
           </div>

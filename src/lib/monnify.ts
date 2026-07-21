@@ -1,22 +1,25 @@
 const SANDBOX_BASE_URL = "https://sandbox.monnify.com";
 
-type MonnifyAuthResponse = {
+type MonnifyEnvelope<Body> = {
   requestSuccessful?: boolean;
-  responseBody?: { accessToken?: string; expiresIn?: number };
+  responseMessage?: string;
+  responseBody?: Body;
 };
 
-type MonnifyQueryResponse = {
-  requestSuccessful?: boolean;
-  responseBody?: {
-    paymentStatus?: string;
-    amountPaid?: number;
-    totalPayable?: number;
-    transactionReference?: string;
-    paymentReference?: string;
-    paidOn?: string | null;
-    paymentMethod?: string | null;
-  };
-};
+type MonnifyAuthResponse = MonnifyEnvelope<{
+  accessToken?: string;
+  expiresIn?: number;
+}>;
+
+type MonnifyQueryResponse = MonnifyEnvelope<{
+  paymentStatus?: string;
+  amountPaid?: number;
+  totalPayable?: number;
+  transactionReference?: string;
+  paymentReference?: string;
+  paidOn?: string | null;
+  paymentMethod?: string | null;
+}>;
 
 export type MonnifyTransaction = {
   paymentStatus: string;
@@ -25,6 +28,25 @@ export type MonnifyTransaction = {
   paymentReference: string;
   paidOn: string | null;
   paymentMethod: string | null;
+};
+
+export type MonnifyResolvedAccount = {
+  accountNumber: string;
+  accountName: string;
+  bankCode: string;
+};
+
+export type MonnifyTransfer = {
+  reference: string;
+  status: string;
+  amount: number;
+  completedOn: string | null;
+};
+
+export type MonnifyTransferOutcome = {
+  status: "SUCCESS" | "PENDING" | "FAILED" | "OTP_REQUIRED";
+  providerReference: string | null;
+  failureReason: string | null;
 };
 
 function requiredEnv(name: string) {
@@ -42,6 +64,11 @@ export function getMonnifyConfig() {
     contractCode: requiredEnv("MONNIFY_CONTRACT_CODE"),
     baseUrl: process.env.MONNIFY_BASE_URL ?? SANDBOX_BASE_URL,
   };
+}
+
+/** The merchant wallet transfers are funded from (Monnify dashboard → Wallet). */
+export function getMonnifySourceAccount() {
+  return requiredEnv("MONNIFY_SOURCE_ACCOUNT_NUMBER");
 }
 
 export function isMonnifySandbox() {
@@ -82,38 +109,46 @@ async function getAccessToken() {
   return token;
 }
 
-/**
- * Authoritative transaction lookup by our own payment reference. Returns null
- * when Monnify doesn't know the reference (e.g. checkout closed before the
- * transaction was initialised).
- */
+async function monnifyFetch(path: string, init: RequestInit = {}) {
+  const { baseUrl } = getMonnifyConfig();
+  const call = async () =>
+    fetch(`${baseUrl}${path}`, {
+      ...init,
+      headers: {
+        ...init.headers,
+        Authorization: `Bearer ${await getAccessToken()}`,
+      },
+      cache: "no-store",
+    });
+
+  let response = await call();
+
+  if (response.status === 401) {
+    cachedToken = null;
+    response = await call();
+  }
+
+  return response;
+}
+
+async function readEnvelope<Body>(response: Response) {
+  return (await response
+    .json()
+    .catch(() => null)) as MonnifyEnvelope<Body> | null;
+}
+
 export async function getTransactionByPaymentReference(
   paymentReference: string,
 ): Promise<MonnifyTransaction | null> {
-  const { baseUrl } = getMonnifyConfig();
   const query = `paymentReference=${encodeURIComponent(paymentReference)}`;
-  const url = `${baseUrl}/api/v2/merchant/transactions/query?${query}`;
-
-  let response = await fetch(url, {
-    headers: { Authorization: `Bearer ${await getAccessToken()}` },
-    cache: "no-store",
-  });
-
-  // A cached token can be revoked server-side before our expiry margin hits.
-  if (response.status === 401) {
-    cachedToken = null;
-    response = await fetch(url, {
-      headers: { Authorization: `Bearer ${await getAccessToken()}` },
-      cache: "no-store",
-    });
-  }
+  const response = await monnifyFetch(
+    `/api/v2/merchant/transactions/query?${query}`,
+  );
 
   if (response.status === 404) return null;
 
   if (!response.ok) {
-    const failure = (await response.json().catch(() => null)) as {
-      responseMessage?: string;
-    } | null;
+    const failure = await readEnvelope<never>(response);
     throw new Error(
       `Monnify transaction query failed (${response.status}): ${failure?.responseMessage ?? "unknown error"}`,
     );
@@ -140,5 +175,158 @@ export async function getTransactionByPaymentReference(
     paymentReference: body.paymentReference,
     paidOn: body.paidOn ?? null,
     paymentMethod: body.paymentMethod ?? null,
+  };
+}
+
+export async function validateBankAccount(
+  accountNumber: string,
+  bankCode: string,
+): Promise<MonnifyResolvedAccount | null> {
+  const query = `accountNumber=${encodeURIComponent(accountNumber)}&bankCode=${encodeURIComponent(bankCode)}`;
+  const response = await monnifyFetch(
+    `/api/v1/disbursements/account/validate?${query}`,
+  );
+
+  if (response.status >= 500) {
+    throw new Error(`Monnify account validation failed (${response.status}).`);
+  }
+
+  const payload = await readEnvelope<{
+    accountNumber?: string;
+    accountName?: string;
+    bankCode?: string;
+  }>(response);
+  const accountName = payload?.responseBody?.accountName?.trim();
+
+  if (!response.ok || !payload?.requestSuccessful || !accountName) {
+    return null;
+  }
+
+  return {
+    accountNumber: payload.responseBody?.accountNumber ?? accountNumber,
+    accountName,
+    bankCode: payload.responseBody?.bankCode ?? bankCode,
+  };
+}
+
+export async function getTransferByReference(
+  reference: string,
+): Promise<MonnifyTransfer | null> {
+  const response = await monnifyFetch(
+    `/api/v2/disbursements/single/summary?reference=${encodeURIComponent(reference)}`,
+  );
+
+  if (response.status === 404) return null;
+
+  const payload = await readEnvelope<{
+    reference?: string;
+    status?: string;
+    amount?: number;
+    completedOn?: string | null;
+  }>(response);
+
+  if (!response.ok || !payload?.requestSuccessful) {
+    const message = payload?.responseMessage ?? "";
+    if (
+      response.status < 500 &&
+      /not.*found|does not exist|no transaction/i.test(message)
+    ) {
+      return null;
+    }
+    throw new Error(
+      `Monnify transfer query failed (${response.status}): ${message || "unknown error"}`,
+    );
+  }
+
+  const body = payload.responseBody;
+  if (!body?.status) return null;
+
+  return {
+    reference: body.reference ?? reference,
+    status: body.status,
+    amount: body.amount ?? 0,
+    completedOn: body.completedOn ?? null,
+  };
+}
+
+export async function initiateTransfer(request: {
+  amount: number;
+  reference: string;
+  narration: string;
+  destinationBankCode: string;
+  destinationAccountNumber: string;
+  destinationAccountName: string;
+}): Promise<MonnifyTransferOutcome> {
+  const response = await monnifyFetch("/api/v2/disbursements/single", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...request,
+      currency: "NGN",
+      sourceAccountNumber: getMonnifySourceAccount(),
+    }),
+  });
+
+  if (response.status >= 500) {
+    throw new Error(`Monnify transfer initiation failed (${response.status}).`);
+  }
+
+  const payload = await readEnvelope<{
+    status?: string;
+    reference?: string;
+    transactionReference?: string;
+  }>(response);
+  const message = payload?.responseMessage ?? `HTTP ${response.status}`;
+
+  if (!response.ok || !payload?.requestSuccessful) {
+    if (/duplicate|already exist/i.test(message)) {
+      const existing = await getTransferByReference(request.reference);
+      if (existing) {
+        return {
+          status:
+            existing.status === "SUCCESS"
+              ? "SUCCESS"
+              : /FAILED|REVERSED|EXPIRED|CANCELLED/.test(existing.status)
+                ? "FAILED"
+                : "PENDING",
+          providerReference: null,
+          failureReason:
+            existing.status === "SUCCESS"
+              ? null
+              : `Provider status: ${existing.status}`,
+        };
+      }
+    }
+
+    return {
+      status: "FAILED",
+      providerReference: null,
+      failureReason: `Monnify rejected the transfer: ${message}`,
+    };
+  }
+
+  const status = payload.responseBody?.status ?? "PENDING";
+  const providerReference =
+    payload.responseBody?.transactionReference ??
+    payload.responseBody?.reference ??
+    null;
+
+  if (status === "PENDING_AUTHORIZATION") {
+    return {
+      status: "OTP_REQUIRED",
+      providerReference,
+      failureReason:
+        "Transfer OTP authorization is enabled on the Monnify dashboard — disable 2FA for API transfers.",
+    };
+  }
+
+  if (status === "FAILED") {
+    return { status: "FAILED", providerReference, failureReason: message };
+  }
+
+  return {
+    status: status === "SUCCESS" ? "SUCCESS" : "PENDING",
+    providerReference,
+    failureReason: null,
   };
 }
