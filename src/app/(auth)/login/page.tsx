@@ -10,10 +10,21 @@ export const metadata: Metadata = {
     "Sign in to Tippy with a one-tap email link — no password to remember.",
 };
 
-export default async function Login() {
+export default async function Login({
+  searchParams,
+}: {
+  searchParams: Promise<{ username?: string | string[] }>;
+}) {
   const { session, creator } = await getSessionCreator();
 
   if (session) redirect(creator ? "/overview" : "/onboarding");
+
+  const { username } = await searchParams;
+  const claimUsername = Array.isArray(username) ? username[0] : username;
+
+  if (claimUsername) {
+    redirect(`/register?username=${encodeURIComponent(claimUsername)}`);
+  }
 
   return (
     <Suspense>

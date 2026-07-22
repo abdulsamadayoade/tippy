@@ -81,7 +81,7 @@ export function Home() {
                     key="username-form"
                     layoutId="claim-control"
                     className="w-72 max-w-full"
-                    action="/login"
+                    action="/register"
                     method="get"
                     autoComplete="off"
                     noValidate
