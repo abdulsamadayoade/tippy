@@ -2,6 +2,7 @@ import { and, eq, inArray, lt, ne, sql, sum } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { bankAccount, creator, payout, tip } from "@/lib/db/schema";
 import { getTransferByReference, initiateTransfer } from "@/lib/monnify";
+import { reportError, reportWarning } from "@/lib/monitoring";
 import { formatNaira } from "@/lib/utils";
 import { MINIMUM_WITHDRAWAL } from "@/data/constants";
 
@@ -136,10 +137,13 @@ export async function submitPayout(
       destinationAccountName: submission.accountName,
     });
   } catch (error) {
-    console.error(
-      `Payout ${submission.paymentReference}: initiation unreachable`,
-      error,
-    );
+    reportError(error, {
+      category: "payout.initiation",
+      extra: {
+        paymentReference: submission.paymentReference,
+        amount: submission.amount,
+      },
+    });
     return {
       ok: false,
       error:
@@ -174,6 +178,15 @@ export async function submitPayout(
       .where(and(eq(payout.id, submission.id), eq(payout.status, "pending")));
     return { ok: true };
   }
+
+  reportWarning("Monnify rejected transfer", {
+    category: "payout.initiation",
+    extra: {
+      paymentReference: submission.paymentReference,
+      status: outcome.status,
+      failureReason: outcome.failureReason,
+    },
+  });
 
   await db
     .update(payout)
@@ -297,10 +310,10 @@ export async function reconcileStalePayouts(creatorId: string): Promise<void> {
     try {
       await reconcilePayoutWithMonnify(row.paymentReference);
     } catch (error) {
-      console.error(
-        `Stale payout reconciliation failed for ${row.paymentReference}`,
-        error,
-      );
+      reportError(error, {
+        category: "payout.reconciliation",
+        extra: { paymentReference: row.paymentReference },
+      });
     }
   }
 }
@@ -348,7 +361,10 @@ export async function runAutoPayouts(): Promise<
         ...(submitted.ok ? {} : { error: submitted.error }),
       });
     } catch (error) {
-      console.error(`Auto payout failed for creator ${creatorId}`, error);
+      reportError(error, {
+        category: "payout.auto",
+        extra: { creatorId },
+      });
       results.push({
         creatorId,
         error: "Unexpected failure — see server logs.",

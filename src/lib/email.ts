@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { reportError } from "@/lib/monitoring";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -78,6 +79,11 @@ export async function sendMagicLinkEmail({
   );
 
   if (error) {
-    throw new Error(`Magic link email failed: ${error.message}`);
+    const failure = new Error(`Magic link email failed: ${error.message}`);
+    reportError(failure, {
+      category: "email.resend",
+      tags: { resendErrorName: error.name },
+    });
+    throw failure;
   }
 }

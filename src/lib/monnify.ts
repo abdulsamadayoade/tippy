@@ -1,3 +1,5 @@
+import { reportError } from "@/lib/monitoring";
+
 const SANDBOX_BASE_URL = "https://sandbox.monnify.com";
 
 type MonnifyEnvelope<Body> = {
@@ -91,14 +93,31 @@ async function getAccessToken() {
   });
 
   if (!response.ok) {
-    throw new Error(`Monnify authentication failed (${response.status}).`);
+    const error = new Error(
+      `Monnify authentication failed (${response.status}).`,
+    );
+    reportError(error, {
+      category: "monnify.auth",
+      tags: {
+        httpStatus: response.status,
+        monnifyEnv: baseUrl.includes("sandbox") ? "sandbox" : "live",
+      },
+      fingerprint: ["monnify-auth-failure"],
+    });
+    throw error;
   }
 
   const payload = (await response.json()) as MonnifyAuthResponse;
   const token = payload.responseBody?.accessToken;
 
   if (!payload.requestSuccessful || !token) {
-    throw new Error("Monnify authentication returned no access token.");
+    const error = new Error("Monnify authentication returned no access token.");
+    reportError(error, {
+      category: "monnify.auth",
+      tags: { monnifyEnv: baseUrl.includes("sandbox") ? "sandbox" : "live" },
+      fingerprint: ["monnify-auth-failure"],
+    });
+    throw error;
   }
 
   const expiresInSeconds = payload.responseBody?.expiresIn ?? 3600;
