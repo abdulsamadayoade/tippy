@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { cn } from "@/lib/cn";
+import { formatNaira } from "@/lib/utils";
+import { reportError } from "@/lib/monitoring";
 import { Modal } from "@/components/ui/modal";
 import { MAXIMUM_TIP, MINIMUM_TIP } from "@/data/constants";
 import { DEFAULT_TIP, getPresets } from "./data";
@@ -14,7 +16,6 @@ import { TextInput } from "@/components/ui/text-input";
 import { AmountInput } from "@/components/ui/amount-input";
 import { AmountPreset } from "@/components/ui/amount-preset";
 import { Switch } from "@/components/ui/switch";
-import { formatNaira } from "@/lib/utils";
 import { Header } from "./components/header";
 import { Secured } from "@/components/elements/secured";
 import { Nav } from "@/components/layout/nav";
@@ -160,6 +161,10 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
 
       checkout = result;
     } catch (error) {
+      reportError(error, {
+        category: "checkout.start",
+        tags: { creator: creator.username },
+      });
       setPaymentError(
         error instanceof Error && error.message
           ? error.message

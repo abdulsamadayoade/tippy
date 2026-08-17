@@ -6,27 +6,23 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { bankAccount, creator } from "@/lib/db/schema";
 import { validateBankAccount } from "@/lib/monnify";
+import { reportError } from "@/lib/monitoring";
 import { createPendingPayout, submitPayout } from "@/lib/payouts";
 import { getSessionCreator } from "@/lib/session";
 import { ACCOUNT_NUMBER_LENGTH, BANKS } from "@/data/constants";
 import type { FormErrors } from "./types";
 
 const accountSchema = z.object({
-  bank: z
-    .string()
-    .refine((value) => BANKS.some(({ name }) => name === value), {
-      message: "Select your bank.",
-    }),
+  bank: z.string().refine((value) => BANKS.some(({ name }) => name === value), {
+    message: "Select your bank.",
+  }),
   accountNumber: z
     .string()
     .regex(
       new RegExp(`^\\d{${ACCOUNT_NUMBER_LENGTH}}$`),
       `Enter your ${ACCOUNT_NUMBER_LENGTH}-digit account number.`,
     ),
-  accountName: z
-    .string()
-    .trim()
-    .min(2, "Enter the account holder’s name."),
+  accountName: z.string().trim().min(2, "Enter the account holder’s name."),
 });
 
 function revalidatePayoutViews() {
@@ -48,7 +44,11 @@ export async function savePayoutAccount(values: {
     const errors: FormErrors = {};
     for (const issue of parsed.error.issues) {
       const field = issue.path[0];
-      if (field === "bank" || field === "accountNumber" || field === "accountName") {
+      if (
+        field === "bank" ||
+        field === "accountNumber" ||
+        field === "accountName"
+      ) {
         errors[field] ??= issue.message;
       }
     }
@@ -63,7 +63,11 @@ export async function savePayoutAccount(values: {
   try {
     resolved = await validateBankAccount(parsed.data.accountNumber, bankCode);
   } catch (error) {
-    console.error("Bank account validation unavailable", error);
+    reportError(error, {
+      category: "bank.verification",
+      tags: { bankCode },
+      extra: { creatorId: sessionCreator.id },
+    });
     return {
       errors: {
         accountNumber:
@@ -143,7 +147,8 @@ export async function requestWithdrawal(
   if (!submitted.ok) {
     return {
       error:
-        submitted.error ?? "We couldn’t start this withdrawal. Try again shortly.",
+        submitted.error ??
+        "We couldn’t start this withdrawal. Try again shortly.",
     };
   }
 
