@@ -203,7 +203,7 @@ export async function validateBankAccount(
 ): Promise<MonnifyResolvedAccount | null> {
   const query = `accountNumber=${encodeURIComponent(accountNumber)}&bankCode=${encodeURIComponent(bankCode)}`;
   const response = await monnifyFetch(
-    `/api/v1/disbursements/account/validate?${query}`,
+    `/api/v2/disbursements/account/validate?${query}`,
   );
 
   if (response.status >= 500) {
