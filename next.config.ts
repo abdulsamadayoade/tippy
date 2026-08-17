@@ -17,9 +17,8 @@ const nextConfig: NextConfig = {
 };
 
 export default withSentryConfig(nextConfig, {
-  org: process.env.SENTRY_ORG ?? "tippy",
-  project: process.env.SENTRY_PROJECT ?? "tippy",
-  // Absent locally → the build warns but still succeeds (Husky pre-push safe).
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: !process.env.CI,
   widenClientFileUpload: true,

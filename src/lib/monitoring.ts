@@ -52,7 +52,8 @@ export function resolveSentryEnvironment(): "local" | "staging" | "production" {
   ) {
     return override;
   }
-  const vercelEnv = process.env.NEXT_PUBLIC_VERCEL_ENV ?? process.env.VERCEL_ENV;
+  const vercelEnv =
+    process.env.NEXT_PUBLIC_VERCEL_ENV ?? process.env.VERCEL_ENV;
   if (vercelEnv === "production") return "production";
   if (vercelEnv === "preview") return "staging";
   return "local";
@@ -69,6 +70,27 @@ const REDACTIONS: Array<[RegExp, string]> = [
 
 function scrubText(value: string): string {
   return REDACTIONS.reduce((acc, [re, sub]) => acc.replace(re, sub), value);
+}
+
+const SENSITIVE_KEY =
+  /account_?(number|name)|token|secret|password|api_?key|authorization|credential|database_?url|connection|email|tipper_?name|^note$|raw_?body/i;
+
+function scrubValue(value: unknown, key = "", depth = 0): unknown {
+  if (depth > 6) return "[redacted: too deep]";
+  if (key && SENSITIVE_KEY.test(key)) return "[redacted]";
+  if (typeof value === "string") return scrubText(value);
+  if (Array.isArray(value)) {
+    return value.map((item) => scrubValue(item, key, depth + 1));
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([childKey, childValue]) => [
+        childKey,
+        scrubValue(childValue, childKey, depth + 1),
+      ]),
+    );
+  }
+  return value;
 }
 
 /** beforeSend: secrets, credentials, and account numbers must never leave
@@ -95,6 +117,15 @@ export function scrubEvent<E extends Sentry.ErrorEvent>(event: E): E {
     if (typeof crumb.data?.url === "string") {
       crumb.data.url = scrubText(crumb.data.url);
     }
+  }
+  if (event.extra) {
+    event.extra = scrubValue(event.extra) as typeof event.extra;
+  }
+  if (event.tags) {
+    event.tags = scrubValue(event.tags) as typeof event.tags;
+  }
+  if (event.contexts) {
+    event.contexts = scrubValue(event.contexts) as typeof event.contexts;
   }
   return event;
 }
