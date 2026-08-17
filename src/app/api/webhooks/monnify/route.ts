@@ -4,6 +4,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { payout, tip } from "@/lib/db/schema";
 import { getMonnifyConfig, isMonnifySandbox } from "@/lib/monnify";
+import { reportError, reportWarning } from "@/lib/monitoring";
 import { reconcilePayoutWithMonnify } from "@/lib/payouts";
 import { reconcileTipWithMonnify } from "@/lib/tips";
 
@@ -53,9 +54,12 @@ async function settleTipFromPayload(event: MonnifyWebhookEvent) {
   if (!row || row.status !== "pending") return;
 
   if ((amountPaid ?? 0) < row.amount) {
-    console.warn(
-      `Monnify webhook: underpaid tip ${paymentReference} (${amountPaid} < ${row.amount})`,
-    );
+    reportWarning(`Underpaid tip ${paymentReference}`, {
+      category: "webhook.settlement",
+      tags: { kind: "underpaid-tip" },
+      extra: { paymentReference, amountPaid, expected: row.amount },
+      fingerprint: ["webhook-underpaid-tip"],
+    });
     return;
   }
 
@@ -124,7 +128,21 @@ export async function POST(request: Request) {
 
   if (event.eventType === "SUCCESSFUL_TRANSACTION") {
     if (signature) {
-      await settleTipFromPayload(event);
+      try {
+        await settleTipFromPayload(event);
+      } catch (error) {
+        // Never attach event, rawBody, or secretKey. The 500 keeps Monnify's
+        // retry semantics identical to an uncaught throw.
+        reportError(error, {
+          category: "webhook.settlement",
+          tags: { eventType: event.eventType },
+          extra: { paymentReference: event.eventData?.paymentReference },
+        });
+        return NextResponse.json(
+          { message: "Settlement failed" },
+          { status: 500 },
+        );
+      }
     } else {
       // Sandbox events are unsigned, so authenticate the claim with a single
       // authoritative lookup instead of trusting the payload.
@@ -134,7 +152,11 @@ export async function POST(request: Request) {
         try {
           await reconcileTipWithMonnify(paymentReference);
         } catch (error) {
-          console.error("Sandbox webhook reconciliation failed", error);
+          reportError(error, {
+            category: "tip.settlement",
+            tags: { kind: "sandbox-webhook" },
+            extra: { paymentReference },
+          });
         }
       }
     }
@@ -144,7 +166,19 @@ export async function POST(request: Request) {
 
   if (event.eventType && DISBURSEMENT_EVENTS.has(event.eventType)) {
     if (signature) {
-      await settlePayoutFromPayload(event);
+      try {
+        await settlePayoutFromPayload(event);
+      } catch (error) {
+        reportError(error, {
+          category: "webhook.settlement",
+          tags: { eventType: event.eventType },
+          extra: { reference: event.eventData?.reference },
+        });
+        return NextResponse.json(
+          { message: "Settlement failed" },
+          { status: 500 },
+        );
+      }
     } else {
       const reference = event.eventData?.reference;
 
@@ -152,7 +186,11 @@ export async function POST(request: Request) {
         try {
           await reconcilePayoutWithMonnify(reference);
         } catch (error) {
-          console.error("Sandbox payout reconciliation failed", error);
+          reportError(error, {
+            category: "payout.reconciliation",
+            tags: { kind: "sandbox-webhook" },
+            extra: { reference },
+          });
         }
       }
     }
