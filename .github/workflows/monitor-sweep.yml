@@ -1,0 +1,36 @@
+name: monitor-sweep
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Sweep production
+        run: |
+          # www is canonical — the apex 308-redirects, and curl --fail
+          # treats a redirect as success without following it.
+          curl --fail-with-body -sS --max-time 90 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://www.tippy.cash/api/cron/monitor
+
+  staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    continue-on-error: true
+    steps:
+      - name: Sweep staging
+        run: |
+          EXTRA=()
+          # Only needed while Vercel Deployment Protection covers staging.
+          if [ -n "${{ secrets.STAGING_PROTECTION_BYPASS }}" ]; then
+            EXTRA+=(-H "x-vercel-protection-bypass: ${{ secrets.STAGING_PROTECTION_BYPASS }}")
+          fi
+          curl --fail-with-body -sS --max-time 90 \
+            -H "Authorization: Bearer ${{ secrets.STAGING_CRON_SECRET }}" \
+            "${EXTRA[@]}" \
+            https://staging.tippy.cash/api/cron/monitor

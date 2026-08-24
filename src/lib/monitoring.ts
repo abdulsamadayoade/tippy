@@ -12,7 +12,10 @@ export type ErrorCategory =
   | "db.connection"
   | "db.health"
   | "cron.config"
-  | "checkout.start";
+  | "checkout.start"
+  | "webhook.signature"
+  | "wallet.balance"
+  | "monitor.sweep";
 
 type ReportOptions = {
   category: ErrorCategory;

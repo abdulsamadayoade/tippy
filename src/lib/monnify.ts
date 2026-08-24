@@ -268,6 +268,27 @@ export async function getTransferByReference(
   };
 }
 
+/** Available balance (naira) of the disbursement wallet payouts draw from. */
+export async function getWalletBalance(): Promise<number> {
+  const accountNumber = getMonnifySourceAccount();
+  const response = await monnifyFetch(
+    `/api/v2/disbursements/wallet-balance?accountNumber=${encodeURIComponent(accountNumber)}`,
+  );
+  const payload = await readEnvelope<{ availableBalance?: number }>(response);
+  const balance = payload?.responseBody?.availableBalance;
+
+  if (
+    !response.ok ||
+    !payload?.requestSuccessful ||
+    typeof balance !== "number"
+  ) {
+    throw new Error(
+      `Monnify wallet balance query failed (${response.status}): ${payload?.responseMessage ?? "unknown error"}`,
+    );
+  }
+  return balance;
+}
+
 export async function initiateTransfer(request: {
   amount: number;
   reference: string;

@@ -112,10 +112,24 @@ export async function POST(request: Request) {
   const { secretKey } = getMonnifyConfig();
 
   if (!signature && !isMonnifySandbox()) {
+    // Shared fingerprint with the mismatch case: a burst of any rejection
+    // flavor accumulates in one issue for the count-based alert rule.
+    reportWarning("Monnify webhook rejected: missing signature", {
+      category: "webhook.signature",
+      tags: { reason: "missing" },
+      extra: { bodyLength: rawBody.length },
+      fingerprint: ["monnify-webhook-invalid-signature"],
+    });
     return NextResponse.json({ message: "Missing signature" }, { status: 401 });
   }
 
   if (signature && !signatureMatches(rawBody, signature, secretKey)) {
+    reportWarning("Monnify webhook rejected: invalid signature", {
+      category: "webhook.signature",
+      tags: { reason: "mismatch" },
+      extra: { bodyLength: rawBody.length },
+      fingerprint: ["monnify-webhook-invalid-signature"],
+    });
     return NextResponse.json({ message: "Invalid signature" }, { status: 401 });
   }
 

@@ -1,5 +1,9 @@
-import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
+import { LOCK_KEYS, withAdvisoryLock } from "@/lib/db";
+import {
+  checkWalletCoverageForAutoPayouts,
+  withCronMonitor,
+} from "@/lib/monitor";
 import { runAutoPayouts } from "@/lib/payouts";
 import { reportError, reportWarning } from "@/lib/monitoring";
 
@@ -26,19 +30,31 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
+  // Warn-only pre-flight: can the wallet cover what this run may disburse?
+  await checkWalletCoverageForAutoPayouts();
+
   try {
-    // withMonitor reports start/ok/error check-ins and upserts the Sentry
-    // Cron monitor, so a run that never starts alerts as a missed check-in.
-    const results = await Sentry.withMonitor(
-      "weekly-auto-payouts",
-      () => runAutoPayouts(),
-      {
+    // Advisory lock guards Vercel's occasional duplicate cron delivery (the
+    // balance re-check in createPendingPayout already makes duplicates safe
+    // at the money level — this avoids wasted Monnify calls). Lock sits
+    // outside withMonitor so the losing invocation reports no phantom
+    // check-in; the winner reports start/ok/error, and a run that never
+    // starts alerts as a missed check-in.
+    const outcome = await withAdvisoryLock(LOCK_KEYS.autoPayouts, () =>
+      withCronMonitor("weekly-auto-payouts", () => runAutoPayouts(), {
         schedule: { type: "crontab", value: "0 9 * * 5" },
         checkinMargin: 60,
         maxRuntime: 5,
         timezone: "Etc/UTC",
-      },
+      }),
     );
+
+    if (!outcome.acquired) {
+      // A concurrent duplicate is expected behavior, not a failure.
+      return NextResponse.json({ skipped: true });
+    }
+
+    const results = outcome.result;
     const failed = results.filter((result) => result.error).length;
 
     if (failed > 0) {
@@ -47,6 +63,7 @@ export async function GET(request: Request) {
         {
           category: "payout.auto",
           extra: { ran: results.length, failed },
+          fingerprint: ["auto-payout-run-failures"],
         },
       );
     }
