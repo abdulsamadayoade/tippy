@@ -1,5 +1,10 @@
 import { Nav } from "@/components/layout/nav";
 import { AuthNavActions } from "@/modules/auth/components/nav-actions";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function AuthLayout({
   children,
