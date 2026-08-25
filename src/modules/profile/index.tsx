@@ -5,9 +5,10 @@ import Script from "next/script";
 import { cn } from "@/lib/cn";
 import { formatNaira } from "@/lib/utils";
 import { reportError } from "@/lib/monitoring";
+import { isValidEmail } from "@/modules/auth/utils";
 import { Modal } from "@/components/ui/modal";
 import { MAXIMUM_TIP, MINIMUM_TIP } from "@/data/constants";
-import { DEFAULT_TIP, getPresets } from "./data";
+import { POPULAR_PRESET_INDEX, resolvePresets } from "./data";
 import { AnimatedNaira } from "./components/animated-naira";
 import { fireConfetti } from "./components/confetti";
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import { AmountInput } from "@/components/ui/amount-input";
 import { AmountPreset } from "@/components/ui/amount-preset";
 import { Switch } from "@/components/ui/switch";
 import { Header } from "./components/header";
+import { ReportPage } from "./components/report-modal";
 import { Secured } from "@/components/elements/secured";
 import { Nav } from "@/components/layout/nav";
 import { CheckoutPanel } from "./components/checkout-panel";
@@ -24,9 +26,12 @@ import { Success } from "./components/success";
 import type { CheckoutResponse, Step, ProfileProps } from "./types";
 
 export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
-  const [amount, setAmount] = useState(DEFAULT_TIP);
+  const presets = resolvePresets(creator.tipPresets, creator.categoryName);
+  const defaultAmount = presets[POPULAR_PRESET_INDEX].amount;
+  const [amount, setAmount] = useState(defaultAmount);
   const [message, setMessage] = useState("");
   const [tipperName, setTipperName] = useState("");
+  const [tipperEmail, setTipperEmail] = useState("");
   const [anonymous, setAnonymous] = useState(false);
   const [step, setStep] = useState<Step>("form");
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -37,10 +42,13 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
   const confettiRef = useRef<HTMLCanvasElement>(null);
   const checkRef = useRef<HTMLSpanElement>(null);
   const [checkState, setCheckState] = useState<"out" | "in">("out");
-  const amountIsValid = amount >= MINIMUM_TIP && amount <= MAXIMUM_TIP;
+  const amountIsValid = creator.allowCustomAmount
+    ? amount >= MINIMUM_TIP && amount <= MAXIMUM_TIP
+    : presets.some((preset) => preset.amount === amount);
+  const emailIsValid = tipperEmail.trim() === "" || isValidEmail(tipperEmail);
 
   function openCheckout() {
-    if (!amountIsValid) return;
+    if (!amountIsValid || !emailIsValid) return;
     setCheckoutOpen(true);
   }
 
@@ -148,6 +156,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
           note: message,
           anonymous,
           tipperName: anonymous ? "" : tipperName,
+          tipperEmail: tipperEmail.trim(),
         }),
       });
 
@@ -200,9 +209,10 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
   }
 
   function reset() {
-    setAmount(DEFAULT_TIP);
+    setAmount(defaultAmount);
     setMessage("");
     setTipperName("");
+    setTipperEmail("");
     setAnonymous(false);
     setPaymentError("");
     setCheckState("out");
@@ -243,7 +253,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
             )}>
             <div>
               <h2 className="text-base font-medium">
-                Support {creator.displayName}&apos;s next stream
+                Support {creator.displayName}
               </h2>
               <p className="text-ui-sm text-muted-text">
                 Choose an amount and add a note if you&apos;d like.
@@ -253,9 +263,9 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
             <div
               className="mt-4 grid grid-cols-2 gap-2"
               aria-label="Tip amount presets">
-              {getPresets(creator.categoryName).map((preset) => (
+              {presets.map((preset, index) => (
                 <AmountPreset
-                  key={preset.amount}
+                  key={index}
                   amount={preset.amount}
                   label={preset.label}
                   popular={preset.popular}
@@ -265,23 +275,25 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               ))}
             </div>
 
-            <AmountInput
-              containerClassName="mt-4"
-              label="Other amount"
-              name="amount"
-              value={amount}
-              onValueChange={setAmount}
-              max={MAXIMUM_TIP}
-              error={
-                amountIsValid
-                  ? undefined
-                  : `Enter at least ${formatNaira(MINIMUM_TIP)}.`
-              }
-              hint={`Enter any amount up to ${formatNaira(MAXIMUM_TIP)}.`}
-            />
+            {creator.allowCustomAmount ? (
+              <AmountInput
+                containerClassName="mt-4"
+                label="Other amount"
+                name="amount"
+                value={amount}
+                onValueChange={setAmount}
+                max={MAXIMUM_TIP}
+                error={
+                  amountIsValid
+                    ? undefined
+                    : `Enter at least ${formatNaira(MINIMUM_TIP)}.`
+                }
+                hint={`Enter any amount up to ${formatNaira(MAXIMUM_TIP)}.`}
+              />
+            ) : null}
 
             <TextArea
-              containerClassName="mt-2.5"
+              containerClassName={creator.allowCustomAmount ? "mt-2.5" : "mt-4"}
               label={`Add a note for ${creator.displayName}`}
               visuallyHideLabel
               showCount
@@ -318,6 +330,27 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               </div>
             </div>
 
+            <TextInput
+              containerClassName="mt-2.5"
+              label="Email for your receipt"
+              visuallyHideLabel
+              id="tipper-email"
+              name="tipperEmail"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              spellCheck={false}
+              maxLength={254}
+              placeholder="Email for your receipt (optional)"
+              value={tipperEmail}
+              error={
+                emailIsValid
+                  ? undefined
+                  : "Enter a valid email, or leave this blank."
+              }
+              onChange={(event) => setTipperEmail(event.target.value)}
+            />
+
             <Switch
               className="mt-3.5"
               checked={anonymous}
@@ -328,7 +361,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
 
             <Button
               className="w-full mt-4"
-              disabled={!amountIsValid}
+              disabled={!amountIsValid || !emailIsValid}
               onClick={openCheckout}>
               {amountIsValid ? (
                 <span className="inline-flex items-baseline gap-1">
@@ -341,6 +374,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               )}
             </Button>
             <Secured />
+            <ReportPage username={creator.username} />
           </section>
 
           {step === "success" && (
@@ -351,6 +385,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               checkState={checkState}
               amount={amount}
               message={message}
+              receiptEmail={tipperEmail.trim()}
               reset={reset}
             />
           )}

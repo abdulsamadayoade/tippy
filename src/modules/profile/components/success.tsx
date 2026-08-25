@@ -8,6 +8,7 @@ export function Success({
   checkState,
   amount,
   message,
+  receiptEmail,
   creatorName,
   reset,
 }: SuccessProps) {
@@ -53,9 +54,14 @@ export function Success({
           <strong className="font-semibold text-primary">
             {formatNaira(amount)}
           </strong>{" "}
-          tip is on its way to {creatorName}. Thanks for the
-          support.
+          tip is on its way to {creatorName}. Thanks for the support.
         </p>
+
+        {receiptEmail && (
+          <p className="mt-1.5 text-ui-sm text-muted-text">
+            A receipt is on its way to {receiptEmail}.
+          </p>
+        )}
 
         {message.trim() && (
           <blockquote className="mt-4.5 rounded-surface bg-soft px-4 py-3.25">

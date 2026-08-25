@@ -1,4 +1,5 @@
-import type { PresetLabels } from "./types";
+import type { TipPresets } from "@/types";
+import type { PresetLabels, ResolvedPreset } from "./types";
 
 const NUMBER_FLOW_TIMING = {
   duration: 240,
@@ -10,18 +11,23 @@ const NUMBER_FLOW_OPACITY_TIMING = {
   easing: "ease-out",
 } satisfies EffectTiming;
 
-const PRESET_AMOUNTS = [
-  { amount: 500, popular: false },
-  { amount: 1000, popular: true },
-  { amount: 2000, popular: false },
-  { amount: 5000, popular: false },
-] as const;
+const PRESET_AMOUNTS = [500, 1000, 2000, 5000] as const;
+
+const POPULAR_PRESET_INDEX = 1;
+const PRESET_LABEL_MAX_LENGTH = 20;
 
 const DEFAULT_PRESET_LABELS: PresetLabels = [
   "Small thanks",
   "Show some love",
   "Big support",
   "Super fan",
+];
+const REASONS = [
+  { value: "impersonation", label: "Pretending to be someone else" },
+  { value: "scam", label: "Scam or fraud" },
+  { value: "inappropriate", label: "Inappropriate content" },
+  { value: "spam", label: "Spam" },
+  { value: "other", label: "Something else" },
 ];
 
 const CATEGORY_PRESET_LABELS: Record<string, PresetLabels> = {
@@ -44,20 +50,32 @@ const CATEGORY_PRESET_LABELS: Record<string, PresetLabels> = {
   Other: DEFAULT_PRESET_LABELS,
 };
 
-function getPresets(categoryName: string) {
+/** A creator's stored presets win; otherwise their category's defaults. */
+function resolvePresets(
+  tipPresets: TipPresets | null,
+  categoryName: string,
+): ResolvedPreset[] {
+  if (tipPresets) {
+    return tipPresets.map((preset, index) => ({
+      ...preset,
+      popular: index === POPULAR_PRESET_INDEX,
+    }));
+  }
+
   const labels = CATEGORY_PRESET_LABELS[categoryName] ?? DEFAULT_PRESET_LABELS;
 
-  return PRESET_AMOUNTS.map((preset, index) => ({
-    ...preset,
+  return PRESET_AMOUNTS.map((amount, index) => ({
+    amount,
     label: labels[index],
+    popular: index === POPULAR_PRESET_INDEX,
   }));
 }
 
-const DEFAULT_TIP = 1_000;
-
 export {
+  REASONS,
   NUMBER_FLOW_OPACITY_TIMING,
   NUMBER_FLOW_TIMING,
-  getPresets,
-  DEFAULT_TIP,
+  POPULAR_PRESET_INDEX,
+  PRESET_LABEL_MAX_LENGTH,
+  resolvePresets,
 };

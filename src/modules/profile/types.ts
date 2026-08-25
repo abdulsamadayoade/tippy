@@ -1,4 +1,5 @@
 import type { RefObject } from "react";
+import type { TipPresets } from "@/types";
 
 type PublicCreator = {
   displayName: string;
@@ -6,6 +7,8 @@ type PublicCreator = {
   categoryName: string;
   bio: string | null;
   avatarUrl: string | null;
+  tipPresets: TipPresets | null;
+  allowCustomAmount: boolean;
 };
 
 type MonnifyClientConfig = {
@@ -35,6 +38,7 @@ type SuccessProps = {
   checkState: "out" | "in";
   amount: number;
   message: string;
+  receiptEmail?: string;
   reset: () => void;
 };
 
@@ -52,6 +56,12 @@ type CheckoutPanelProps = {
 
 type PresetLabels = [string, string, string, string];
 
+type ResolvedPreset = {
+  amount: number;
+  label: string;
+  popular: boolean;
+};
+
 export type {
   PublicCreator,
   ProfileProps,
@@ -61,4 +71,5 @@ export type {
   SuccessProps,
   CheckoutPanelProps,
   PresetLabels,
+  ResolvedPreset,
 };
