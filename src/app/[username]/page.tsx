@@ -1,50 +1,44 @@
-import { cache } from "react";
 import { notFound } from "next/navigation";
-import { eq } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { category, creator } from "@/lib/db/schema";
 import { getSession } from "@/lib/session";
 import { Profile } from "@/modules/profile";
-import type { PublicCreator } from "@/modules/profile/types";
+import { getCreatorByUsername } from "@/modules/profile/queries";
 import type { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{ username: string }>;
 };
 
-const getCreatorByUsername = cache(
-  async (rawUsername: string): Promise<PublicCreator | null> => {
-    const rows = await db
-      .select({
-        displayName: creator.displayName,
-        username: creator.username,
-        bio: creator.bio,
-        avatarUrl: creator.avatarUrl,
-        categoryName: category.name,
-      })
-      .from(creator)
-      .innerJoin(category, eq(creator.categoryId, category.id))
-      .where(eq(creator.username, rawUsername.toLowerCase()))
-      .limit(1);
-
-    const row = rows[0];
-    if (!row) return null;
-
-    return row;
-  },
-);
-
 export async function generateMetadata({
   params,
-}: PageProps): Promise<Metadata> {
+}: {
+  params: Promise<{ username: string }>;
+}): Promise<Metadata> {
   const { username } = await params;
   const tipCreator = await getCreatorByUsername(username);
 
   if (!tipCreator) return { title: "Tip" };
 
+  const title = `Tip ${tipCreator.displayName}`;
+  const description = `Send ${tipCreator.displayName} a secure tip in naira and add a personal note.`;
+  // DB-cased username, so /JohnDoe canonicalizes to /johndoe.
+  const path = `/${tipCreator.username}`;
+
   return {
-    title: `Tip ${tipCreator.displayName}`,
-    description: `Send ${tipCreator.displayName} a secure tip in naira and add a personal note.`,
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      title,
+      description,
+      url: path,
+      // Repeated from the root layout — metadata merging is shallow per
+      // top-level key, so defining openGraph here replaces it wholesale.
+      siteName: "Tippy",
+      locale: "en_NG",
+      type: "profile",
+      username: tipCreator.username,
+    },
+    twitter: { card: "summary_large_image" },
   };
 }
 
