@@ -58,6 +58,13 @@ type BankAccount = {
   accountNumber: string;
 };
 
+type TipPreset = {
+  amount: number;
+  label: string;
+};
+
+type TipPresets = [TipPreset, TipPreset, TipPreset, TipPreset];
+
 export type {
   Tip,
   TipFilter,
@@ -71,4 +78,6 @@ export type {
   PayoutStatus,
   TipDraft,
   BankAccount,
+  TipPreset,
+  TipPresets,
 };
