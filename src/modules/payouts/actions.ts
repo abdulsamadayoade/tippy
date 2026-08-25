@@ -2,28 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
-import { z } from "zod";
 import { db } from "@/lib/db";
 import { bankAccount, creator } from "@/lib/db/schema";
 import { validateBankAccount } from "@/lib/monnify";
 import { reportError } from "@/lib/monitoring";
 import { createPendingPayout, submitPayout } from "@/lib/payouts";
 import { getSessionCreator } from "@/lib/session";
-import { ACCOUNT_NUMBER_LENGTH, BANKS } from "@/data/constants";
+import { accountSchema } from "./schema";
+import { BANKS } from "@/data/constants";
 import type { FormErrors } from "./types";
-
-const accountSchema = z.object({
-  bank: z.string().refine((value) => BANKS.some(({ name }) => name === value), {
-    message: "Select your bank.",
-  }),
-  accountNumber: z
-    .string()
-    .regex(
-      new RegExp(`^\\d{${ACCOUNT_NUMBER_LENGTH}}$`),
-      `Enter your ${ACCOUNT_NUMBER_LENGTH}-digit account number.`,
-    ),
-  accountName: z.string().trim().min(2, "Enter the account holder’s name."),
-});
 
 function revalidatePayoutViews() {
   revalidatePath("/payouts");

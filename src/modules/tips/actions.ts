@@ -3,13 +3,8 @@
 import { z } from "zod";
 import { getTipsPage } from "@/lib/dashboard";
 import { getSessionCreator } from "@/lib/session";
+import { pageRequestSchema } from "./schema";
 import type { TipsPage } from "@/types";
-
-const pageRequestSchema = z.object({
-  filter: z.enum(["all", "notes", "anonymous"]),
-  cursor: z.object({ createdAt: z.iso.datetime(), id: z.uuid() }).nullable(),
-  loadedCount: z.number().int().min(0).max(100_000),
-});
 
 export async function fetchTipsPage(
   request: z.infer<typeof pageRequestSchema>,
