@@ -1,14 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useMenuState } from "@/hooks/use-menu-state";
 import { cn } from "@/lib/cn";
 import { authClient } from "@/lib/auth-client";
-import { useMenuState } from "@/hooks/use-menu-state";
 import { CreatorAvatar } from "@/components/ui/creator-avatar";
+import Link from "next/link";
 import { LinkIcon } from "@/components/icons/link";
 import { LogoutIcon } from "@/components/icons/logout";
+import { SettingsIcon } from "@/components/icons/settings";
 import type { CreatorAccountMenuProps } from "../types";
 
 export function CreatorAccountMenu({
@@ -79,6 +80,14 @@ export function CreatorAccountMenu({
           onClick={beginClose}>
           <LinkIcon className="size-4" />
           View tip page
+        </Link>
+        <Link
+          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft"
+          role="menuitem"
+          href="/settings"
+          onClick={beginClose}>
+          <SettingsIcon className="size-4" />
+          Settings
         </Link>
         <button
           className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft disabled:cursor-default disabled:opacity-60"

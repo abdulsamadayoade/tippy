@@ -135,6 +135,9 @@ export async function requestWithdrawal(
 ): Promise<{ error?: string }> {
   const { creator: sessionCreator } = await getSessionCreator();
   if (!sessionCreator) return { error: "Sign in and try again." };
+  if (sessionCreator.suspended) {
+    return { error: "Your account is suspended. Contact hello@tippy.cash." };
+  }
 
   const created = await createPendingPayout(sessionCreator.id, amount);
   if ("error" in created) return { error: created.error };
