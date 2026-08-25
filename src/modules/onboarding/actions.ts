@@ -2,10 +2,10 @@
 
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
-import { put } from "@vercel/blob";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { creator } from "@/lib/db/schema";
+import { deleteAvatarBlob, processAndUploadAvatar } from "@/lib/avatar";
 import { getSessionCreator } from "@/lib/session";
 import {
   BIO_MAX_LENGTH,
@@ -15,8 +15,6 @@ import {
   USERNAME_PATTERN,
 } from "./data";
 import type { OnboardingError } from "./types";
-
-const MAX_PHOTO_BYTES = 4 * 1024 * 1024;
 
 const usernameSchema = z
   .string()
@@ -112,29 +110,11 @@ export async function completeOnboarding(
   const photo = formData.get("photo");
 
   if (photo instanceof File && photo.size > 0) {
-    if (!photo.type.startsWith("image/")) {
-      return {
-        error: {
-          field: "form",
-          message: "Your profile photo must be an image.",
-        },
-      };
+    const uploaded = await processAndUploadAvatar(photo, session.user.id);
+    if (!uploaded.ok) {
+      return { error: { field: "form", message: uploaded.error } };
     }
-    if (photo.size > MAX_PHOTO_BYTES) {
-      return {
-        error: {
-          field: "form",
-          message: "Your profile photo must be 4MB or smaller.",
-        },
-      };
-    }
-
-    const blob = await put(`avatars/${session.user.id}`, photo, {
-      access: "public",
-      addRandomSuffix: true,
-      contentType: photo.type,
-    });
-    avatarUrl = blob.url;
+    avatarUrl = uploaded.url;
   }
 
   try {
@@ -147,6 +127,8 @@ export async function completeOnboarding(
       avatarUrl,
     });
   } catch (error) {
+    // The blob was uploaded before the insert; don't orphan it.
+    await deleteAvatarBlob(avatarUrl);
     if (pgErrorCode(error) === "23505") {
       return {
         error: { field: "username", message: "That username is taken." },

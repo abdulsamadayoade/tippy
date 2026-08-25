@@ -72,7 +72,7 @@ export function ProfileStep({
             ref={photoInputRef}
             className="sr-only"
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             aria-label="Add a profile photo"
             onChange={(event) => onPhotoChange(event.target.files?.[0])}
           />
