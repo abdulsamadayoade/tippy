@@ -11,6 +11,7 @@ import Link from "next/link";
 import { ArrowRightIcon } from "@/components/icons/arrow-right";
 import { CloseIcon } from "@/components/icons/close";
 import { Nav } from "@/components/layout/nav";
+import { Footer } from "@/components/layout/footer";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
 import { ProductPreview } from "./components/product-preview";
@@ -191,6 +192,7 @@ export function Home() {
           <ProductPreview />
           <Features />
         </section>
+        <Footer />
       </main>
     </>
   );

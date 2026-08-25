@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RichText } from "./rich-text";
 import type { LegalPageProps } from "./types";
 
 export function LegalPage({
@@ -6,7 +7,7 @@ export function LegalPage({
   intro,
   updated,
   sections,
-  crossLink,
+  crossLinks,
 }: LegalPageProps) {
   return (
     <main className="flex flex-1 flex-col justify-end overflow-x-hidden pt-10">
@@ -14,7 +15,9 @@ export function LegalPage({
         <h1 className="text-lg leading-page-heading font-medium tracking-display text-main-heading">
           {title}
         </h1>
-        <p className="mt-1 text-ui-sm leading-normal text-body-text">{intro}</p>
+        <p className="mt-1 text-ui-sm leading-normal text-body-text">
+          <RichText text={intro} />
+        </p>
         <p className="mt-1.5 text-xs text-muted-text">Last updated {updated}</p>
 
         {sections.map(({ heading, paragraphs, list }) => (
@@ -26,13 +29,15 @@ export function LegalPage({
               <p
                 key={paragraph}
                 className="mt-1.5 text-sm leading-normal text-body-text">
-                {paragraph}
+                <RichText text={paragraph} />
               </p>
             ))}
             {list ? (
               <ul className="mt-1.5 flex list-disc flex-col gap-1.5 pl-5 text-sm leading-normal text-body-text">
                 {list.map((item) => (
-                  <li key={item}>{item}</li>
+                  <li key={item}>
+                    <RichText text={item} />
+                  </li>
                 ))}
               </ul>
             ) : null}
@@ -41,18 +46,31 @@ export function LegalPage({
 
         <div className="mt-7 border-t border-line pt-4">
           <p className="text-sm leading-normal text-body-text">
-            Questions? Write to us at{" "}
+            Tippy is operated by{" "}
+            <span className="border-dashed border-white border-2 px-0.5 bg-body-text text-white">
+              Nightshift Industries
+            </span>
+            . Questions? Write to us at{" "}
             <a
-              className="font-medium text-main-heading hover:underline"
+              className="font-medium text-main-heading border-transparent border-2 border-dashed hover:border-body-text"
               href="mailto:hello@tippy.cash">
               hello@tippy.cash
             </a>
             . Also read our{" "}
-            <Link
-              className="font-medium text-main-heading hover:underline"
-              href={crossLink.href}>
-              {crossLink.label}
-            </Link>
+            {crossLinks.map(({ label, href }, index) => (
+              <span key={href}>
+                {index > 0
+                  ? index === crossLinks.length - 1
+                    ? " and "
+                    : ", "
+                  : ""}
+                <Link
+                  className="font-medium text-main-heading border-transparent border-2 border-dashed hover:border-body-text"
+                  href={href}>
+                  {label}
+                </Link>
+              </span>
+            ))}
             .
           </p>
         </div>

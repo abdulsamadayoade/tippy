@@ -5,6 +5,7 @@ const terms: LegalSection[] = [
     heading: "What Tippy is",
     paragraphs: [
       "Tippy gives creators a personal page where supporters can send them tips. Supporters pay through our payment partner, Monnify, and creators withdraw their balance to a Nigerian bank account.",
+      "These terms are an agreement between you and Nightshift Industries, the company that operates Tippy.",
     ],
   },
   {
@@ -17,6 +18,7 @@ const terms: LegalSection[] = [
     heading: "Tips",
     paragraphs: [
       "Tips are voluntary gifts from supporters to creators. They aren't payments for goods or services, and they're not refundable once settled, except where the law requires it. Card and bank details are collected and processed by Monnify — they never touch our servers.",
+      "For the details — including duplicate charges and how to raise a dispute — see our Refund & Dispute Policy at [tippy.cash/refunds](/refunds).",
     ],
   },
   {
@@ -47,6 +49,12 @@ const terms: LegalSection[] = [
 
 const privacyPolicy: LegalSection[] = [
   {
+    heading: "Who we are",
+    paragraphs: [
+      "Tippy is operated by Nightshift Industries, which is responsible for the personal information described in this policy. When this page says 'we', that's who it means.",
+    ],
+  },
+  {
     heading: "What we collect",
     paragraphs: ["We keep the minimum needed to run Tippy:"],
     list: [
@@ -59,7 +67,7 @@ const privacyPolicy: LegalSection[] = [
   {
     heading: "What we use it for",
     paragraphs: [
-      "To run your tip page, process tips and payouts, email you sign-in links, and keep the platform safe from fraud. That's it — we don't sell your data or use it for advertising.",
+      "To run your tip page, process tips and payouts, email you sign-in links and tip notifications, send supporters the receipts they ask for, and keep the platform safe from fraud. That's it — we don't sell your data or use it for advertising.",
     ],
   },
   {
@@ -88,4 +96,43 @@ const privacyPolicy: LegalSection[] = [
   },
 ];
 
-export { terms, privacyPolicy };
+const refundPolicy: LegalSection[] = [
+  {
+    heading: "The short version",
+    paragraphs: [
+      "Tips are voluntary gifts, and payments are processed by our payment partner, Monnify. Once a tip has settled — the money has reached the creator's Tippy balance — it isn't refundable, except where Nigerian law requires it or the payment itself clearly went wrong.",
+    ],
+  },
+  {
+    heading: "When we'll help reverse a payment",
+    paragraphs: [
+      "We'll investigate and, where the facts support it, reverse a payment if:",
+    ],
+    list: [
+      "You were charged twice for the same tip.",
+      "You were charged a different amount than the one you confirmed.",
+      "Your card or account was used without your permission.",
+      "You were debited but the tip never reached the creator.",
+    ],
+  },
+  {
+    heading: "How to raise a dispute",
+    paragraphs: [
+      "Email [hello@tippy.cash](mailto:hello@tippy.cash) within 14 days of the payment. Include the receipt number from your email receipt (it starts with TIPPY-) and a short description of what happened. We reply within 2 business days, and most disputes are resolved within 7.",
+    ],
+  },
+  {
+    heading: "Chargebacks",
+    paragraphs: [
+      "You can also dispute a charge through your bank. When that happens, Monnify investigates with the card network, and if the payment is reversed, the tip is removed from the creator's balance — the same adjustment our [Terms of Service](/terms) describe.",
+    ],
+  },
+  {
+    heading: "Creator payouts",
+    paragraphs: [
+      "Payouts to your bank account are final once your bank confirms the transfer. If a payout fails, the money returns to your Tippy balance automatically.",
+    ],
+  },
+];
+
+export { terms, privacyPolicy, refundPolicy };

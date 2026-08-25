@@ -9,7 +9,7 @@ type LegalPageProps = {
   intro: string;
   updated: string;
   sections: LegalSection[];
-  crossLink: { label: string; href: string };
+  crossLinks: { label: string; href: string }[];
 };
 
 export type { LegalSection, LegalPageProps };
