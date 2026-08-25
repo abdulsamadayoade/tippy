@@ -33,8 +33,9 @@ Then open [http://localhost:3000](http://localhost:3000).
 | ------------------------------------------------------------------ | ------------------------------------------------------------------ |
 | `DATABASE_URL`                                                     | Postgres connection string                                         |
 | `BETTER_AUTH_SECRET` / `BETTER_AUTH_URL`                           | Auth session signing and base URL                                  |
-| `RESEND_API_KEY` / `EMAIL_FROM`                                    | Sign-in link emails                                                |
-| `BLOB_STORE_ID` / `BLOB_READ_WRITE_TOKEN`                          | Avatar uploads (Vercel Blob)                                       |
+| `RESEND_API_KEY` / `EMAIL_FROM`                                    | Sign-in link, tip receipt, and creator notification emails         |
+| `SUPPORT_EMAIL`                                                    | Destination for support-form messages and abuse reports (defaults to hello@tippy.cash) |
+| `BLOB_STORE_ID` / `BLOB_READ_WRITE_TOKEN`                          | Avatar uploads (Vercel Blob). Two stores: production token scoped to Production, staging token to Preview + Development (and local `.env`) |
 | `MONNIFY_API_KEY` / `MONNIFY_SECRET_KEY` / `MONNIFY_CONTRACT_CODE` | Monnify credentials                                                |
 | `MONNIFY_BASE_URL`                                                 | `https://sandbox.monnify.com` (default) or the live URL            |
 | `MONNIFY_SOURCE_ACCOUNT_NUMBER`                                    | Wallet account number that funds disbursements                     |
@@ -59,7 +60,7 @@ npm run db:studio     # browse data
 
 ## How the money moves
 
-Tips are inserted as `pending` and only marked successful by the signed transaction webhook, or by Monnify's query API when the webhook can't be verified. The available balance is settled tips minus non-failed payouts, computed in SQL.
+Tips are inserted as `pending` and only marked successful by the signed transaction webhook, or by Monnify's query API — used when the webhook can't be verified, and by the post-payment status poll so checkout confirms even if the webhook is delayed or undeliverable (e.g. local dev without a tunnel). The available balance is settled tips minus non-failed payouts, computed in SQL.
 
 A withdrawal inserts a `pending` payout inside a transaction that locks the creator row, so the balance check can't be raced. Then the Monnify single transfer API is called with a unique `TIPPY-PO-` reference, which doubles as an idempotency key. Disbursement webhooks move the payout to `paid` or `failed`, and a reconciliation pass on the payouts page re-checks anything stale. A transfer that never reached Monnify gets failed after a grace period, which releases the reserved amount back to the balance.
 
