@@ -3,6 +3,7 @@ import { terms } from "@/modules/legal/data";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/terms" },
   title: "Terms of Service",
   description: "The short, plain-language rules for using Tippy.",
 };
@@ -12,9 +13,12 @@ export default function TermsPage() {
     <LegalPage
       title="Terms of Service"
       intro="The short, plain-language rules for using Tippy."
-      updated="21 July 2026"
+      updated="24 August 2026"
       sections={terms}
-      crossLink={{ label: "Privacy Policy", href: "/privacy" }}
+      crossLinks={[
+        { label: "Privacy Policy", href: "/privacy" },
+        { label: "Refund & Dispute Policy", href: "/refunds" },
+      ]}
     />
   );
 }
