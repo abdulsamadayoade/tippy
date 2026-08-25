@@ -36,6 +36,20 @@
       "when": 1784619193997,
       "tag": "0004_flippant_deathstrike",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1787542932617,
+      "tag": "0005_fresh_ted_forrester",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1787577546941,
+      "tag": "0006_needy_abomination",
+      "breakpoints": true
     }
   ]
 }
