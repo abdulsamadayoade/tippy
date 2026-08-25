@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   experimental: {
     staleTimes: { dynamic: 30 },
+    serverActions: { bodySizeLimit: "5mb" },
   },
   images: {
     remotePatterns: [
