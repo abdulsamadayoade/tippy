@@ -1,3 +1,5 @@
+import { ADJUSTMENT_TYPES } from "./schema";
+
 type AuditLogEntry = {
   id: number;
   actorType: "admin" | "creator" | "system";
@@ -9,4 +11,12 @@ type AuditLogEntry = {
   createdAt: string;
 };
 
-export type { AuditLogEntry };
+type CreatorOption = {
+  id: string;
+  username: string;
+  displayName: string;
+};
+
+type AdjustmentType = (typeof ADJUSTMENT_TYPES)[number];
+
+export type { AuditLogEntry, CreatorOption, AdjustmentType };
