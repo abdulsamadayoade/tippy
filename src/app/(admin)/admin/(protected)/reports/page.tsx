@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listAbuseReports } from "@/modules/admin/queries";
+import { formatAdminDateTime } from "@/modules/admin/format";
 import { PageHeader } from "@/components/elements/page-header";
 import { REPORT_REASONS } from "@/data/report-reasons";
 import { UserIcon } from "@/components/icons/user";
@@ -36,9 +37,7 @@ export default async function AdminReportsPage() {
                   )}
                   <span className="ml-auto text-xs text-muted-text flex items-center gap-1">
                     <ClockIcon />
-                    {report.createdAt.toLocaleString("en-NG", {
-                      timeZone: "Africa/Lagos",
-                    })}
+                    {formatAdminDateTime(report.createdAt)}
                   </span>
                 </div>
               </div>
