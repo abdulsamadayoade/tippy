@@ -14,8 +14,8 @@ export function PlusIcon({ className, ...props }: ComponentProps<"svg">) {
       strokeWidth="1"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={cn(className)}
-      {...props}>
+      {...props}
+      className={cn(className)}>
       <path d="M12.001 5.00003V19.002"></path>
       <path d="M19.002 12.002L4.99998 12.002"></path>
     </svg>

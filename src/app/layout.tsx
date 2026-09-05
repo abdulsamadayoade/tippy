@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Geist } from "next/font/google";
 import { SITE_URL, isProductionSite } from "@/lib/site";
 import "./globals.css";
@@ -45,7 +46,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={geist.variable} data-scroll-behavior="smooth">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
