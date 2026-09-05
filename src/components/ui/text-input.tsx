@@ -10,8 +10,21 @@ import {
 } from "react";
 import { cn } from "@/lib/cn";
 
-export type TextInputProps = ComponentPropsWithoutRef<"input"> & {
+export type FieldSize = "default" | "sm";
+
+const controlSizes: Record<FieldSize, string> = {
+  default: "min-h-12",
+  sm: "min-h-10",
+};
+
+const inputSizes: Record<FieldSize, string> = {
+  default: "min-h-12 px-3.5",
+  sm: "min-h-10 px-3",
+};
+
+export type TextInputProps = Omit<ComponentPropsWithoutRef<"input">, "size"> & {
   label: ReactNode;
+  size?: FieldSize;
   error?: ReactNode;
   hint?: ReactNode;
   leadingContent?: ReactNode;
@@ -27,6 +40,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     {
       id,
       label,
+      size = "default",
       error,
       hint,
       leadingContent,
@@ -78,7 +92,8 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 
         <div
           className={cn(
-            "flex min-h-11 w-full items-center rounded-xl bg-white shadow-surface transition-[box-shadow,opacity] duration-150 ease-out",
+            "flex w-full items-center rounded-xl bg-white shadow-surface transition-[box-shadow,opacity] duration-150 ease-out",
+            controlSizes[size],
             invalid
               ? "shadow-[inset_0_0_0_1px_var(--color-danger)] focus-within:shadow-[inset_0_0_0_1px_var(--color-danger),0_0_0_4px_rgba(143,48,48,0.09),0_4px_12px_rgba(143,48,48,0.07)]"
               : "focus-within:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_rgba(6,78,91,0.12),0_4px_12px_rgba(6,78,91,0.08)]",
@@ -99,7 +114,11 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             inputRef.current?.focus();
           }}>
           {leadingContent ? (
-            <div className="shrink-0 cursor-text pl-3.5 text-base sm:text-sm font-medium text-muted-text">
+            <div
+              className={cn(
+                "shrink-0 cursor-text text-base font-medium text-muted-text sm:text-sm",
+                size === "sm" ? "pl-3" : "pl-3.5",
+              )}>
               {leadingContent}
             </div>
           ) : null}
@@ -108,7 +127,8 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             ref={setInputRef}
             id={inputId}
             className={cn(
-              "min-h-12 min-w-0 flex-1 rounded-[inherit] border-0 bg-transparent px-3.5 text-base sm:text-sm font-medium text-body-text outline-none placeholder:font-normal placeholder:text-muted-text disabled:cursor-not-allowed",
+              "min-w-0 flex-1 rounded-[inherit] border-0 bg-transparent text-base font-medium text-body-text outline-none placeholder:font-normal placeholder:text-muted-text disabled:cursor-not-allowed sm:text-sm",
+              inputSizes[size],
               Boolean(leadingContent) && "pl-0.5",
               Boolean(trailingAction) && "pr-1.5",
               className,

@@ -3,31 +3,37 @@
 import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { ChevronDownIcon } from "@/components/icons/chevron-down";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { formatAdminDateTime } from "@/modules/admin/format";
 import type { AuditLogEntry } from "../types";
 
 export function AuditLogTable({ entries }: { entries: AuditLogEntry[] }) {
   return (
-    <div className="mt-3 overflow-x-auto">
-      <table className="w-full text-left text-sm">
-        <thead>
-          <tr className="text-xs text-muted-text">
-            <th className="py-2 pr-4 pl-4 font-medium">#</th>
-            <th className="py-2 pr-4 font-medium">When</th>
-            <th className="py-2 pr-4 font-medium">Actor</th>
-            <th className="py-2 pr-4 font-medium">Action</th>
-            <th className="py-2 pr-4 font-medium">
+    <Table containerClassName="mt-3" aria-label="Audit trail">
+      <TableHeader>
+        <TableRow>
+          <TableHead>#</TableHead>
+          <TableHead>When</TableHead>
+          <TableHead>Actor</TableHead>
+          <TableHead>Action</TableHead>
+          <TableHead className="w-12">
               <span className="sr-only">Entry details</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-solid divide-y-[0.5px] divide-line">
-          {entries.map((entry) => (
-            <AuditLogRow key={entry.id} entry={entry} />
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {entries.map((entry) => (
+          <AuditLogRow key={entry.id} entry={entry} />
+        ))}
+      </TableBody>
+    </Table>
   );
 }
 
@@ -44,33 +50,33 @@ function AuditLogRow({ entry }: { entry: AuditLogEntry }) {
 
   return (
     <>
-      <tr
+      <TableRow
         className={cn(
-          "t-acc align-top transition-colors duration-150",
+          "t-acc transition-colors duration-150",
           expandable && "cursor-pointer hover:bg-soft",
         )}
         data-open={expanded ? "true" : "false"}
         onClick={toggleExpanded}>
-        <td className="py-3 pr-4 pl-4 font-mono text-xs text-muted-text">
+        <TableCell className="font-mono text-xs text-muted-text">
           {entry.id}
-        </td>
-        <td className="py-3 pr-4 whitespace-nowrap text-body-text">
+        </TableCell>
+        <TableCell className="whitespace-nowrap text-body-text">
           <time dateTime={entry.createdAt}>
             {formatAdminDateTime(entry.createdAt)}
           </time>
-        </td>
-        <td className="py-3 pr-4 text-body-text">
+        </TableCell>
+        <TableCell className="text-body-text">
           {entry.actorType}
           {entry.actorEmail && (
             <span className="block text-xs text-muted-text">
               {entry.actorEmail}
             </span>
           )}
-        </td>
-        <td className="py-3 pr-4 font-medium text-main-heading">
+        </TableCell>
+        <TableCell className="font-medium text-main-heading">
           {entry.action}
-        </td>
-        <td className="w-12 py-2 pr-4 text-right">
+        </TableCell>
+        <TableCell className="w-12 py-2 text-right">
           {expandable && (
             <button
               className="inline-flex size-8 cursor-pointer items-center justify-center rounded-full text-muted-text transition-colors duration-150 hover:bg-line hover:text-main-heading"
@@ -89,12 +95,12 @@ function AuditLogRow({ entry }: { entry: AuditLogEntry }) {
               </span>
             </button>
           )}
-        </td>
-      </tr>
+        </TableCell>
+      </TableRow>
 
       {expandable && (
-        <tr aria-hidden={!expanded}>
-          <td className="p-0" colSpan={5}>
+        <TableRow aria-hidden={!expanded}>
+          <TableCell className="p-0" colSpan={5}>
             <div
               className={cn(
                 "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
@@ -136,8 +142,8 @@ function AuditLogRow({ entry }: { entry: AuditLogEntry }) {
                 </dl>
               </div>
             </div>
-          </td>
-        </tr>
+          </TableCell>
+        </TableRow>
       )}
     </>
   );
