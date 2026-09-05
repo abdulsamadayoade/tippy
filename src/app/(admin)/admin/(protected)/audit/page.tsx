@@ -75,7 +75,11 @@ export default async function AdminAuditPage({
       <form
         className="mt-5 grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[9rem_minmax(10rem,1fr)_10.5rem_10.5rem_auto]"
         action="/admin/audit">
-        <Select label="Actor" name="actor" defaultValue={query.actor ?? ""}>
+        <Select
+          label="Actor"
+          name="actor"
+          size="sm"
+          defaultValue={query.actor ?? ""}>
           <option value="">Any actor</option>
           <option value="admin">Admin</option>
           <option value="creator">Creator</option>
@@ -84,6 +88,7 @@ export default async function AdminAuditPage({
         <TextInput
           label="Action"
           name="action"
+          size="sm"
           placeholder="Action contains…"
           defaultValue={query.action ?? ""}
         />
@@ -91,15 +96,17 @@ export default async function AdminAuditPage({
           label="From"
           pickerLabel="Open from-date picker"
           name="from"
+          size="sm"
           defaultValue={query.from ?? ""}
         />
         <DatePicker
           label="To"
           pickerLabel="Open to-date picker"
           name="to"
+          size="sm"
           defaultValue={query.to ?? ""}
         />
-        <Button className="w-full xl:w-auto" type="submit">
+        <Button className="w-full xl:w-auto" type="submit" size="sm">
           Filter
         </Button>
       </form>

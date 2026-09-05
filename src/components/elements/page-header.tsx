@@ -7,7 +7,7 @@ type PageHeaderProps = {
 export function PageHeader({ title, description, children }: PageHeaderProps) {
   return (
     <header className="mb-6 flex items-center justify-between flex-wrap gap-2">
-      <div>
+      <div className="max-w-lg">
         <h1 className="text-xl font-semibold tracking-tight text-main-heading">
           {title}
         </h1>
