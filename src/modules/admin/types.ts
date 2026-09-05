@@ -18,5 +18,11 @@ type CreatorOption = {
 };
 
 type AdjustmentType = (typeof ADJUSTMENT_TYPES)[number];
+type PendingOperatorAction = "suspend" | "unsuspend" | "freeze" | "unfreeze";
 
-export type { AuditLogEntry, CreatorOption, AdjustmentType };
+export type {
+  AuditLogEntry,
+  CreatorOption,
+  AdjustmentType,
+  PendingOperatorAction,
+};
