@@ -33,7 +33,10 @@ type TipSummary = {
 
 type TipPeriod = "day" | "week" | "month" | "year";
 
-type TipPeriodTotals = Record<TipPeriod, { total: number; count: number }>;
+type TipPeriodTotals = Record<
+  TipPeriod,
+  { total: number; count: number }
+>;
 
 type TipStats = {
   summary: TipSummary;
@@ -46,6 +49,7 @@ type Payout = {
   id: string;
   date: string;
   amount: number;
+  providerFeeAmount: number;
   status: PayoutStatus;
   reference: string;
 };
