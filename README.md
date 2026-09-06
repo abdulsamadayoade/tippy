@@ -60,7 +60,7 @@ npm run db:studio     # browse data
 
 ## How the money moves
 
-Tippy keeps a platform fee (2.5% by default, `PLATFORM_FEE_BPS`) out of every tip. The supporter is charged the full amount they chose; the fee and the resulting net are computed once at tip creation and stamped on the row, so changing the rate never rewrites historical tips. Balance math only ever sums `tip.net_amount`, never the gross — crediting gross is what drained the wallet against Monnify's collection and transfer fees.
+Tippy currently keeps a 0% platform fee. The creator is credited the full tip amount, while the supporter bears Monnify's separate payment-processing charge under the Monnify contract. The platform fee and resulting net are still computed once at tip creation and stamped on the row, so a later code change to the rate never rewrites historical tips. Balance math only ever sums `tip.net_amount`, never the gross.
 
 Tips are inserted as `pending` and only marked successful by the signed transaction webhook, or by Monnify's query API — used when the webhook can't be verified, and by the post-payment status poll so checkout confirms even if the webhook is delayed or undeliverable (e.g. local dev without a tunnel). The available balance is settled tips net of the platform fee, minus non-failed payouts, plus signed adjustments — one formula in `src/lib/ledger.ts`, computed in SQL.
 
