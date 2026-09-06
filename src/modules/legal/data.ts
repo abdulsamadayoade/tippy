@@ -30,9 +30,9 @@ const terms: LegalSection[] = [
   {
     heading: "Fees",
     paragraphs: [
-      "Tippy keeps 2.5% of each tip. Supporters pay exactly the amount they choose — the fee comes out of what's credited to the creator, so a ₦1,000 tip adds ₦975 to your balance.",
-      "Withdrawals are free. Your bank transfer costs are on us, which is why there's a ₦5,000 minimum on payouts.",
-      "If the fee ever changes, we'll say so on this page before it affects new tips. Tips you've already received keep the rate they were made under.",
+      "Tippy currently keeps 0% of each tip, so the creator is credited the full tip amount. Monnify charges the supporter a separate payment-processing fee.",
+      "Tippy adds no withdrawal fee. Monnify's estimated transfer fee is shown before confirmation and deducted from the creator's balance together with the amount sent to their bank.",
+      "If Tippy introduces a platform fee later, we'll say so on this page before it affects new tips. Tips you've already received keep the rate they were made under.",
     ],
   },
   {
