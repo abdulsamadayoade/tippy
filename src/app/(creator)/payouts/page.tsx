@@ -3,7 +3,6 @@ import { Payouts } from "@/modules/payouts";
 import { getPayoutData } from "@/lib/dashboard";
 import { reconcileStalePayouts } from "@/lib/payouts";
 import { getSessionCreator } from "@/lib/session";
-import { DEFAULT_PLATFORM_FEE_BPS } from "@/data/constants";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -28,7 +27,6 @@ export default async function PayoutsPage() {
     <Payouts
       balance={balance}
       earnings={earnings}
-      feeBps={DEFAULT_PLATFORM_FEE_BPS}
       account={account}
       autoPayout={creator.autoPayout}
       payouts={payouts}

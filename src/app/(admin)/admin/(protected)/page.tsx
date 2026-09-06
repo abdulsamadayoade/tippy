@@ -1,9 +1,6 @@
 import { getDashboardCounts } from "@/modules/admin/queries";
 import { computeCreatorLiability } from "@/lib/monitor";
-import { formatFeeRate } from "@/lib/fees";
-import { getPlatformFeeTotals } from "@/lib/ledger";
 import { getWalletBalance } from "@/lib/monnify";
-import { DEFAULT_PLATFORM_FEE_BPS } from "@/data/constants";
 import { formatNaira } from "@/lib/utils";
 import { cn } from "@/lib/cn";
 import { SweepButton } from "@/modules/admin/components/sweep-button";
@@ -34,11 +31,10 @@ function StatCard({
 }
 
 export default async function AdminDashboardPage() {
-  const [counts, liability, wallet, fees] = await Promise.all([
+  const [counts, liability, wallet] = await Promise.all([
     getDashboardCounts(),
     computeCreatorLiability().catch(() => null),
     getWalletBalance().catch(() => null),
-    getPlatformFeeTotals().catch(() => null),
   ]);
 
   const shortfall = wallet !== null && liability !== null && wallet < liability;
@@ -52,7 +48,7 @@ export default async function AdminDashboardPage() {
         Operations
       </h1>
 
-      <div className="mt-6 grid grid-cols-3 gap-3 max-sm:grid-cols-1">
+      <div className="mt-6 grid grid-cols-4 gap-3 max-md:grid-cols-2 max-sm:grid-cols-1">
         <StatCard
           label="Monnify wallet"
           value={wallet !== null ? formatNaira(wallet) : "Unavailable"}
@@ -73,21 +69,10 @@ export default async function AdminDashboardPage() {
           }
           alert={shortfall}
         />
-      </div>
-
-      <div className="mt-3 grid grid-cols-3 gap-3 max-sm:grid-cols-1">
         <StatCard
           label="Wallet balance after creator obligations"
           value={platformFunds !== null ? formatNaira(platformFunds) : "—"}
           alert={platformFunds !== null && platformFunds < 0}
-        />
-        <StatCard
-          label={`Fees accrued · all time (${formatFeeRate(DEFAULT_PLATFORM_FEE_BPS)})`}
-          value={fees ? formatNaira(fees.allTime) : "Unavailable"}
-        />
-        <StatCard
-          label="Fees accrued · 30d"
-          value={fees ? formatNaira(fees.last30Days) : "Unavailable"}
         />
       </div>
 
