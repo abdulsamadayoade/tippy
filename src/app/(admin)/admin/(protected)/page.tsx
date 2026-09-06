@@ -1,8 +1,9 @@
 import { getDashboardCounts } from "@/modules/admin/queries";
 import { computeCreatorLiability } from "@/lib/monitor";
-import { formatFeeRate, getPlatformFeeBps } from "@/lib/fees";
+import { formatFeeRate } from "@/lib/fees";
 import { getPlatformFeeTotals } from "@/lib/ledger";
 import { getWalletBalance } from "@/lib/monnify";
+import { DEFAULT_PLATFORM_FEE_BPS } from "@/data/constants";
 import { formatNaira } from "@/lib/utils";
 import { cn } from "@/lib/cn";
 import { SweepButton } from "@/modules/admin/components/sweep-button";
@@ -81,7 +82,7 @@ export default async function AdminDashboardPage() {
           alert={platformFunds !== null && platformFunds < 0}
         />
         <StatCard
-          label={`Fees accrued · all time (${formatFeeRate(getPlatformFeeBps())})`}
+          label={`Fees accrued · all time (${formatFeeRate(DEFAULT_PLATFORM_FEE_BPS)})`}
           value={fees ? formatNaira(fees.allTime) : "Unavailable"}
         />
         <StatCard
