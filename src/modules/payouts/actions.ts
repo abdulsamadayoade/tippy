@@ -8,6 +8,7 @@ import { validateBankAccount } from "@/lib/monnify";
 import { reportError } from "@/lib/monitoring";
 import { createPendingPayout, submitPayout } from "@/lib/payouts";
 import { getSessionCreator } from "@/lib/session";
+import { writeAuditSafe } from "@/lib/audit";
 import { accountSchema } from "./schema";
 import { BANKS } from "@/data/constants";
 import type { FormErrors } from "./types";
@@ -78,6 +79,11 @@ export async function savePayoutAccount(values: {
     accountNumber: parsed.data.accountNumber,
   };
 
+  const previous = await db.query.bankAccount.findFirst({
+    where: eq(bankAccount.creatorId, sessionCreator.id),
+    columns: { bankName: true, accountNumber: true },
+  });
+
   await db
     .insert(bankAccount)
     .values({ creatorId: sessionCreator.id, ...accountValues })
@@ -85,6 +91,27 @@ export async function savePayoutAccount(values: {
       target: bankAccount.creatorId,
       set: accountValues,
     });
+
+  // Best-effort trail for fraud review — account numbers masked to last-4.
+  await writeAuditSafe(db, {
+    actorType: "creator",
+    actorUserId: sessionCreator.userId,
+    action: "bank_account.update",
+    targetType: "creator",
+    targetId: sessionCreator.id,
+    details: {
+      before: previous
+        ? {
+            bankName: previous.bankName,
+            accountNumberLast4: previous.accountNumber.slice(-4),
+          }
+        : null,
+      after: {
+        bankName: accountValues.bankName,
+        accountNumberLast4: accountValues.accountNumber.slice(-4),
+      },
+    },
+  });
 
   revalidatePayoutViews();
   return {};
@@ -94,9 +121,21 @@ export async function removePayoutAccount(): Promise<{ error?: string }> {
   const { creator: sessionCreator } = await getSessionCreator();
   if (!sessionCreator) return { error: "Sign in and try again." };
 
-  await db
+  const removed = await db
     .delete(bankAccount)
-    .where(eq(bankAccount.creatorId, sessionCreator.id));
+    .where(eq(bankAccount.creatorId, sessionCreator.id))
+    .returning({ bankName: bankAccount.bankName });
+
+  if (removed.length > 0) {
+    await writeAuditSafe(db, {
+      actorType: "creator",
+      actorUserId: sessionCreator.userId,
+      action: "bank_account.remove",
+      targetType: "creator",
+      targetId: sessionCreator.id,
+      details: { bankName: removed[0].bankName },
+    });
+  }
 
   revalidatePayoutViews();
   return {};
@@ -117,13 +156,20 @@ export async function setAutoPayout(
   return {};
 }
 
-export async function requestWithdrawal(
-  amount: number,
-): Promise<{ error?: string }> {
+export async function requestWithdrawal(amount: number): Promise<{
+  error?: string;
+  withdrawal?: { bankAmount: number; providerFeeAmount: number };
+}> {
   const { creator: sessionCreator } = await getSessionCreator();
   if (!sessionCreator) return { error: "Sign in and try again." };
   if (sessionCreator.suspended) {
     return { error: "Your account is suspended. Contact hello@tippy.cash." };
+  }
+  if (sessionCreator.payoutsFrozen) {
+    return {
+      error:
+        "Withdrawals are temporarily paused on your account while we review recent activity. Contact hello@tippy.cash.",
+    };
   }
 
   const created = await createPendingPayout(sessionCreator.id, amount);
@@ -142,5 +188,11 @@ export async function requestWithdrawal(
     };
   }
 
-  return {};
+  return {
+    withdrawal: {
+      bankAmount: created.submission.amount,
+      providerFeeAmount:
+        submitted.providerFeeAmount ?? created.submission.providerFeeAmount,
+    },
+  };
 }

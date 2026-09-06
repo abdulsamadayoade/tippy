@@ -30,9 +30,8 @@ const terms: LegalSection[] = [
   {
     heading: "Fees",
     paragraphs: [
-      "Tippy currently keeps 0% of each tip, so the creator is credited the full tip amount. Monnify charges the supporter a separate payment-processing fee.",
-      "Tippy adds no withdrawal fee. Monnify's estimated transfer fee is shown before confirmation and deducted from the creator's balance together with the amount sent to their bank.",
-      "If Tippy introduces a platform fee later, we'll say so on this page before it affects new tips. Tips you've already received keep the rate they were made under.",
+      "Creators receive the full tip amount. Monnify charges the supporter a separate payment-processing fee.",
+      "Tippy adds no withdrawal fee. Monnify deducts its processing fee from the creator's selected withdrawal before the remaining amount is sent to their bank.",
     ],
   },
   {

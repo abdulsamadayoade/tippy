@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { formatAmountInput, sanitizeAmountInput } from "@/lib/amount-input";
 import { cn } from "@/lib/cn";
 import { formatNaira, maskAccountNumber } from "@/lib/utils";
-import { quotePayoutFromBalance } from "@/lib/payout-fees";
 import { requestWithdrawal } from "../actions";
 import { CheckIcon } from "@/components/icons/check";
 import { Modal } from "@/components/ui/modal";
@@ -22,10 +21,6 @@ export function WithdrawModal({
   const [wasOpen, setWasOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [requested, setRequested] = useState(false);
-  const [submittedQuote, setSubmittedQuote] = useState<{
-    bankAmount: number;
-    providerFeeAmount: number;
-  } | null>(null);
   const [serverError, setServerError] = useState("");
   const doneRef = useRef<HTMLButtonElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
@@ -35,13 +30,11 @@ export function WithdrawModal({
     if (open) {
       setAmountValue(String(balance));
       setRequested(false);
-      setSubmittedQuote(null);
       setServerError("");
     }
   }
 
   const amountNumber = Number(amountValue || 0);
-  const quote = quotePayoutFromBalance(amountNumber);
   const overBalance = amountNumber > balance;
   const belowMinimum = amountNumber > 0 && amountNumber < MINIMUM_WITHDRAWAL;
   const canConfirm =
@@ -67,7 +60,6 @@ export function WithdrawModal({
       return;
     }
 
-    setSubmittedQuote(result.withdrawal);
     setRequested(true);
   }
 
@@ -95,11 +87,8 @@ export function WithdrawModal({
           <p
             className="mt-1.5 text-center text-sm leading-normal text-body-text"
             id="withdrawal-dialog-description">
-            We’ll send{" "}
-            <strong className="font-semibold text-main-heading">
-              {formatNaira(submittedQuote?.bankAmount ?? quote.bankAmount)}
-            </strong>{" "}
-            to your verified{" "}
+            Monnify will deduct its processing fee from your withdrawal, then
+            send the remaining amount to your verified{" "}
             <strong className="font-semibold text-main-heading">
               {account?.bank}
             </strong>{" "}
@@ -122,8 +111,8 @@ export function WithdrawModal({
           <p
             className="mt-1.5 text-sm leading-normal text-body-text"
             id="withdrawal-dialog-description">
-            Choose how much of your balance to withdraw. Monnify’s transfer fee
-            is deducted; Tippy adds no fee.
+            Choose how much of your balance to withdraw. Monnify will deduct its
+            processing fee before sending the remaining amount to your bank.
           </p>
 
           <div className="mt-5">
@@ -196,39 +185,15 @@ export function WithdrawModal({
               </dd>
             </div>
             <div className="flex items-start justify-between gap-4 py-3.5">
-              <dt className="text-ui-sm text-muted-text">To your bank</dt>
+              <dt className="text-ui-sm text-muted-text">Withdrawal amount</dt>
               <dd className="text-ui-sm font-medium text-main-heading">
-                {formatNaira(quote.bankAmount)}
+                {formatNaira(amountNumber)}
               </dd>
             </div>
             <div className="flex items-start justify-between gap-4 py-3.5">
-              <dt className="text-ui-sm text-muted-text">
-                Estimated Monnify fee
-              </dt>
-              <dd className="text-ui-sm font-medium text-main-heading">
-                {formatNaira(quote.feeAmount)}
-              </dd>
-            </div>
-            {quote.remainder > 0 && (
-              <div className="flex items-start justify-between gap-4 py-3.5">
-                <dt className="text-ui-sm text-muted-text">
-                  Remains in balance
-                </dt>
-                <dd className="text-ui-sm font-medium text-main-heading">
-                  {formatNaira(quote.remainder)}
-                </dd>
-              </div>
-            )}
-            <div className="flex items-start justify-between gap-4 py-3.5">
-              <dt className="text-ui-sm text-muted-text">Tippy fee</dt>
-              <dd className="text-ui-sm font-medium text-main-heading">₦0</dd>
-            </div>
-            <div className="flex items-start justify-between gap-4 py-3.5">
-              <dt className="text-ui-sm text-muted-text">
-                Deducted from balance
-              </dt>
-              <dd className="text-ui-sm font-medium text-main-heading">
-                {formatNaira(quote.balanceDebit)}
+              <dt className="text-ui-sm text-muted-text">Processing fee</dt>
+              <dd className="text-right text-ui-sm font-medium text-main-heading">
+                Deducted by Monnify
               </dd>
             </div>
             <div className="flex items-start justify-between gap-4 py-3.5">
@@ -253,7 +218,7 @@ export function WithdrawModal({
               loading={submitting}
               loadingText="Requesting…"
               onClick={confirm}>
-              Confirm
+              Request withdrawal
             </Button>
           </div>
         </>
