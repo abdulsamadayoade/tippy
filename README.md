@@ -60,11 +60,11 @@ npm run db:studio     # browse data
 
 ## How the money moves
 
-Tippy currently keeps a 0% platform fee. The creator is credited the full tip amount, while the supporter bears Monnify's separate payment-processing charge under the Monnify contract. The platform fee and resulting net are still computed once at tip creation and stamped on the row, so a later code change to the rate never rewrites historical tips. Balance math only ever sums `tip.net_amount`, never the gross.
+Every settled tip is credited to the creator in full. Tippy does not deduct a fee from tips; the supporter bears Monnify's separate payment-processing charge under the Monnify contract.
 
-Tips are inserted as `pending` and only marked successful by the signed transaction webhook, or by Monnify's query API — used when the webhook can't be verified, and by the post-payment status poll so checkout confirms even if the webhook is delayed or undeliverable (e.g. local dev without a tunnel). The available balance is settled tips net of the platform fee, minus non-failed payouts, plus signed adjustments — one formula in `src/lib/ledger.ts`, computed in SQL.
+Tips are inserted as `pending` and only marked successful by the signed transaction webhook, or by Monnify's query API — used when the webhook can't be verified, and by the post-payment status poll so checkout confirms even if the webhook is delayed or undeliverable (e.g. local dev without a tunnel). The available balance is settled tips, minus non-failed bank transfers and their Monnify fees, plus signed adjustments — one formula in `src/lib/ledger.ts`, computed in SQL.
 
-A withdrawal inserts a `pending` payout inside a transaction that locks the creator row, so the balance check can't be raced. Then the Monnify single transfer API is called with a unique `TIPPY-PO-` reference, which doubles as an idempotency key. Disbursement webhooks move the payout to `paid` or `failed`, and a reconciliation pass on the payouts page re-checks anything stale. A transfer that never reached Monnify gets failed after a grace period, which releases the reserved amount back to the balance.
+A withdrawal inserts a `pending` payout inside a transaction that locks the creator row, so the balance check can't be raced. The creator's selected balance amount is split into the bank transfer and Monnify's published transfer fee; Tippy adds no fee and subsidizes none. Then the Monnify single transfer API is called with a unique `TIPPY-PO-` reference, which doubles as an idempotency key. The provider's returned fee is stored separately, disbursement webhooks move the payout to `paid` or `failed`, and a reconciliation pass on the payouts page re-checks anything stale. A transfer that never reached Monnify gets failed after a grace period, which releases the reserved transfer and fee back to the balance.
 
 ## Layout
 
