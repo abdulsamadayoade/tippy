@@ -60,7 +60,9 @@ npm run db:studio     # browse data
 
 ## How the money moves
 
-Tips are inserted as `pending` and only marked successful by the signed transaction webhook, or by Monnify's query API — used when the webhook can't be verified, and by the post-payment status poll so checkout confirms even if the webhook is delayed or undeliverable (e.g. local dev without a tunnel). The available balance is settled tips minus non-failed payouts, computed in SQL.
+Tippy keeps a platform fee (2.5% by default, `PLATFORM_FEE_BPS`) out of every tip. The supporter is charged the full amount they chose; the fee and the resulting net are computed once at tip creation and stamped on the row, so changing the rate never rewrites historical tips. Balance math only ever sums `tip.net_amount`, never the gross — crediting gross is what drained the wallet against Monnify's collection and transfer fees.
+
+Tips are inserted as `pending` and only marked successful by the signed transaction webhook, or by Monnify's query API — used when the webhook can't be verified, and by the post-payment status poll so checkout confirms even if the webhook is delayed or undeliverable (e.g. local dev without a tunnel). The available balance is settled tips net of the platform fee, minus non-failed payouts, plus signed adjustments — one formula in `src/lib/ledger.ts`, computed in SQL.
 
 A withdrawal inserts a `pending` payout inside a transaction that locks the creator row, so the balance check can't be raced. Then the Monnify single transfer API is called with a unique `TIPPY-PO-` reference, which doubles as an idempotency key. Disbursement webhooks move the payout to `paid` or `failed`, and a reconciliation pass on the payouts page re-checks anything stale. A transfer that never reached Monnify gets failed after a grace period, which releases the reserved amount back to the balance.
 
