@@ -1,12 +1,12 @@
 "use client";
 
+import { useTipsFeed } from "./hooks/use-tips-feed";
 import { formatNaira } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SlidingTabs } from "@/components/ui/sliding-tabs";
 import { MetricCard } from "@/modules/creator/components/metric-card";
 import { TipList } from "@/modules/creator/components/tip-list";
 import { TipListSkeleton, TipRowSkeleton } from "./components/skeleton";
-import { useTipsFeed } from "./hooks/use-tips-feed";
 import type { TipsProps } from "./types";
 
 export function Tips({
@@ -33,7 +33,7 @@ export function Tips({
       <div className="mt-5 grid grid-cols-3 gap-3 max-dashboard:grid-cols-2 max-phone-sm:grid-cols-1">
         <MetricCard
           className="max-dashboard:col-span-2 max-phone-sm:col-span-1"
-          label="Total received"
+          label="Total earned"
           value={formatNaira(summary.total)}
         />
         <MetricCard label="Tips received" value={String(summary.count)} />
@@ -60,7 +60,11 @@ export function Tips({
           <p className="text-muted-text">
             Couldn’t load tips. Check your connection and try again.
           </p>
-          <Button size="sm" variant="secondary" className="mt-4" onClick={retry}>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="mt-4"
+            onClick={retry}>
             Try again
           </Button>
         </div>
