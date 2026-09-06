@@ -114,8 +114,8 @@ export function ReportPage({ username }: { username: string }) {
               Report this page
             </h2>
             <p className="mt-1.5 text-sm leading-normal text-body-text">
-              Tell us what&rsquo;s wrong with @{username}&rsquo;s page. We
-              review every report.
+              Tell us what&rsquo;s wrong with{" "}
+              <strong>@{username}&rsquo;s</strong> page. We review every report.
             </p>
 
             <form
