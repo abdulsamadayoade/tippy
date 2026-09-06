@@ -5,6 +5,7 @@ import type { SummaryBannerProps } from "../types";
 
 export function SummaryBanner({
   total,
+  gross,
   count,
   automaticPayoutActive,
   period,
@@ -20,6 +21,11 @@ export function SummaryBanner({
         <span className="mt-3 inline-flex items-center gap-1.25 rounded-full bg-white/12 px-2.5 py-1 text-xs font-medium text-white/85">
           {count} {count === 1 ? "tip" : "tips"} received
         </span>
+        {gross > total && (
+          <small className="mt-2 block text-xs text-white/50">
+            {formatNaira(gross)} sent · {formatNaira(gross - total)} fee
+          </small>
+        )}
       </div>
       <div className="text-right max-phone:flex max-phone:w-full max-phone:items-center max-phone:justify-between max-phone:border-t max-phone:border-white/12 max-phone:pt-3.5 max-phone:text-left">
         <div>

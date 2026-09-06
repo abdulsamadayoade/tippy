@@ -2,6 +2,7 @@ import type { TipPeriod } from "@/types";
 
 type SummaryBannerProps = {
   total: number;
+  gross: number;
   count: number;
   automaticPayoutActive: boolean;
   period: TipPeriod;

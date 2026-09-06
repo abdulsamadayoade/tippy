@@ -24,13 +24,15 @@ const terms: LegalSection[] = [
   {
     heading: "Payouts",
     paragraphs: [
-      "Settled tips build up your available balance. You can withdraw any amount to your verified bank account, or turn on automatic payouts to receive your full balance every Friday. If a payment behind your balance is reversed or found to be fraudulent, we may adjust your balance to match.",
+      "Settled tips build up your available balance. Once it reaches ₦5,000 you can withdraw to your verified bank account, or turn on automatic payouts to receive your full balance every Friday. If a payment behind your balance is reversed or found to be fraudulent, we may adjust your balance to match.",
     ],
   },
   {
     heading: "Fees",
     paragraphs: [
-      "Tippy doesn't charge platform fees right now. If that ever changes, we'll say so clearly before it affects you.",
+      "Tippy keeps 2.5% of each tip. Supporters pay exactly the amount they choose — the fee comes out of what's credited to the creator, so a ₦1,000 tip adds ₦975 to your balance.",
+      "Withdrawals are free. Your bank transfer costs are on us, which is why there's a ₦5,000 minimum on payouts.",
+      "If the fee ever changes, we'll say so on this page before it affects new tips. Tips you've already received keep the rate they were made under.",
     ],
   },
   {
@@ -124,7 +126,7 @@ const refundPolicy: LegalSection[] = [
   {
     heading: "Chargebacks",
     paragraphs: [
-      "You can also dispute a charge through your bank. When that happens, Monnify investigates with the card network, and if the payment is reversed, the tip is removed from the creator's balance — the same adjustment our [Terms of Service](/terms) describe.",
+      "You can also dispute a charge through your bank. When that happens, Monnify investigates with the card network, and if the payment is reversed, the amount the tip added to the creator's balance is removed from it — the same adjustment our [Terms of Service](/terms) describe.",
     ],
   },
   {

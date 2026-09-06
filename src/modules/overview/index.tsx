@@ -42,6 +42,7 @@ export function Overview({
       <div className="mt-5.5 grid grid-cols-3 gap-3 max-dashboard:grid-cols-2 max-phone-sm:grid-cols-1">
         <SummaryBanner
           total={periodSummary.total}
+          gross={periodSummary.gross}
           count={periodSummary.count}
           automaticPayoutActive={automaticPayoutActive}
           period={period}
