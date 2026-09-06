@@ -1,14 +1,14 @@
 "use client";
 
 import { useId, useState, type SubmitEvent } from "react";
+import { isValidEmail } from "@/modules/auth/utils";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { TextArea } from "@/components/ui/text-area";
 import { TextInput } from "@/components/ui/text-input";
 import { ErrorMessage } from "@/components/elements/error-message";
-import { isValidEmail } from "@/modules/auth/utils";
-import { REASONS } from "../data";
+import { REPORT_REASONS } from "@/data/report-reasons";
 
 export function ReportPage({ username }: { username: string }) {
   const uid = useId();
@@ -128,7 +128,7 @@ export function ReportPage({ username }: { username: string }) {
                 value={reason}
                 error={submitAttempted ? reasonError || undefined : undefined}
                 onChange={(event) => setReason(event.target.value)}>
-                {REASONS.map((option) => (
+                {REPORT_REASONS.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -171,7 +171,7 @@ export function ReportPage({ username }: { username: string }) {
                 />
               </div>
 
-              {serverError ? <ErrorMessage>{serverError}</ErrorMessage> : null}
+              {serverError && <ErrorMessage>{serverError}</ErrorMessage>}
 
               <div className="mt-1.5 grid grid-cols-2 gap-2.5">
                 <Button

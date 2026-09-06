@@ -22,14 +22,6 @@ const DEFAULT_PRESET_LABELS: PresetLabels = [
   "Big support",
   "Super fan",
 ];
-const REASONS = [
-  { value: "impersonation", label: "Pretending to be someone else" },
-  { value: "scam", label: "Scam or fraud" },
-  { value: "inappropriate", label: "Inappropriate content" },
-  { value: "spam", label: "Spam" },
-  { value: "other", label: "Something else" },
-];
-
 const CATEGORY_PRESET_LABELS: Record<string, PresetLabels> = {
   Streamer: ["Coffee", "Stream fuel", "Big support", "Next upgrade"],
   Musician: ["Coffee", "Practice fuel", "Studio hour", "Next single"],
@@ -72,7 +64,6 @@ function resolvePresets(
 }
 
 export {
-  REASONS,
   NUMBER_FLOW_OPACITY_TIMING,
   NUMBER_FLOW_TIMING,
   POPULAR_PRESET_INDEX,

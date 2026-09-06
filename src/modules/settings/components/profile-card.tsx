@@ -36,6 +36,11 @@ export function ProfileCard({ creator, categories }: ProfileCardProps) {
     ? { ...clientErrors, ...serverErrors }
     : {};
 
+  const isDirty =
+    values.displayName.trim() !== creator.displayName.trim() ||
+    values.categoryId !== creator.categoryId ||
+    values.bio.trim() !== (creator.bio ?? "").trim();
+
   function setValue(patch: Partial<ProfileValues>) {
     setSaved(false);
     setValues((current) => ({ ...current, ...patch }));
@@ -59,6 +64,7 @@ export function ProfileCard({ creator, categories }: ProfileCardProps) {
     event.preventDefault();
     setSubmitAttempted(true);
     setServerErrors({});
+    if (!isDirty) return;
     if (Object.keys(clientErrors).length > 0 || saving) return;
 
     setSaving(true);
@@ -174,6 +180,7 @@ export function ProfileCard({ creator, categories }: ProfileCardProps) {
           <Button
             type="submit"
             size="sm"
+            disabled={!isDirty || saving}
             loading={saving}
             loadingText="Saving…">
             Save changes
