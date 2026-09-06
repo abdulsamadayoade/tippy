@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/elements/logo";
+import { AlertBanner } from "@/components/ui/alert-banner";
 import { CreatorAccountMenu } from "@/modules/creator/components/account-menu";
 import { CreatorNavigation } from "@/modules/creator/components/navigation";
 import { getSessionCreator } from "@/lib/session";
@@ -40,12 +41,17 @@ export default async function CreatorLayout({
 
       <div className="mx-auto max-w-160 px-5.5 pt-7 pb-15 max-sm:px-4 max-sm:pt-6 max-sm:pb-12">
         {creator.suspended && (
-          <div
-            className="mb-6 rounded-md bg-danger-soft px-4 py-2 text-sm leading-normal text-danger"
-            role="status">
+          <AlertBanner className="mb-6" variant="danger">
             Your account is suspended — payouts and your public page are paused.
             Contact hello@tippy.cash if you think this is a mistake.
-          </div>
+          </AlertBanner>
+        )}
+        {!creator.suspended && creator.payoutsFrozen && (
+          <AlertBanner className="mb-6" variant="danger">
+            Withdrawals are temporarily paused while we review recent activity.
+            Tips still arrive as usual. Contact hello@tippy.cash with any
+            questions.
+          </AlertBanner>
         )}
         {children}
       </div>

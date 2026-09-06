@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listCreators, type CreatorListFilter } from "@/modules/admin/queries";
 import { cn } from "@/lib/cn";
+import { formatAdminDateTime } from "@/modules/admin/format";
 import { PageHeader } from "@/components/elements/page-header";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
@@ -89,7 +90,10 @@ export default async function AdminCreatorsPage({
                     </span>
                   </p>
                   <p className="text-xs text-muted-text">
-                    Joined {row.createdAt.toLocaleDateString()}
+                    Joined{" "}
+                    <time dateTime={row.createdAt.toISOString()}>
+                      {formatAdminDateTime(row.createdAt)}
+                    </time>
                   </p>
                 </div>
                 <div className="ml-auto flex shrink-0 gap-1.5">
