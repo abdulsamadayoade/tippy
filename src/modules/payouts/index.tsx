@@ -5,11 +5,17 @@ import { BalanceBanner } from "./components/balance-banner";
 import { PastPayouts } from "./components/past-payouts";
 import { PayoutAccountCard } from "./components/payout-account-card";
 import { WithdrawModal } from "./components/withdraw-modal";
+import { MINIMUM_WITHDRAWAL } from "@/data/constants";
 import type { PayoutsProps } from "./types";
 
-export function Payouts({ balance, account, autoPayout, payouts }: PayoutsProps) {
+export function Payouts({
+  balance,
+  account,
+  autoPayout,
+  payouts,
+}: PayoutsProps) {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
-  const canWithdraw = balance > 0 && Boolean(account);
+  const canWithdraw = balance >= MINIMUM_WITHDRAWAL && Boolean(account);
   const hasReservedWithdrawal = payouts.some(
     ({ status }) => status === "pending" || status === "processing",
   );

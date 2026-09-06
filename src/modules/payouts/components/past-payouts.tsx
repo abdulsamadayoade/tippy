@@ -1,18 +1,7 @@
 import { cn } from "@/lib/cn";
 import { formatDate, formatNaira } from "@/lib/utils";
-import type { PayoutStatus } from "@/types";
+import { STATUS_CHIPS } from "../data";
 import type { PastPayoutsProps } from "../types";
-
-const STATUS_CHIPS: Record<PayoutStatus, { label: string; className: string }> =
-  {
-    paid: { label: "Paid", className: "bg-success-soft text-success" },
-    pending: { label: "Pending", className: "bg-warning-soft text-warning" },
-    processing: {
-      label: "Processing",
-      className: "bg-warning-soft text-warning",
-    },
-    failed: { label: "Failed", className: "bg-danger-soft text-danger" },
-  };
 
 export function PastPayouts({ payouts }: PastPayoutsProps) {
   return (
@@ -52,6 +41,9 @@ export function PastPayouts({ payouts }: PastPayoutsProps) {
                 </span>
                 <strong className="text-right text-base font-medium whitespace-nowrap text-main-heading max-phone:col-start-2 max-phone:row-span-2 max-phone:row-start-1">
                   {formatNaira(payout.amount)}
+                  <span className="block text-xs font-normal text-muted-text">
+                    Monnify fee {formatNaira(payout.providerFeeAmount)}
+                  </span>
                 </strong>
               </article>
             );

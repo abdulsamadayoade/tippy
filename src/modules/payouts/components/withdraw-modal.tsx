@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { formatAmountInput, sanitizeAmountInput } from "@/lib/amount-input";
 import { cn } from "@/lib/cn";
+import { formatNaira, maskAccountNumber } from "@/lib/utils";
+import { quotePayoutFromBalance } from "@/lib/payout-fees";
+import { requestWithdrawal } from "../actions";
 import { CheckIcon } from "@/components/icons/check";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
-import { formatNaira, maskAccountNumber } from "@/lib/utils";
-import { requestWithdrawal } from "../actions";
+import { MINIMUM_WITHDRAWAL } from "@/data/constants";
 import type { WithdrawModalProps } from "../types";
 
 export function WithdrawModal({
@@ -19,6 +22,10 @@ export function WithdrawModal({
   const [wasOpen, setWasOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [requested, setRequested] = useState(false);
+  const [submittedQuote, setSubmittedQuote] = useState<{
+    bankAmount: number;
+    providerFeeAmount: number;
+  } | null>(null);
   const [serverError, setServerError] = useState("");
   const doneRef = useRef<HTMLButtonElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
@@ -28,14 +35,18 @@ export function WithdrawModal({
     if (open) {
       setAmountValue(String(balance));
       setRequested(false);
+      setSubmittedQuote(null);
       setServerError("");
     }
   }
 
   const amountNumber = Number(amountValue || 0);
+  const quote = quotePayoutFromBalance(amountNumber);
   const overBalance = amountNumber > balance;
-  const canConfirm = amountNumber > 0 && !overBalance && !submitting;
-  const hintIsError = Boolean(serverError) || overBalance;
+  const belowMinimum = amountNumber > 0 && amountNumber < MINIMUM_WITHDRAWAL;
+  const canConfirm =
+    amountNumber >= MINIMUM_WITHDRAWAL && !overBalance && !submitting;
+  const hintIsError = Boolean(serverError) || overBalance || belowMinimum;
 
   useEffect(() => {
     if (!open || !requested) return;
@@ -51,11 +62,12 @@ export function WithdrawModal({
     const result = await requestWithdrawal(amountNumber);
     setSubmitting(false);
 
-    if (result.error) {
-      setServerError(result.error);
+    if (result.error || !result.withdrawal) {
+      setServerError(result.error ?? "We couldn’t start this withdrawal.");
       return;
     }
 
+    setSubmittedQuote(result.withdrawal);
     setRequested(true);
   }
 
@@ -85,7 +97,7 @@ export function WithdrawModal({
             id="withdrawal-dialog-description">
             We’ll send{" "}
             <strong className="font-semibold text-main-heading">
-              {formatNaira(amountNumber)}
+              {formatNaira(submittedQuote?.bankAmount ?? quote.bankAmount)}
             </strong>{" "}
             to your verified{" "}
             <strong className="font-semibold text-main-heading">
@@ -110,7 +122,8 @@ export function WithdrawModal({
           <p
             className="mt-1.5 text-sm leading-normal text-body-text"
             id="withdrawal-dialog-description">
-            Choose how much to send to your account.
+            Choose how much of your balance to withdraw. Monnify’s transfer fee
+            is deducted; Tippy adds no fee.
           </p>
 
           <div className="mt-5">
@@ -118,7 +131,7 @@ export function WithdrawModal({
               <label
                 className="text-ui-sm font-medium text-copy"
                 htmlFor="withdraw-amount">
-                Amount
+                Amount from balance
               </label>
               <span className="text-xs text-muted-text">
                 Available {formatNaira(balance)}
@@ -136,21 +149,18 @@ export function WithdrawModal({
                 className={cn(
                   "min-h-13 w-full rounded-xl bg-white pr-20 pl-9 text-lg font-medium text-main-heading tabular-nums shadow-surface outline-none transition-shadow duration-150 ease-out placeholder:font-normal placeholder:text-muted-text",
                   "focus:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_rgba(6,78,91,0.12),0_4px_12px_rgba(6,78,91,0.08)]",
-                  overBalance && "shadow-[inset_0_0_0_1px_var(--color-danger)]",
+                  (overBalance || belowMinimum) &&
+                    "shadow-[inset_0_0_0_1px_var(--color-danger)]",
                 )}
                 type="text"
-                inputMode="numeric"
+                inputMode="decimal"
                 autoComplete="off"
                 placeholder="0"
-                aria-invalid={overBalance}
+                aria-invalid={overBalance || belowMinimum}
                 aria-describedby="withdraw-amount-hint"
-                value={
-                  amountValue === ""
-                    ? ""
-                    : Number(amountValue).toLocaleString("en-NG")
-                }
+                value={formatAmountInput(amountValue)}
                 onChange={(event) => {
-                  setAmountValue(event.target.value.replace(/\D/g, ""));
+                  setAmountValue(sanitizeAmountInput(event.target.value));
                   if (serverError) setServerError("");
                 }}
               />
@@ -170,7 +180,9 @@ export function WithdrawModal({
               {serverError ||
                 (overBalance
                   ? "Amount exceeds your available balance."
-                  : "Enter an amount or tap Max to withdraw everything.")}
+                  : belowMinimum
+                    ? `Minimum withdrawal is ${formatNaira(MINIMUM_WITHDRAWAL)}.`
+                    : "Enter an amount or tap Max to withdraw everything.")}
             </p>
           </div>
 
@@ -184,8 +196,40 @@ export function WithdrawModal({
               </dd>
             </div>
             <div className="flex items-start justify-between gap-4 py-3.5">
-              <dt className="text-ui-sm text-muted-text">Transfer fee</dt>
+              <dt className="text-ui-sm text-muted-text">To your bank</dt>
+              <dd className="text-ui-sm font-medium text-main-heading">
+                {formatNaira(quote.bankAmount)}
+              </dd>
+            </div>
+            <div className="flex items-start justify-between gap-4 py-3.5">
+              <dt className="text-ui-sm text-muted-text">
+                Estimated Monnify fee
+              </dt>
+              <dd className="text-ui-sm font-medium text-main-heading">
+                {formatNaira(quote.feeAmount)}
+              </dd>
+            </div>
+            {quote.remainder > 0 && (
+              <div className="flex items-start justify-between gap-4 py-3.5">
+                <dt className="text-ui-sm text-muted-text">
+                  Remains in balance
+                </dt>
+                <dd className="text-ui-sm font-medium text-main-heading">
+                  {formatNaira(quote.remainder)}
+                </dd>
+              </div>
+            )}
+            <div className="flex items-start justify-between gap-4 py-3.5">
+              <dt className="text-ui-sm text-muted-text">Tippy fee</dt>
               <dd className="text-ui-sm font-medium text-main-heading">₦0</dd>
+            </div>
+            <div className="flex items-start justify-between gap-4 py-3.5">
+              <dt className="text-ui-sm text-muted-text">
+                Deducted from balance
+              </dt>
+              <dd className="text-ui-sm font-medium text-main-heading">
+                {formatNaira(quote.balanceDebit)}
+              </dd>
             </div>
             <div className="flex items-start justify-between gap-4 py-3.5">
               <dt className="text-ui-sm text-muted-text">Estimated arrival</dt>
