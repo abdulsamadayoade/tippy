@@ -52,8 +52,6 @@ export default async function AdminCreatorDetailPage({
     email,
     balance,
     tipTotal,
-    tipFees,
-    tipNet,
     tipCount,
     tips,
     totalTips,
@@ -123,9 +121,6 @@ export default async function AdminCreatorDetailPage({
               ({tipCount})
             </span>
           </p>
-          <p className="mt-1 text-xs text-muted-text">
-            {formatNaira(tipFees)} fee · {formatNaira(tipNet)} net
-          </p>
         </div>
 
         <div className="rounded-xl p-4 shadow-surface">
@@ -194,7 +189,8 @@ export default async function AdminCreatorDetailPage({
                   <TableHeader>
                     <TableRow>
                       <TableHead>Date</TableHead>
-                      <TableHead>Amount</TableHead>
+                      <TableHead>To bank</TableHead>
+                      <TableHead>Monnify fee</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Reference</TableHead>
                     </TableRow>
@@ -209,6 +205,9 @@ export default async function AdminCreatorDetailPage({
                         </TableCell>
                         <TableCell className="text-body-text">
                           {formatNaira(payout.amount)}
+                        </TableCell>
+                        <TableCell className="text-body-text">
+                          {formatNaira(payout.providerFeeAmount)}
                         </TableCell>
                         <TableCell className="text-body-text">
                           {payout.status}

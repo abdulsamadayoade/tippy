@@ -88,16 +88,6 @@ export default async function AdminLookupPage({
               <dl className="mt-4 grid grid-cols-3 gap-4 max-sm:grid-cols-1">
                 <Field label="Amount" value={formatNaira(result.tip.amount)} />
                 <Field
-                  label="Platform fee"
-                  value={formatNaira(result.tip.platformFeeAmount)}
-                />
-                <Field
-                  label="Net to creator"
-                  value={formatNaira(result.tip.netAmount)}
-                />
-                {/* Provider truth — this is where the assumed 1.5% collection
-                    fee gets checked one transaction at a time. */}
-                <Field
                   label="Paid (provider)"
                   value={
                     result.tip.amountPaid !== null
@@ -172,8 +162,18 @@ export default async function AdminLookupPage({
               </div>
               <dl className="mt-4 grid grid-cols-3 gap-4 max-sm:grid-cols-1">
                 <Field
-                  label="Amount"
+                  label="To creator’s bank"
                   value={formatNaira(result.payout.amount)}
+                />
+                <Field
+                  label="Monnify fee"
+                  value={formatNaira(result.payout.providerFeeAmount)}
+                />
+                <Field
+                  label="Total balance debit"
+                  value={formatNaira(
+                    result.payout.amount + result.payout.providerFeeAmount,
+                  )}
                 />
                 <Field
                   label="Creator"

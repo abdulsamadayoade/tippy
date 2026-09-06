@@ -19,14 +19,11 @@ export default async function PayoutsPage() {
 
   await reconcileStalePayouts(creator.id);
 
-  const { balance, earnings, account, payouts } = await getPayoutData(
-    creator.id,
-  );
+  const { balance, account, payouts } = await getPayoutData(creator.id);
 
   return (
     <Payouts
       balance={balance}
-      earnings={earnings}
       account={account}
       autoPayout={creator.autoPayout}
       payouts={payouts}
