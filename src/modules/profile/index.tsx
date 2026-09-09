@@ -21,6 +21,7 @@ import { Header } from "./components/header";
 import { ReportPage } from "./components/report-modal";
 import { Secured } from "@/components/elements/secured";
 import { Nav } from "@/components/layout/nav";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { CheckoutPanel } from "./components/checkout-panel";
 import { Success } from "./components/success";
 import type { CheckoutResponse, Step, ProfileProps } from "./types";
@@ -234,12 +235,12 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               href={viewerSignedIn ? "/overview" : "/login"}>
               {viewerSignedIn ? "Dashboard" : "Login"}
             </ButtonLink>
-
-            {viewerSignedIn ? null : (
+            {!viewerSignedIn && (
               <ButtonLink variant="secondary" size="xs" href="/register">
                 Claim my Link
               </ButtonLink>
             )}
+            <ThemeToggle />
           </div>
         </Nav>
 
@@ -275,7 +276,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               ))}
             </div>
 
-            {creator.allowCustomAmount ? (
+            {creator.allowCustomAmount && (
               <AmountInput
                 containerClassName="mt-4"
                 label="Other amount"
@@ -290,7 +291,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
                 }
                 hint={`Enter any amount up to ${formatNaira(MAXIMUM_TIP)}.`}
               />
-            ) : null}
+            )}
 
             <TextArea
               containerClassName={creator.allowCustomAmount ? "mt-2.5" : "mt-4"}

@@ -27,7 +27,9 @@ export function CheckoutPanel({
           photoUrl={creatorPhotoUrl}
         />
         <div className="flex-1">
-          <span className="text-xs text-muted-text-2">Sending a tip to</span>
+          <span className="text-xs text-muted-text-2 dark:text-muted-text">
+            Sending a tip to
+          </span>
           <h2
             className="text-base font-medium text-main-heading"
             id="checkout-title">
@@ -36,7 +38,7 @@ export function CheckoutPanel({
         </div>
         <button
           ref={closeRef}
-          className="inline-flex size-10 cursor-pointer items-center justify-center rounded-full bg-soft disabled:cursor-not-allowed disabled:opacity-45"
+          className="inline-flex size-10 text-black cursor-pointer items-center justify-center rounded-full bg-soft disabled:cursor-not-allowed disabled:opacity-45"
           type="button"
           aria-label="Close checkout"
           disabled={paying}
@@ -46,7 +48,7 @@ export function CheckoutPanel({
       </div>
 
       <div className="px-0 pt-6 pb-2 text-center">
-        <span className="block text-xs font-medium tracking-label text-muted-text-2 uppercase">
+        <span className="block text-xs font-medium tracking-label text-muted-text-2 dark:text-muted-text uppercase">
           You&apos;re sending
         </span>
         <strong className="mt-1.5 block text-2xl font-medium tracking-display text-main-heading">
@@ -60,10 +62,10 @@ export function CheckoutPanel({
         </blockquote>
       )}
 
-      <div className="mt-4.5 mb-3.5 flex items-center justify-center gap-2 text-center text-xs text-muted-text-2">
+      <div className="mt-4.5 mb-3.5 flex items-center justify-center gap-2 text-center text-xs text-muted-text-2 dark:text-muted-text">
         <div className="flex items-center gap-1">
           <LockIcon className="size-4 stroke-2" />
-          <MonnifyLogo className="h-3 w-auto shrink-0 text-primary" />
+          <MonnifyLogo className="h-3 w-auto shrink-0 text-main-heading" />
         </div>
         <span>securely processes your payment</span>
       </div>
