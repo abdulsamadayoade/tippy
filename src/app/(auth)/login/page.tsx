@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Sign in",
   description:
-    "Sign in to Tippy with a one-tap email link — no password to remember.",
+    "Sign in to Tippy with Google or a one-tap email link — no password to remember.",
 };
 
 export default async function Login({

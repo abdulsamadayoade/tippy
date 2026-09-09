@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Create your account",
   description:
-    "Create your Tippy account with a one-tap email link — no password to remember.",
+    "Create your Tippy account with Google or a one-tap email link — no password to remember.",
 };
 
 export default async function Register() {
