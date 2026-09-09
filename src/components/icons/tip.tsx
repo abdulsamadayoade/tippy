@@ -8,9 +8,9 @@ export function TipIcon({ className, ...props }: ComponentProps<"svg">) {
       viewBox="0 0 24 24"
       width="32"
       height="32"
-      color="#064E5B"
+      color="currentColor"
       fill="none"
-      stroke="#064E5B"
+      stroke="currentColor"
       strokeWidth="1.5"
       className={cn(className)}
       {...props}>
