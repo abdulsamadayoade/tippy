@@ -17,12 +17,12 @@ export function Header({ creator }: { creator: PublicCreator }) {
           <CheckBadgeIcon />
         </div>
       </div>
-      <p className="mt-0.7 mb-3 text-sm text-[#F5F7FA]">
+      <p className="mt-1 mb-3 text-sm text-[#F5F7FA] dark:text-body-text">
         @{creator.username} <span aria-hidden="true">·</span>{" "}
         {creator.categoryName}
       </p>
       {creator.bio && (
-        <p className="mx-auto max-w-82 font-medium text-sm leading-normal text-pretty">
+        <p className="mx-auto max-w-82 font-medium text-sm leading-normal text-pretty dark:text-muted-text">
           {creator.bio}
         </p>
       )}

@@ -7,13 +7,13 @@ import {
   motion,
   useReducedMotion,
 } from "motion/react";
-import Link from "next/link";
 import { ArrowRightIcon } from "@/components/icons/arrow-right";
 import { CloseIcon } from "@/components/icons/close";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ProductPreview } from "./components/product-preview";
 import { Features } from "./components/features";
 import { Secured } from "@/components/elements/secured";
@@ -47,11 +47,17 @@ export function Home() {
   return (
     <>
       <Nav>
-        <Link
-          className="bg-white px-3 py-0.5 items-center rounded-full text-sm font-medium text-main-heading"
-          href="/login">
-          Login
-        </Link>
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
+          <ButtonLink variant="secondary" size="xs" href="/login">
+            Login
+          </ButtonLink>
+          <div className="flex shrink-0 items-center gap-2">
+            <ButtonLink variant="secondary" size="xs" href="/register">
+              Claim my Link
+            </ButtonLink>
+            <ThemeToggle />
+          </div>
+        </div>
       </Nav>
 
       <main className="flex min-h-screen w-full max-w-full flex-col py-16">
