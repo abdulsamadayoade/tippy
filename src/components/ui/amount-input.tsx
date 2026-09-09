@@ -122,19 +122,19 @@ export const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
             event.preventDefault();
             inputRef.current?.focus();
           }}>
-          {currencySymbol ? (
+          {currencySymbol && (
             <span
               className="mr-1 text-lg font-medium text-muted-text-2"
               aria-hidden="true">
               {currencySymbol}
             </span>
-          ) : null}
+          )}
 
           <input
             ref={setInputRef}
             id={inputId}
             className={cn(
-              "min-w-0 flex-1 rounded-[inherit] border-0 bg-transparent py-3 text-lg font-medium tracking-display text-ink tabular-nums outline-none disabled:cursor-not-allowed",
+              "min-w-0 flex-1 rounded-[inherit] border-0 bg-transparent py-3 text-lg font-medium tracking-display text-ink dark:text-main-heading tabular-nums outline-none disabled:cursor-not-allowed",
               className,
             )}
             type="text"
@@ -151,14 +151,14 @@ export const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
             {...props}
           />
 
-          {currencyCode ? (
+          {currencyCode && (
             <span className="ml-2 text-xs font-medium text-muted-text-2">
               {currencyCode}
             </span>
-          ) : null}
+          )}
         </div>
 
-        {error || hint ? (
+        {(error || hint) && (
           <p
             className={cn(
               "mt-1.75 text-xs",
@@ -168,7 +168,7 @@ export const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
             aria-live={error ? "polite" : undefined}>
             {error ?? hint}
           </p>
-        ) : null}
+        )}
       </div>
     );
   },

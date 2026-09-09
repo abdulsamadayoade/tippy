@@ -7,7 +7,7 @@ import {
 import { cn } from "@/lib/cn";
 
 const variants = {
-  primary: "major-button bg-primary text-white",
+  primary: "major-button bg-primary",
   secondary: "bg-soft text-ink hover:bg-line",
   ghost: "bg-transparent text-muted-text-2 disabled:opacity-45",
 } as const;
