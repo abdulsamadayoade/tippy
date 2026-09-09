@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { ThemeProvider } from "next-themes";
 import { Geist } from "next/font/google";
 import { SITE_URL, isProductionSite } from "@/lib/site";
 import "./globals.css";
@@ -45,10 +46,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={geist.variable} data-scroll-behavior="smooth">
+    <html
+      lang="en"
+      className={geist.variable}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning>
       <body>
-        {children}
-        <Analytics />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {children}
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );
