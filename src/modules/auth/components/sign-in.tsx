@@ -1,75 +1,34 @@
 "use client";
 
-import { useEffect, useState, type SubmitEvent } from "react";
-import { useSearchParams } from "next/navigation";
-import { inboxUrl, isValidEmail, requestMagicLink } from "../utils";
+import { useSignIn } from "../hooks/use-sign-in";
 import Link from "next/link";
 import { Button, buttonClassName } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
 import { ErrorMessage } from "@/components/elements/error-message";
 import { MailIcon } from "@/components/icons/mail";
-import { RESEND_SECONDS } from "../data";
+import { GoogleIcon } from "@/components/icons/google";
 
 export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
-  const searchParams = useSearchParams();
-  const claimUsername = searchParams.get("username");
-  const linkFailed = searchParams.get("error") === "link";
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
-
+  const {
+    email,
+    error,
+    sending,
+    sent,
+    secondsLeft,
+    linkFailed,
+    googleFailed,
+    googleError,
+    connectingToGoogle,
+    providerUrl,
+    updateEmail,
+    sendEmailLink,
+    resend,
+    continueWithGoogle,
+    useDifferentEmail,
+  } = useSignIn(mode);
   const linkNoun = mode === "sign-in" ? "sign-in link" : "sign-up link";
 
-  useEffect(() => {
-    if (!sent || secondsLeft <= 0) return;
-
-    const timer = window.setInterval(() => {
-      setSecondsLeft((current) => Math.max(0, current - 1));
-    }, 1000);
-    return () => window.clearInterval(timer);
-  }, [sent, secondsLeft]);
-
-  async function submit(event: SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    if (!isValidEmail(email)) {
-      setError("Enter a valid email address.");
-      return;
-    }
-
-    setSending(true);
-    const failure = await requestMagicLink(email.trim(), claimUsername);
-    setSending(false);
-
-    if (failure) {
-      setError(failure);
-      return;
-    }
-
-    setSecondsLeft(RESEND_SECONDS);
-    setSent(true);
-  }
-
-  async function resend() {
-    setSecondsLeft(RESEND_SECONDS);
-    const failure = await requestMagicLink(email.trim(), claimUsername);
-
-    if (failure) {
-      setSent(false);
-      setError(failure);
-    }
-  }
-
-  function useDifferentEmail() {
-    setSent(false);
-    setError("");
-  }
-
   if (sent) {
-    const providerUrl = inboxUrl(email);
-
     return (
       <section className="flex w-full max-w-88 flex-col items-center text-center">
         <span
@@ -131,17 +90,50 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
         {mode === "sign-in" ? "Sign in to Tippy" : "Create your Tippy account"}
       </h1>
       <p className="mx-auto max-w-70 mt-1.5 text-muted-text text-pretty">
-        Enter your email and we&apos;ll send a one-tap {linkNoun}. No password
-        to remember.
+        Continue with Google or use a one-tap email link. No password to
+        remember.
       </p>
 
-      <form className="mt-8 text-left" noValidate onSubmit={submit}>
-        {linkFailed && !sent ? (
+      <div className="mt-8">
+        {(googleFailed || googleError) && (
+          <ErrorMessage>
+            {googleError || "Google sign-in didn’t finish. Please try again."}
+          </ErrorMessage>
+        )}
+
+        <Button
+          className="w-full bg-white shadow-surface hover:bg-soft"
+          variant="secondary"
+          type="button"
+          loading={connectingToGoogle}
+          loadingText="Connecting…"
+          onClick={continueWithGoogle}>
+          <GoogleIcon className="size-4.5" aria-hidden="true" />
+          Continue with Google
+        </Button>
+      </div>
+
+      <div className="my-6 flex items-center gap-3" aria-hidden="true">
+        <span className="h-px flex-1 bg-line" />
+        <span className="text-ui-sm text-muted-text-2">
+          or continue with email
+        </span>
+        <span className="h-px flex-1 bg-line" />
+      </div>
+
+      <form
+        className="text-left"
+        noValidate
+        onSubmit={async (event) => {
+          event.preventDefault();
+          await sendEmailLink();
+        }}>
+        {linkFailed && !sent && (
           <ErrorMessage>
             That sign-in link is invalid or has expired. Request a new one
             below.
           </ErrorMessage>
-        ) : null}
+        )}
         <TextInput
           label="Email"
           labelClassName="text-main-heading"
@@ -154,10 +146,7 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
           placeholder="name@email.com"
           value={email}
           error={error}
-          onChange={(event) => {
-            setEmail(event.target.value);
-            if (error) setError("");
-          }}
+          onChange={(event) => updateEmail(event.target.value)}
         />
 
         <Button
