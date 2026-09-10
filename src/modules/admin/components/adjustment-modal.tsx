@@ -32,9 +32,7 @@ export function AdjustmentModal({ creators }: { creators: CreatorOption[] }) {
   const [serverError, setServerError] = useState("");
   const [saved, setSaved] = useState(false);
   const [relatedTip, setRelatedTip] = useState<{
-    gross: number;
-    fee: number;
-    net: number;
+    amount: number;
   } | null>(null);
 
   const amountNumber = Number(amount);
@@ -93,7 +91,7 @@ export function AdjustmentModal({ creators }: { creators: CreatorOption[] }) {
 
     setRelatedTip(result.tip);
     if (!creatorId) setCreatorId(result.tip.creatorId);
-    if (!amount) setAmount(String(result.tip.net));
+    if (!amount) setAmount(String(result.tip.amount));
   }
 
   async function submit(event: SubmitEvent<HTMLFormElement>) {
@@ -281,12 +279,8 @@ export function AdjustmentModal({ creators }: { creators: CreatorOption[] }) {
 
                 {relatedTip && (
                   <p className="rounded-xl bg-soft px-3.5 py-3 text-sm text-body-text">
-                    That tip: {formatNaira(relatedTip.gross)} gross ·{" "}
-                    {formatNaira(relatedTip.fee)} fee ·{" "}
-                    <strong className="font-semibold text-main-heading">
-                      {formatNaira(relatedTip.net)} credited
-                    </strong>
-                    . A refund should normally debit the credited amount.
+                    That tip was {formatNaira(relatedTip.amount)}. A refund
+                    should normally debit the same amount.
                   </p>
                 )}
 
