@@ -1,4 +1,5 @@
 import { ADJUSTMENT_TYPES } from "./schema";
+import type { ReactNode } from "react";
 
 type AuditLogEntry = {
   id: number;
@@ -35,10 +36,25 @@ type CreatorTipEntry = {
   createdAt: string;
 };
 
+type CreatorDetailView =
+  | "tips"
+  | "withdrawals"
+  | "adjustments"
+  | "reports"
+  | "account-history";
+
+type CreatorDetailTab = {
+  value: CreatorDetailView;
+  label: string;
+  content: ReactNode;
+};
+
 export type {
   AuditLogEntry,
   CreatorOption,
   AdjustmentType,
   CreatorTipEntry,
   PendingOperatorAction,
+  CreatorDetailTab,
+  CreatorDetailView,
 };
