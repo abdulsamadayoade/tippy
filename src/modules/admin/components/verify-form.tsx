@@ -8,7 +8,7 @@ import {
   startTotpEnrollment,
   verifyAdminTotp,
   verifyAdminBackupCode,
-} from "../actions";
+} from "../actions/auth";
 import type { Enrollment } from "../types";
 
 export function AdminVerifyForm({ mode }: { mode: "enroll" | "verify" }) {

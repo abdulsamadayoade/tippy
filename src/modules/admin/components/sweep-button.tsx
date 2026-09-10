@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { runSweepAction } from "../actions";
+import { runSweepAction } from "../actions/maintenance";
 import { Button } from "@/components/ui/button";
 import type { MonitorSweepSummary } from "@/lib/monitor";
 

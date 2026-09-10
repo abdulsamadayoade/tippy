@@ -11,9 +11,9 @@ import {
   unsuspendCreator,
   freezeCreatorPayouts,
   unfreezeCreatorPayouts,
-  reconcileCreatorPayoutsAction,
-  payOutBelowMinimumAction,
-} from "../actions";
+} from "../actions/moderation";
+import { reconcileCreatorPayoutsAction } from "../actions/reconciliation";
+import { payOutBelowMinimumAction } from "../actions/payouts";
 import { PENDING_OPERATOR_ACTION_LABELS } from "../data";
 import type { PendingOperatorAction } from "../types";
 

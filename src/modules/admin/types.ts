@@ -55,6 +55,12 @@ type Enrollment = {
   backupCodes: string[];
 };
 
+type AdminContext = {
+  session: { user: { id: string } };
+  ip: string | null;
+  userAgent: string | null;
+};
+
 export type {
   AuditLogEntry,
   CreatorOption,
@@ -64,4 +70,5 @@ export type {
   CreatorDetailTab,
   CreatorDetailView,
   Enrollment,
+  AdminContext,
 };

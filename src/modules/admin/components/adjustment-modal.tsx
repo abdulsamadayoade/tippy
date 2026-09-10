@@ -3,7 +3,10 @@
 import { useEffect, useRef, useState, type SubmitEvent } from "react";
 import { useRouter } from "next/navigation";
 import { formatNaira } from "@/lib/utils";
-import { createAdjustment, lookupAdjustmentReferenceAction } from "../actions";
+import {
+  createAdjustment,
+  lookupAdjustmentReferenceAction,
+} from "../actions/adjustments";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";

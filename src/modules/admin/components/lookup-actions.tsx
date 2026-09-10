@@ -7,7 +7,7 @@ import {
   reconcileTipAction,
   reconcilePayoutAction,
   fetchProviderStateAction,
-} from "../actions";
+} from "../actions/reconciliation";
 
 export function LookupActions({
   paymentReference,
