@@ -25,4 +25,29 @@ async function requestMagicLink(email: string, claimUsername?: string | null) {
   return error ? "We couldn’t send the link. Try again." : null;
 }
 
-export { inboxUrl, isValidEmail, requestMagicLink };
+async function signInWithGoogle({
+  mode,
+  claimUsername,
+}: {
+  mode: "sign-in" | "sign-up";
+  claimUsername?: string | null;
+}) {
+  const onboardingUrl = claimUsername
+    ? `/onboarding?username=${encodeURIComponent(claimUsername)}`
+    : "/onboarding";
+  const authPath = mode === "sign-in" ? "/login" : "/register";
+  const errorUrl = claimUsername
+    ? `${authPath}?username=${encodeURIComponent(claimUsername)}&auth=google`
+    : `${authPath}?auth=google`;
+
+  const { error } = await authClient.signIn.social({
+    provider: "google",
+    callbackURL: claimUsername ? onboardingUrl : "/overview",
+    newUserCallbackURL: onboardingUrl,
+    errorCallbackURL: errorUrl,
+  });
+
+  return error ? "We couldn’t continue with Google. Try again." : null;
+}
+
+export { inboxUrl, isValidEmail, requestMagicLink, signInWithGoogle };
