@@ -49,6 +49,12 @@ type CreatorDetailTab = {
   content: ReactNode;
 };
 
+type Enrollment = {
+  qrDataUrl: string;
+  secret: string;
+  backupCodes: string[];
+};
+
 export type {
   AuditLogEntry,
   CreatorOption,
@@ -57,4 +63,5 @@ export type {
   PendingOperatorAction,
   CreatorDetailTab,
   CreatorDetailView,
+  Enrollment,
 };
