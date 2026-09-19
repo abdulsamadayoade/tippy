@@ -5,33 +5,33 @@ const terms: LegalSection[] = [
     heading: "What Tippy is",
     paragraphs: [
       "Tippy gives creators a personal page where supporters can send them tips. Supporters pay through our payment partner, Monnify, and creators withdraw their balance to a Nigerian bank account.",
-      "These terms are an agreement between you and Nightshift Industries, the company that operates Tippy.",
+      "These terms are an agreement between you and Very Serious Company, the company that operates Tippy.",
     ],
   },
   {
     heading: "Your account",
     paragraphs: [
-      "You sign in with a link we email you — there's no password to manage. Keep your email account secure: anyone who can read your email can access your Tippy account. You're responsible for what happens under your account, and the details you give us (like your name and bank account) must be accurate and yours.",
+      "You sign in with a link we email you or use your Google account — there's no password to manage. Keep your email account secure: anyone who can read your email can access your Tippy account. You're responsible for what happens under your account, and the details you give us (like your name and bank account) must be accurate and yours.",
     ],
   },
   {
     heading: "Tips",
     paragraphs: [
-      "Tips are voluntary gifts from supporters to creators. They aren't payments for goods or services, and they're not refundable once settled, except where the law requires it. Card and bank details are collected and processed by Monnify — they never touch our servers.",
+      "Tips are voluntary gifts from supporters to creators. They aren't payments for goods or services, and they're not refundable once settled, except where the law requires it. Supporter checkout details are collected and processed by Monnify. Tippy stores creators’ payout bank details to arrange withdrawals.",
       "For the details — including duplicate charges and how to raise a dispute — see our Refund & Dispute Policy at [tippy.cash/refunds](/refunds).",
     ],
   },
   {
     heading: "Payouts",
     paragraphs: [
-      "Settled tips build up your available balance. Once it reaches ₦5,000 you can withdraw to your verified bank account, or turn on automatic payouts to receive your full balance every Friday. If a payment behind your balance is reversed or found to be fraudulent, we may adjust your balance to match.",
+      "Settled tips build up your available balance. Once it reaches ₦5,000 and your BVN has been verified against your payout bank account, you can withdraw or enable full-balance payouts every Friday. Changing your bank account requires a new identity check. Automatic payouts wait until your account is eligible. If a payment behind your balance is reversed or found to be fraudulent, we may adjust your balance to match.",
     ],
   },
   {
     heading: "Fees",
     paragraphs: [
       "Creators receive the full tip amount. Monnify charges the supporter a separate payment-processing fee.",
-      "Tippy adds no withdrawal fee. Monnify deducts its processing fee from the creator's selected withdrawal before the remaining amount is sent to their bank.",
+      "Tippy deducts the quoted transfer fee from your selected withdrawal before instructing Monnify to send the remaining amount to your bank. Live transfer fees are ₦10 below ₦10,000, ₦20 from ₦10,000 to ₦49,999.99, and ₦40 from ₦50,000, based on the amount selected. Manual withdrawals show the fee and bank amount before confirmation; automatic payouts use the same schedule. Your selected amount is the total balance debit. If Monnify charges a different fee, Tippy records the difference without changing your approved debit. Tippy covers any excess and does not automatically refund a lower provider fee.",
     ],
   },
   {
@@ -52,7 +52,7 @@ const privacyPolicy: LegalSection[] = [
   {
     heading: "Who we are",
     paragraphs: [
-      "Tippy is operated by Nightshift Industries, which is responsible for the personal information described in this policy. When this page says 'we', that's who it means.",
+      "Tippy is operated by Very Serious Company, which is responsible for the personal information described in this policy. When this page says 'we', that's who it means.",
     ],
   },
   {
@@ -62,6 +62,7 @@ const privacyPolicy: LegalSection[] = [
       "Account details — your email, display name, username, category, bio, and avatar.",
       "Tip records — the amount, note, and (if the supporter chose to share it) their name and email.",
       "Payout details — your bank name, account number, and the account holder's name, verified with your bank.",
+      "Identity verification — with your consent, we send your BVN and bank details to Monnify to check that they match. We do not store your BVN. We retain the verification result, bank-account revision, verification environment, time, provider reference when supplied, and consent record. Tippy covers verification costs.",
       "A session cookie that keeps you signed in. No advertising or cross-site tracking.",
     ],
   },
@@ -74,7 +75,7 @@ const privacyPolicy: LegalSection[] = [
   {
     heading: "Who we share it with",
     paragraphs: [
-      "Only the services that make Tippy work, and only what each one needs: Monnify processes payments and bank transfers, Resend delivers our emails, and our hosting providers store the application and its database. Card details go directly to Monnify and are never stored by us.",
+      "Only the services that make Tippy work, and only what each one needs: Monnify processes payments, bank transfers, and identity verification, Resend delivers our emails, and our hosting providers store the application and its database. Card details go directly to Monnify and are never stored by us.",
     ],
   },
   {

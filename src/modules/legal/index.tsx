@@ -47,9 +47,12 @@ export function LegalPage({
         <div className="mt-7 border-t border-line pt-4">
           <p className="text-sm leading-normal text-body-text">
             Tippy is operated by{" "}
-            <span className="border-dashed border-white border-2 px-0.5 bg-body-text text-white">
-              Nightshift Industries
-            </span>
+            <a
+              href="https://veryseriouscompany.co"
+              target="_blank"
+              className="border-dashed border-white border-2 px-0.5 bg-body-text text-white">
+              Very Serious Company
+            </a>
             . Questions? Write to us at{" "}
             <a
               className="font-medium text-main-heading border-transparent border-2 border-dashed hover:border-body-text"
