@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getPayoutEnvironment } from "@/lib/payout-config";
 import { Payouts } from "@/modules/payouts";
 import { getPayoutData } from "@/lib/dashboard";
 import { reconcileStalePayouts } from "@/lib/payouts";
@@ -19,10 +20,19 @@ export default async function PayoutsPage() {
 
   await reconcileStalePayouts(creator.id);
 
-  const { balance, account, payouts } = await getPayoutData(creator.id);
+  const { balance, account, payouts, verification, destinationKey } =
+    await getPayoutData(creator.id);
 
   return (
     <Payouts
+      environment={getPayoutEnvironment()}
+      payoutBlockReason={
+        creator.suspended || creator.payoutsFrozen
+          ? "Withdrawals are paused on your account. Contact hello@tippy.cash."
+          : null
+      }
+      verification={verification}
+      destinationKey={destinationKey}
       balance={balance}
       account={account}
       autoPayout={creator.autoPayout}
