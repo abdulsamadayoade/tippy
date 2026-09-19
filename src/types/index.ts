@@ -49,7 +49,7 @@ type Payout = {
   id: string;
   date: string;
   amount: number;
-  providerFeeAmount: number;
+  creatorFeeAmount: number;
   status: PayoutStatus;
   reference: string;
 };

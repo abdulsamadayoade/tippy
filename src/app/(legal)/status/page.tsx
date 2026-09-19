@@ -103,10 +103,10 @@ export default async function StatusPage() {
               key={name}
               className={cn(
                 "flex items-center justify-between gap-3 px-4.5 py-4",
-                index > 0 && "border-t border-line",
+                index > 0 && "border-t-[0.3px] border-line",
               )}>
               <div className="min-w-0">
-                <span className="block text-[15px] font-medium text-main-heading">
+                <span className="block text-sm font-medium text-main-heading">
                   {name}
                 </span>
                 <span className="block text-ui-sm text-muted-text">
