@@ -110,7 +110,7 @@ export const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
 
         <div
           className={cn(
-            "mt-2 flex min-h-13 items-center rounded-xl bg-white px-3.5 shadow-surface transition-shadow duration-150 ease-out",
+            "mt-2 flex min-h-13 items-center rounded-xl bg-form-input-bg px-3.5 shadow-surface transition-shadow duration-150 ease-out",
             invalid
               ? "shadow-[inset_0_0_0_1px_var(--color-danger)] focus-within:shadow-[inset_0_0_0_1px_var(--color-danger),0_0_0_4px_rgba(143,48,48,0.09),0_4px_12px_rgba(143,48,48,0.07)]"
               : "focus-within:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_rgba(6,78,91,0.12),0_4px_12px_rgba(6,78,91,0.08)]",

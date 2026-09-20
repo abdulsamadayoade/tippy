@@ -87,7 +87,7 @@ export function ProfileCard({ creator, categories }: ProfileCardProps) {
   }
 
   return (
-    <article className="mt-5 rounded-surface bg-white p-4.5 shadow-surface">
+    <article className="mt-5 rounded-surface bg-card-bg p-4.5 shadow-surface">
       <div className="flex items-center gap-4">
         <CreatorAvatar
           size="large"
@@ -107,11 +107,11 @@ export function ProfileCard({ creator, categories }: ProfileCardProps) {
           <span className="text-ui-sm text-muted-text">
             JPEG, PNG, or WebP · a square image works best
           </span>
-          {photoError ? (
+          {photoError && (
             <p className="text-xs text-danger" role="alert">
               {photoError}
             </p>
-          ) : null}
+          )}
         </div>
         <input
           ref={photoInputRef}

@@ -110,7 +110,7 @@ export function TipPresetsCard({
   }
 
   return (
-    <article className="mt-3 rounded-surface bg-white shadow-surface">
+    <article className="mt-3 rounded-surface bg-card-bg shadow-surface">
       <form className="p-4.5" onSubmit={handleSubmit} noValidate>
         <p className="text-ui-sm text-muted-text">
           The four amounts supporters see on your page.
@@ -124,11 +124,11 @@ export function TipPresetsCard({
                 <span className="text-xs font-medium text-muted-text">
                   Preset {index + 1}
                 </span>
-                {index === POPULAR_PRESET_INDEX ? (
+                {index === POPULAR_PRESET_INDEX && (
                   <span className="rounded-full bg-soft px-2 py-0.5 text-xs leading-none font-medium text-body-text">
                     Popular
                   </span>
-                ) : null}
+                )}
               </div>
               <div className="mt-1.5 grid grid-cols-2 gap-2.5 max-phone:grid-cols-1">
                 <AmountInput
@@ -192,7 +192,7 @@ export function TipPresetsCard({
         </div>
       </form>
 
-      <div className="flex items-center justify-between gap-3 border-t border-line px-4.5 py-4">
+      <div className="flex items-center justify-between gap-3 border-t border-divider px-4.5 py-4">
         <div className="min-w-0">
           <span className="block text-ui-sm text-muted-text">
             Custom amount
