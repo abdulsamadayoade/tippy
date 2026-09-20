@@ -112,7 +112,7 @@ export function WithdrawModal({
       describedBy="withdrawal-dialog-description"
       dismissible={!submitting}
       initialFocusRef={done ? doneRef : amountRef}
-      className="max-h-[calc(100dvh-2rem)] overflow-y-auto w-full max-w-105 rounded-[20px] bg-white p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
+      className="max-h-[calc(100dvh-2rem)] overflow-y-auto w-full max-w-105 rounded-[20px] bg-card-bg p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
       {done && quote ? (
         <>
           <span
@@ -175,7 +175,7 @@ export function WithdrawModal({
                 ref={amountRef}
                 id="withdraw-amount"
                 className={cn(
-                  "min-h-13 w-full rounded-xl bg-white pr-20 pl-9 text-lg font-medium text-main-heading tabular-nums shadow-surface outline-none transition-shadow duration-150 ease-out placeholder:font-normal placeholder:text-muted-text",
+                  "min-h-13 w-full rounded-xl bg-form-input-bg pr-20 pl-9 text-lg font-medium text-main-heading tabular-nums shadow-surface outline-none transition-shadow duration-150 ease-out placeholder:font-normal placeholder:text-muted-text",
                   "focus:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_rgba(6,78,91,0.12),0_4px_12px_rgba(6,78,91,0.08)]",
                   (overBalance || belowMinimum) &&
                     "shadow-[inset_0_0_0_1px_var(--color-danger)]",
@@ -193,7 +193,7 @@ export function WithdrawModal({
                 }}
               />
               <button
-                className="absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer rounded-full bg-soft dark:bg-ink dark:hover:bg-copy/20 px-3 py-1.5 text-xs font-medium text-main-heading transition-colors duration-150 hover:bg-line"
+                className="absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer rounded-full bg-soft px-3 py-1.5 text-xs font-medium text-main-heading transition-colors duration-150 hover:bg-line"
                 type="button"
                 disabled={submitting}
                 onClick={() => setAmountValue(String(balance))}>
@@ -203,7 +203,7 @@ export function WithdrawModal({
             <p
               className={cn(
                 "mt-1.5 text-xs",
-                hintIsError ? "text-danger" : "text-muted-text",
+                hintIsError ? "text-red-500" : "text-muted-text",
               )}
               role={serverError ? "alert" : undefined}
               id="withdraw-amount-hint">
@@ -216,7 +216,7 @@ export function WithdrawModal({
             </p>
           </div>
 
-          <dl className="mt-4 divide-y divide-line rounded-surface bg-soft dark:bg-ink dark:divide-copy/20 px-4">
+          <dl className="mt-4 divide-y divide-divider rounded-surface bg-soft px-4">
             <div className="flex items-start justify-between gap-4 py-3.5">
               <dt className="text-ui-sm text-muted-text">Account</dt>
               <dd className="text-right text-ui-sm font-medium text-main-heading">
