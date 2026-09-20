@@ -1,0 +1,1 @@
+ALTER TABLE "bank_account" DROP COLUMN "verification_consent_version";
