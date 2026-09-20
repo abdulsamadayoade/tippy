@@ -38,7 +38,7 @@ export function IdentityCard() {
 
   return (
     <article
-      className="mt-4 rounded-surface bg-white px-4.5 py-5 shadow-surface"
+      className="mt-4 rounded-surface bg-card-bg px-4.5 py-5 shadow-surface"
       aria-labelledby="identity-heading">
       <h2
         id="identity-heading"
@@ -81,7 +81,7 @@ export function IdentityCard() {
           </span>
         </label>
         {error && (
-          <p role="alert" className="text-xs text-danger">
+          <p role="alert" className="text-xs text-red-500">
             {error}
           </p>
         )}

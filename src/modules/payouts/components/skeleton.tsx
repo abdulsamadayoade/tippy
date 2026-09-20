@@ -25,7 +25,7 @@ export function PayoutsSkeleton() {
         <BannerBlock className="h-9.5 w-36 rounded-full" />
       </article>
 
-      <article className="mt-4 rounded-surface bg-white shadow-surface">
+      <article className="mt-4 rounded-surface bg-card-bg shadow-surface">
         <div className="flex items-center justify-between gap-3 px-4.5 py-4">
           <div className="min-w-0 flex-1">
             <Skeleton className="h-4 w-28 max-w-full" />
@@ -44,7 +44,7 @@ export function PayoutsSkeleton() {
 
       <div className="mt-7">
         <Skeleton className="h-5 w-28" />
-        <div className="mt-3 flex flex-col rounded-surface bg-white p-1 shadow-surface">
+        <div className="mt-3 flex flex-col rounded-surface bg-card-bg p-1 shadow-surface">
           {[0, 1, 2].map((index) => (
             <div
               key={index}

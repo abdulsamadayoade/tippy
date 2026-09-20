@@ -11,7 +11,7 @@ export function PastPayouts({ payouts }: PastPayoutsProps) {
         id="payout-history-heading">
         Past payouts
       </h2>
-      <div className="mt-3 flex flex-col rounded-surface bg-white p-1 shadow-surface">
+      <div className="mt-3 flex flex-col rounded-surface bg-card-bg p-1 shadow-surface">
         {payouts.length === 0 ? (
           <p className="px-4 py-8 text-center text-muted-text">
             No payouts yet — your withdrawals will show up here.
