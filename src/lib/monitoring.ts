@@ -3,30 +3,37 @@ import * as Sentry from "@sentry/nextjs";
 export type ErrorCategory =
   | "monnify.auth"
   | "bank.verification"
+  | "identity.verification"
   | "tip.settlement"
+  | "tip.notification"
   | "webhook.settlement"
   | "payout.initiation"
   | "payout.reconciliation"
   | "payout.auto"
+  | "payout.notification"
   | "email.resend"
   | "db.connection"
-  | "db.health"
   | "cron.config"
   | "checkout.start"
   | "webhook.signature"
   | "wallet.balance"
-  | "monitor.sweep";
+  | "monitor.sweep"
+  | "avatar.upload"
+  | "avatar.delete"
+  | "abuse.report"
+  | "admin.auth"
+  | "admin.action"
+  | "admin.export"
+  | "audit.write"
+  | "webhook.persistence";
 
 type ReportOptions = {
   category: ErrorCategory;
   tags?: Record<string, string | number | boolean>;
-  /** Whitelisted, non-sensitive values ONLY — never raw request/response
-   *  objects, account numbers, emails, tokens, or Monnify payloads. */
   extra?: Record<string, unknown>;
   fingerprint?: string[];
 };
 
-/** console.error + Sentry in one call so no site can forget one half. */
 export function reportError(error: unknown, options: ReportOptions): void {
   console.error(`[${options.category}]`, error);
   Sentry.captureException(error, {
@@ -63,6 +70,8 @@ export function resolveSentryEnvironment(): "local" | "staging" | "production" {
 }
 
 const REDACTIONS: Array<[RegExp, string]> = [
+  [/\b\d{11}\b/g, "[redacted identity]"],
+  [/((?:bvn|nin)["'=:\s]+)[^\s,}]+/gi, "$1[redacted]"],
   [/(accountNumber["'=:\s]+)\d+/gi, "$1[redacted]"],
   [/(sourceAccountNumber["'=:\s]+)\d+/gi, "$1[redacted]"],
   [/Basic\s+[A-Za-z0-9+/=]+/g, "Basic [redacted]"],
@@ -76,7 +85,7 @@ function scrubText(value: string): string {
 }
 
 const SENSITIVE_KEY =
-  /account_?(number|name)|token|secret|password|api_?key|authorization|credential|database_?url|connection|email|tipper_?name|^note$|raw_?body/i;
+  /bvn|nin|identity|account_?(number|name)|token|secret|password|api_?key|authorization|credential|database_?url|connection|email|tipper_?name|^note$|raw_?body/i;
 
 function scrubValue(value: unknown, key = "", depth = 0): unknown {
   if (depth > 6) return "[redacted: too deep]";
@@ -96,8 +105,6 @@ function scrubValue(value: unknown, key = "", depth = 0): unknown {
   return value;
 }
 
-/** beforeSend: secrets, credentials, and account numbers must never leave
- *  the process, whatever surface of the event they end up on. */
 export function scrubEvent<E extends Sentry.ErrorEvent>(event: E): E {
   if (event.request?.headers) {
     delete event.request.headers["authorization"];
@@ -105,6 +112,7 @@ export function scrubEvent<E extends Sentry.ErrorEvent>(event: E): E {
     delete event.request.headers["cookie"];
     delete event.request.headers["Cookie"];
   }
+  if (event.request?.data) event.request.data = scrubValue(event.request.data);
   if (event.request?.url) {
     event.request.url = scrubText(event.request.url);
   }
@@ -117,6 +125,7 @@ export function scrubEvent<E extends Sentry.ErrorEvent>(event: E): E {
   if (event.message) event.message = scrubText(event.message);
   for (const crumb of event.breadcrumbs ?? []) {
     if (crumb.message) crumb.message = scrubText(crumb.message);
+    if (crumb.data) crumb.data = scrubValue(crumb.data) as typeof crumb.data;
     if (typeof crumb.data?.url === "string") {
       crumb.data.url = scrubText(crumb.data.url);
     }
@@ -133,9 +142,6 @@ export function scrubEvent<E extends Sentry.ErrorEvent>(event: E): E {
   return event;
 }
 
-/** beforeBreadcrumb: outgoing fetch/http breadcrumbs lose their query string
- *  entirely — bank validation puts the full account number in the query, and
- *  no query string here is diagnostic. */
 export function sanitizeBreadcrumb(
   breadcrumb: Sentry.Breadcrumb,
 ): Sentry.Breadcrumb | null {

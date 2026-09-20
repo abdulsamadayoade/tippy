@@ -42,7 +42,9 @@ function signatureMatches(
 
   const key = Buffer.from(secret.replace(/^whsec_/, ""), "base64");
   const expected = Buffer.from(
-    createHmac("sha256", key).update(`${id}.${timestamp}.${rawBody}`).digest("base64"),
+    createHmac("sha256", key)
+      .update(`${id}.${timestamp}.${rawBody}`)
+      .digest("base64"),
   );
 
   return signatures.split(" ").some((entry) => {
@@ -103,8 +105,7 @@ export async function POST(request: Request) {
           ? { bounceSubType: event.data.bounce.subType }
           : {}),
       },
-      // email_id only — look the recipient up in the Resend dashboard.
-      extra: { emailId: event.data?.email_id },
+      extra: { resendId: event.data?.email_id },
       fingerprint: ["resend-delivery-failure", event.type],
     });
   }
