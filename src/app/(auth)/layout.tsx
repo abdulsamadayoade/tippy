@@ -1,5 +1,4 @@
 import { Nav } from "@/components/layout/nav";
-import { AuthNavActions } from "@/modules/auth/components/nav-actions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,9 +12,7 @@ export default function AuthLayout({
 }>) {
   return (
     <div className="flex min-h-dvh w-full flex-col">
-      <Nav>
-        <AuthNavActions />
-      </Nav>
+      <Nav />
       <div className="flex flex-1 items-center justify-center px-5 py-10">
         {children}
       </div>

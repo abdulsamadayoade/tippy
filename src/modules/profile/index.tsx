@@ -12,7 +12,7 @@ import { MAXIMUM_TIP, MINIMUM_TIP } from "@/data/constants";
 import { POPULAR_PRESET_INDEX, resolvePresets } from "./data";
 import { AnimatedNaira } from "./components/animated-naira";
 import { fireConfetti } from "./components/confetti";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { TextArea } from "@/components/ui/text-area";
 import { TextInput } from "@/components/ui/text-input";
 import { AmountInput } from "@/components/ui/amount-input";
@@ -22,8 +22,6 @@ import { Header } from "./components/header";
 import { ReportPage } from "./components/report-modal";
 import { Secured } from "@/components/elements/secured";
 import { Nav } from "@/components/layout/nav";
-import { SoundToggle } from "@/components/ui/sound-toggle";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { CheckoutPanel } from "./components/checkout-panel";
 import { Success } from "./components/success";
 import type { CheckoutResponse, Step, ProfileProps } from "./types";
@@ -229,23 +227,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
         strategy="afterInteractive"
       />
       <div className="min-h-screen flex flex-col justify-between">
-        <Nav>
-          <div className="flex items-center gap-2">
-            <ButtonLink
-              variant="secondary"
-              size="xs"
-              href={viewerSignedIn ? "/overview" : "/login"}>
-              {viewerSignedIn ? "Dashboard" : "Login"}
-            </ButtonLink>
-            {!viewerSignedIn && (
-              <ButtonLink variant="secondary" size="xs" href="/register">
-                Claim my Link
-              </ButtonLink>
-            )}
-            <SoundToggle />
-            <ThemeToggle />
-          </div>
-        </Nav>
+        <Nav signedIn={viewerSignedIn} />
 
         <main className="md:min-h-screen overflow-x-hidden pt-10 flex-1 flex flex-col justify-between">
           <Header creator={creator} />

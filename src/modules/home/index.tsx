@@ -10,8 +10,6 @@ import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
-import { SoundToggle } from "@/components/ui/sound-toggle";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ProductPreview } from "./components/product-preview";
 import { Features } from "./components/features";
 import { Secured } from "@/components/elements/secured";
@@ -57,20 +55,7 @@ export function Home() {
 
   return (
     <>
-      <Nav>
-        <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
-          <ButtonLink variant="secondary" size="xs" href="/login">
-            Login
-          </ButtonLink>
-          <div className="flex shrink-0 items-center gap-2">
-            <ButtonLink variant="secondary" size="xs" href="/register">
-              Claim my Link
-            </ButtonLink>
-            <SoundToggle />
-            <ThemeToggle />
-          </div>
-        </div>
-      </Nav>
+      <Nav />
 
       <main className="flex min-h-screen w-full max-w-full flex-col py-16">
         <section className="mx-auto flex w-full max-w-180 flex-1 flex-col items-center px-5 text-center">
@@ -164,7 +149,7 @@ export function Home() {
               </form>
             ) : (
               <div className="[view-transition-name:claim-control]">
-                <Button onClick={openClaimFlow}>Claim your link</Button>
+                <Button onClick={openClaimFlow}>Claim my link</Button>
               </div>
             )}
 

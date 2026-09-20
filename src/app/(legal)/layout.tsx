@@ -1,5 +1,4 @@
 import { Nav } from "@/components/layout/nav";
-import { ButtonLink } from "@/components/ui/button";
 import type { ReactNode } from "react";
 
 export default function LegalLayout({
@@ -7,11 +6,7 @@ export default function LegalLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <div className="flex min-h-dvh flex-col justify-between">
-      <Nav>
-        <ButtonLink variant="secondary" size="xs" href="/login">
-          Login
-        </ButtonLink>
-      </Nav>
+      <Nav />
       {children}
     </div>
   );
