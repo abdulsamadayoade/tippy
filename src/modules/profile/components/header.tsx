@@ -7,6 +7,7 @@ export function Header({ creator }: { creator: PublicCreator }) {
     <header className="text-center mx-auto max-w-130">
       <CreatorAvatar
         name={creator.displayName}
+        seed={creator.username}
         photoUrl={creator.avatarUrl}
         loading="eager"
       />

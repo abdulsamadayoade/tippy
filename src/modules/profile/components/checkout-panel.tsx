@@ -9,6 +9,7 @@ import { CheckoutPanelProps } from "../types";
 
 export function CheckoutPanel({
   creatorName,
+  creatorUsername,
   creatorPhotoUrl,
   amount,
   message,
@@ -24,6 +25,7 @@ export function CheckoutPanel({
         <CreatorAvatar
           size="medium"
           name={creatorName}
+          seed={creatorUsername}
           photoUrl={creatorPhotoUrl}
         />
         <div className="flex-1">

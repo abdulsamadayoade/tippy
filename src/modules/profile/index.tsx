@@ -403,6 +403,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
         className="max-h-[calc(100dvh-24px)] w-full max-w-130 overflow-y-auto overscroll-contain rounded-t-3xl bg-white px-5 pt-6 pb-[calc(24px+env(safe-area-inset-bottom))] shadow-[0_-16px_50px_-20px_rgba(0,0,0,0.3)]">
         <CheckoutPanel
           creatorName={creator.displayName}
+          creatorUsername={creator.username}
           creatorPhotoUrl={creator.avatarUrl}
           amount={amount}
           message={message}

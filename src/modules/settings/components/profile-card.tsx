@@ -92,6 +92,7 @@ export function ProfileCard({ creator, categories }: ProfileCardProps) {
         <CreatorAvatar
           size="large"
           name={values.displayName || creator.displayName}
+          seed={creator.username}
           photoUrl={creator.avatarUrl}
         />
         <div className="flex min-w-0 flex-col items-start gap-2">

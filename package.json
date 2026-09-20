@@ -14,11 +14,13 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@blobatar/react": "^2.7.0",
     "@number-flow/react": "^0.6.2",
     "@sentry/nextjs": "^10.70.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.6.1",
     "better-auth": "^1.6.23",
+    "blobatar": "^2.7.0",
     "cuelume": "^0.2.2",
     "drizzle-orm": "^0.45.2",
     "next": "16.3.3",
