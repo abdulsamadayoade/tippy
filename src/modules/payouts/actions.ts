@@ -111,7 +111,6 @@ async function savePayoutAccount(values: {
                 verificationReference: null,
                 verificationAttemptId: null,
                 verificationConsentAt: null,
-                verificationConsentVersion: null,
               }
             : {}),
         },
