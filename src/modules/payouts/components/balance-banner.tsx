@@ -6,6 +6,7 @@ import type { BalanceBannerProps } from "../types";
 
 export function BalanceBanner({
   total,
+  blockedReason,
   hasAccount,
   autoPayout,
   canWithdraw,
@@ -28,9 +29,11 @@ export function BalanceBanner({
           {formatNaira(total)}
         </strong>
         <small className="mt-2.5 block text-xs text-white/50">
-          {hasAccount && autoPayout
-            ? `Next automatic payout · ${nextPayoutDate} · min ${formatNaira(MINIMUM_WITHDRAWAL)}`
-            : `Automatic payouts are off · min ${formatNaira(MINIMUM_WITHDRAWAL)}`}
+          {blockedReason
+            ? blockedReason
+            : hasAccount && autoPayout
+              ? `Next automatic payout · ${nextPayoutDate} · min ${formatNaira(MINIMUM_WITHDRAWAL)}`
+              : `Automatic payouts are off · min ${formatNaira(MINIMUM_WITHDRAWAL)}`}
         </small>
       </div>
       {hasAccount ? (
@@ -47,11 +50,13 @@ export function BalanceBanner({
           )}
           {withdrawalRequested
             ? "Withdrawal pending"
-            : canWithdraw
-              ? "Withdraw now"
-              : total
-                ? `${formatNaira(MINIMUM_WITHDRAWAL - total)} to go`
-                : "No balance yet"}
+            : blockedReason
+              ? "Withdrawals paused"
+              : canWithdraw
+                ? "Withdraw now"
+                : total
+                  ? `${formatNaira(MINIMUM_WITHDRAWAL - total)} to go`
+                  : "No balance yet"}
         </button>
       ) : null}
     </article>
