@@ -11,7 +11,23 @@ const accountSchema = z.object({
       new RegExp(`^\\d{${ACCOUNT_NUMBER_LENGTH}}$`),
       `Enter your ${ACCOUNT_NUMBER_LENGTH}-digit account number.`,
     ),
-  accountName: z.string().trim().min(2, "Enter the account holder’s name."),
 });
 
-export { accountSchema };
+const verificationSchema = z.object({
+  bvn: z.string().regex(/^\d{11}$/, "Enter your 11-digit BVN."),
+  consent: z.literal(true, { error: "Please consent to BVN verification." }),
+});
+
+const withdrawalQuoteSchema = z.object({
+  bankAmount: z.number().positive(),
+  creatorFeeAmount: z.number().nonnegative(),
+  balanceDebit: z.number().positive(),
+  environment: z.enum(["sandbox", "live"]),
+  feePolicyVersion: z.string(),
+  destinationId: z.uuid(),
+  destinationRevision: z.number().int().positive(),
+  destinationBank: z.string(),
+  destinationLast4: z.string().regex(/^\d{4}$/),
+});
+
+export { accountSchema, verificationSchema, withdrawalQuoteSchema };

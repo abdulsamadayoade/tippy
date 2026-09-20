@@ -4,6 +4,7 @@ import { useState } from "react";
 import { BalanceBanner } from "./components/balance-banner";
 import { PastPayouts } from "./components/past-payouts";
 import { PayoutAccountCard } from "./components/payout-account-card";
+import { IdentityCard } from "./components/identity-card";
 import { WithdrawModal } from "./components/withdraw-modal";
 import { MINIMUM_WITHDRAWAL } from "@/data/constants";
 import type { PayoutsProps } from "./types";
@@ -13,9 +14,20 @@ export function Payouts({
   account,
   autoPayout,
   payouts,
+  identityVerified,
+  environment,
+  destinationKey,
+  payoutBlockReason,
 }: PayoutsProps) {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
-  const canWithdraw = balance >= MINIMUM_WITHDRAWAL && Boolean(account);
+  const blockedReason =
+    payoutBlockReason ??
+    (account && !identityVerified
+      ? "Verify your identity to enable withdrawals."
+      : null);
+
+  const canWithdraw =
+    balance >= MINIMUM_WITHDRAWAL && Boolean(account) && !blockedReason;
   const hasReservedWithdrawal = payouts.some(
     ({ status }) => status === "pending" || status === "processing",
   );
@@ -35,6 +47,7 @@ export function Payouts({
       </p>
 
       <BalanceBanner
+        blockedReason={blockedReason}
         total={balance}
         hasAccount={Boolean(account)}
         autoPayout={autoPayout}
@@ -43,11 +56,24 @@ export function Payouts({
         onWithdraw={openWithdraw}
       />
 
-      <PayoutAccountCard account={account} autoPayout={autoPayout} />
+      <PayoutAccountCard
+        account={account}
+        autoPayout={autoPayout}
+        automaticPayoutBlocked={Boolean(blockedReason)}
+      />
+
+      {account && (
+        <IdentityCard
+          key={`${destinationKey}:${identityVerified}`}
+          identityVerified={identityVerified}
+          environment={environment}
+        />
+      )}
 
       <PastPayouts payouts={payouts} />
 
       <WithdrawModal
+        key={destinationKey}
         open={withdrawOpen}
         onClose={() => setWithdrawOpen(false)}
         balance={balance}
