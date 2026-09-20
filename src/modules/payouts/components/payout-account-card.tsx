@@ -10,6 +10,7 @@ import {
 } from "react";
 import { TrashIcon } from "@/components/icons/trash";
 import { PlusIcon } from "@/components/icons/plus";
+import { CheckIcon } from "@/components/icons/check";
 import { Modal } from "@/components/ui/modal";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -23,14 +24,9 @@ import {
   savePayoutAccount,
   setAutoPayout,
 } from "../actions";
+import { EMPTY_PAYOUT_FORM } from "../data";
 import type { BankAccount } from "@/types";
 import type { FormErrors, FormMode, PayoutAccountCardProps } from "../types";
-
-const EMPTY_FORM: BankAccount = {
-  bank: "",
-  accountName: "",
-  accountNumber: "",
-};
 
 function validate(values: BankAccount): FormErrors {
   const errors: FormErrors = {};
@@ -41,25 +37,25 @@ function validate(values: BankAccount): FormErrors {
     errors.accountNumber = `Enter your ${ACCOUNT_NUMBER_LENGTH}-digit account number.`;
   }
 
-  if (values.accountName.trim().length < 2) {
-    errors.accountName = "Enter the account holder’s name.";
-  }
-
   return errors;
 }
 
 export function PayoutAccountCard({
   account,
   autoPayout,
+  automaticPayoutBlocked,
+  identityVerified,
 }: PayoutAccountCardProps) {
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<FormMode>("add");
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [values, setValues] = useState<BankAccount>(EMPTY_FORM);
+  const [values, setValues] = useState<BankAccount>(EMPTY_PAYOUT_FORM);
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [serverErrors, setServerErrors] = useState<FormErrors>({});
   const [saving, setSaving] = useState(false);
   const [removing, setRemoving] = useState(false);
+  const [removeError, setRemoveError] = useState("");
+
   // Holds the optimistic switch value until the action's revalidated props
   // land, so the switch never flashes back to the stale value; reverts
   // automatically if the action fails.
@@ -79,7 +75,7 @@ export function PayoutAccountCard({
 
   function openAdd() {
     setFormMode("add");
-    setValues(EMPTY_FORM);
+    setValues(EMPTY_PAYOUT_FORM);
     setSubmitAttempted(false);
     setServerErrors({});
     setFormOpen(true);
@@ -104,7 +100,6 @@ export function PayoutAccountCard({
     const result = await savePayoutAccount({
       bank: values.bank,
       accountNumber: values.accountNumber,
-      accountName: values.accountName.trim(),
     });
     setSaving(false);
 
@@ -119,8 +114,12 @@ export function PayoutAccountCard({
   async function confirmDelete() {
     if (removing) return;
     setRemoving(true);
-    await removePayoutAccount();
+    const result = await removePayoutAccount();
     setRemoving(false);
+    if (result.error) {
+      setRemoveError(result.error);
+      return;
+    }
     setDeleteOpen(false);
   }
 
@@ -147,12 +146,22 @@ export function PayoutAccountCard({
               </strong>
             </div>
             <div className="flex shrink-0 items-center gap-1.5">
-              <span className="rounded-full bg-success-soft px-2.5 py-1 text-xs font-medium text-success">
-                Verified
+              <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2.5 py-1 text-xs font-medium text-success">
+                {identityVerified && (
+                  <CheckIcon
+                    className="size-3.5"
+                    strokeWidth="2"
+                    aria-hidden="true"
+                  />
+                )}
+                {identityVerified ? "Verified" : "Name checked"}
               </span>
               <AccountMenu
                 onEdit={openEdit}
-                onRemove={() => setDeleteOpen(true)}
+                onRemove={() => {
+                  setRemoveError("");
+                  setDeleteOpen(true);
+                }}
               />
             </div>
           </div>
@@ -180,7 +189,9 @@ export function PayoutAccountCard({
               {!account
                 ? "Add an account to enable"
                 : autoPayoutShown
-                  ? "Every Friday · automatic"
+                  ? automaticPayoutBlocked
+                    ? "On · paused for now"
+                    : "Every Friday · automatic"
                   : "Off · withdraw manually"}
             </strong>
           </div>
@@ -258,23 +269,10 @@ export function PayoutAccountCard({
             }
           />
 
-          <TextInput
-            id={`${uid}-name`}
-            label="Account name"
-            controlClassName="min-h-12"
-            type="text"
-            autoComplete="off"
-            placeholder="Name on the account"
-            maxLength={80}
-            value={values.accountName}
-            error={errors.accountName}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                accountName: event.target.value,
-              }))
-            }
-          />
+          <p className="text-xs text-muted-text">
+            We&apos;ll look up the account holder&apos;s name with your bank.
+            Changing this account requires a new identity check.
+          </p>
 
           <div className="mt-1.5 grid grid-cols-2 gap-2.5">
             <Button
@@ -320,6 +318,11 @@ export function PayoutAccountCard({
           at any time.
         </p>
 
+        {removeError && (
+          <p role="alert" className="mt-3 text-xs text-danger">
+            {removeError}
+          </p>
+        )}
         <div className="mt-5 grid grid-cols-2 gap-2.5">
           <Button
             ref={cancelDeleteRef}

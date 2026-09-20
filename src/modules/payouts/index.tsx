@@ -62,15 +62,10 @@ export function Payouts({
         account={account}
         autoPayout={autoPayout}
         automaticPayoutBlocked={Boolean(blockedReason)}
+        identityVerified={identityVerified}
       />
 
-      {account && (
-        <IdentityCard
-          key={`${destinationKey}:${identityVerified}`}
-          identityVerified={identityVerified}
-          environment={environment}
-        />
-      )}
+      {account && !identityVerified && <IdentityCard key={destinationKey} />}
 
       <PastPayouts payouts={payouts} />
 
