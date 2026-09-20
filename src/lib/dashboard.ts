@@ -1,6 +1,9 @@
-import { and, desc, eq, isNotNull, lt, ne, or, sql, sum } from "drizzle-orm";
+import { getPayoutEnvironment } from "./payout-config";
+import { isAccountVerified } from "./identity-verification";
+import { and, desc, eq, isNotNull, lt, ne, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { bankAccount, payout, tip } from "@/lib/db/schema";
+import { computeAvailableBalance } from "@/lib/ledger";
 import { formatRelativeTime } from "@/lib/utils";
 import type {
   BankAccount,
@@ -12,7 +15,6 @@ import type {
 } from "@/types";
 
 const TIP_SHADES = ["strong", "default", "subtle"] as const;
-const TIPS_PAGE_SIZE = 20;
 
 function settledTipsFor(creatorId: string) {
   return and(eq(tip.creatorId, creatorId), eq(tip.status, "success"));
@@ -24,13 +26,13 @@ function tipFilterCondition(filter: TipFilter) {
   return undefined;
 }
 
-export async function getTipsPage(
+async function getTipsPage(
   creatorId: string,
   {
     filter = "all",
     cursor = null,
     shadeOffset = 0,
-    limit = TIPS_PAGE_SIZE,
+    limit = 20,
   }: {
     filter?: TipFilter;
     cursor?: TipCursor | null;
@@ -112,7 +114,7 @@ function periodCountSql(unit: "day" | "week" | "month" | "year") {
   );
 }
 
-export async function getTipStats(creatorId: string): Promise<TipStats> {
+async function getTipStats(creatorId: string): Promise<TipStats> {
   const [row] = await db
     .select({
       total: sql<number>`coalesce(sum(${tip.amount}), 0)`.mapWith(Number),
@@ -144,30 +146,33 @@ export async function getTipStats(creatorId: string): Promise<TipStats> {
     },
     periods: {
       day: { total: row.dayTotal, count: row.dayCount },
-      week: { total: row.weekTotal, count: row.weekCount },
-      month: { total: row.monthTotal, count: row.monthCount },
-      year: { total: row.yearTotal, count: row.yearCount },
+      week: {
+        total: row.weekTotal,
+        count: row.weekCount,
+      },
+      month: {
+        total: row.monthTotal,
+        count: row.monthCount,
+      },
+      year: {
+        total: row.yearTotal,
+        count: row.yearCount,
+      },
     },
   };
 }
 
-export async function getPayoutData(creatorId: string): Promise<{
+async function getPayoutData(creatorId: string): Promise<{
   balance: number;
+  identityVerified: boolean;
+  destination: { id: string; revision: number } | null;
   account: BankAccount | null;
   payouts: Payout[];
 }> {
-  const [tipTotals, payoutTotals, accountRow, payoutRows] = await Promise.all([
-    db
-      .select({ total: sum(tip.amount) })
-      .from(tip)
-      .where(and(eq(tip.creatorId, creatorId), eq(tip.status, "success"))),
-    db
-      .select({ total: sum(payout.amount) })
-      .from(payout)
-      .where(and(eq(payout.creatorId, creatorId), ne(payout.status, "failed"))),
+  const [balance, accountRow, payoutRows] = await Promise.all([
+    computeAvailableBalance(db, creatorId),
     db.query.bankAccount.findFirst({
       where: eq(bankAccount.creatorId, creatorId),
-      columns: { bankName: true, accountName: true, accountNumber: true },
     }),
     db.query.payout.findMany({
       where: eq(payout.creatorId, creatorId),
@@ -175,6 +180,7 @@ export async function getPayoutData(creatorId: string): Promise<{
       columns: {
         id: true,
         amount: true,
+        creatorFeeAmount: true,
         status: true,
         paymentReference: true,
         createdAt: true,
@@ -182,11 +188,14 @@ export async function getPayoutData(creatorId: string): Promise<{
     }),
   ]);
 
-  const tipTotal = Number(tipTotals[0]?.total ?? 0);
-  const payoutTotal = Number(payoutTotals[0]?.total ?? 0);
-
   return {
-    balance: Math.max(tipTotal - payoutTotal, 0),
+    identityVerified: Boolean(
+      accountRow && isAccountVerified(accountRow, getPayoutEnvironment()),
+    ),
+    destination: accountRow
+      ? { id: accountRow.id, revision: accountRow.revision }
+      : null,
+    balance,
     account: accountRow
       ? {
           bank: accountRow.bankName,
@@ -198,8 +207,11 @@ export async function getPayoutData(creatorId: string): Promise<{
       id: row.id,
       date: row.createdAt.toISOString().slice(0, 10),
       amount: row.amount,
+      creatorFeeAmount: row.creatorFeeAmount,
       status: row.status,
       reference: row.paymentReference,
     })),
   };
 }
+
+export { getTipsPage, getTipStats, getPayoutData };
