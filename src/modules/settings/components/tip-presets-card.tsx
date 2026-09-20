@@ -212,7 +212,7 @@ export function TipPresetsCard({
 
       <div className="flex items-center justify-between gap-3 border-t border-line px-4.5 py-4">
         <div className="min-w-0">
-          <span className="block text-ui-sm text-muted-text">Other amount</span>
+          <span className="block text-ui-sm text-muted-text">Custom amount</span>
           <strong className="mt-0.5 block text-[15px] font-medium text-main-heading">
             {customAmountShown
               ? "Supporters can type any amount"
