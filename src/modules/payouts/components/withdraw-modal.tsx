@@ -9,18 +9,46 @@ import { CheckIcon } from "@/components/icons/check";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { MINIMUM_WITHDRAWAL } from "@/data/constants";
+import {
+  quotePayoutFromBalance,
+  type WithdrawalQuote,
+} from "@/lib/payout-fees";
 import type { WithdrawModalProps } from "../types";
+
+function buildQuote(
+  amount: number,
+  {
+    account,
+    destination,
+    environment,
+  }: Pick<WithdrawModalProps, "account" | "destination" | "environment">,
+): WithdrawalQuote | null {
+  if (!account || !destination) return null;
+  try {
+    return {
+      ...quotePayoutFromBalance(amount, environment),
+      destinationId: destination.id,
+      destinationRevision: destination.revision,
+      destinationBank: account.bank,
+      destinationLast4: account.accountNumber.slice(-4),
+    };
+  } catch {
+    return null;
+  }
+}
 
 export function WithdrawModal({
   open,
   onClose,
   balance,
   account,
+  destination,
+  environment,
 }: WithdrawModalProps) {
   const [amountValue, setAmountValue] = useState("");
   const [wasOpen, setWasOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [requested, setRequested] = useState(false);
+  const [done, setDone] = useState(false);
   const [serverError, setServerError] = useState("");
   const doneRef = useRef<HTMLButtonElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
@@ -29,38 +57,47 @@ export function WithdrawModal({
     setWasOpen(open);
     if (open) {
       setAmountValue(String(balance));
-      setRequested(false);
+      setDone(false);
       setServerError("");
     }
   }
 
   const amountNumber = Number(amountValue || 0);
+  const quote = buildQuote(amountNumber, { account, destination, environment });
   const overBalance = amountNumber > balance;
   const belowMinimum = amountNumber > 0 && amountNumber < MINIMUM_WITHDRAWAL;
   const canConfirm =
-    amountNumber >= MINIMUM_WITHDRAWAL && !overBalance && !submitting;
+    Boolean(quote) &&
+    amountNumber >= MINIMUM_WITHDRAWAL &&
+    !overBalance &&
+    !submitting;
   const hintIsError = Boolean(serverError) || overBalance || belowMinimum;
 
   useEffect(() => {
-    if (!open || !requested) return;
+    if (!open || !done) return;
     const frame = window.requestAnimationFrame(() => doneRef.current?.focus());
     return () => window.cancelAnimationFrame(frame);
-  }, [open, requested]);
+  }, [open, done]);
 
   async function confirm() {
-    if (!canConfirm) return;
+    if (!canConfirm || !quote) return;
 
     setSubmitting(true);
     setServerError("");
-    const result = await requestWithdrawal(amountNumber);
-    setSubmitting(false);
-
-    if (result.error || !result.withdrawal) {
-      setServerError(result.error ?? "We couldn’t start this withdrawal.");
-      return;
+    try {
+      const result = await requestWithdrawal(quote);
+      if (result.error) {
+        setServerError(result.error);
+        return;
+      }
+      setDone(true);
+    } catch {
+      setServerError(
+        "We couldn’t confirm the request. Check your payout history before trying again.",
+      );
+    } finally {
+      setSubmitting(false);
     }
-
-    setRequested(true);
   }
 
   return (
@@ -70,9 +107,9 @@ export function WithdrawModal({
       labelledBy="withdrawal-dialog-title"
       describedBy="withdrawal-dialog-description"
       dismissible={!submitting}
-      initialFocusRef={requested ? doneRef : amountRef}
-      className="w-full max-w-105 rounded-[20px] bg-white p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
-      {requested ? (
+      initialFocusRef={done ? doneRef : amountRef}
+      className="max-h-[calc(100dvh-2rem)] overflow-y-auto w-full max-w-105 rounded-[20px] bg-white p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
+      {done && quote ? (
         <>
           <span
             className="mx-auto flex size-12 items-center justify-center rounded-full bg-success-soft text-success"
@@ -87,12 +124,10 @@ export function WithdrawModal({
           <p
             className="mt-1.5 text-center text-sm leading-normal text-body-text"
             id="withdrawal-dialog-description">
-            Monnify will deduct its processing fee from your withdrawal, then
-            send the remaining amount to your verified{" "}
-            <strong className="font-semibold text-main-heading">
-              {account?.bank}
-            </strong>{" "}
-            account shortly.
+            {formatNaira(quote.bankAmount)} is on its way to{" "}
+            {quote.destinationBank} · **** {quote.destinationLast4}. Your
+            balance was debited {formatNaira(quote.balanceDebit)}, including a{" "}
+            {formatNaira(quote.creatorFeeAmount)} transfer fee.
           </p>
           <Button
             ref={doneRef}
@@ -111,8 +146,7 @@ export function WithdrawModal({
           <p
             className="mt-1.5 text-sm leading-normal text-body-text"
             id="withdrawal-dialog-description">
-            Choose how much of your balance to withdraw. Monnify will deduct its
-            processing fee before sending the remaining amount to your bank.
+            Choose how much of your balance to withdraw.
           </p>
 
           <div className="mt-5">
@@ -133,6 +167,7 @@ export function WithdrawModal({
                 ₦
               </span>
               <input
+                disabled={submitting}
                 ref={amountRef}
                 id="withdraw-amount"
                 className={cn(
@@ -154,8 +189,9 @@ export function WithdrawModal({
                 }}
               />
               <button
-                className="absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer rounded-full bg-soft px-3 py-1.5 text-xs font-medium text-main-heading transition-colors duration-150 hover:bg-line"
+                className="absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer rounded-full bg-soft dark:bg-ink dark:hover:bg-copy/20 px-3 py-1.5 text-xs font-medium text-main-heading transition-colors duration-150 hover:bg-line"
                 type="button"
+                disabled={submitting}
                 onClick={() => setAmountValue(String(balance))}>
                 Max
               </button>
@@ -165,6 +201,7 @@ export function WithdrawModal({
                 "mt-1.5 text-xs",
                 hintIsError ? "text-danger" : "text-muted-text",
               )}
+              role={serverError ? "alert" : undefined}
               id="withdraw-amount-hint">
               {serverError ||
                 (overBalance
@@ -175,7 +212,7 @@ export function WithdrawModal({
             </p>
           </div>
 
-          <dl className="mt-4 divide-y divide-line rounded-surface bg-soft px-4">
+          <dl className="mt-4 divide-y divide-line rounded-surface bg-soft dark:bg-ink dark:divide-copy/20 px-4">
             <div className="flex items-start justify-between gap-4 py-3.5">
               <dt className="text-ui-sm text-muted-text">Account</dt>
               <dd className="text-right text-ui-sm font-medium text-main-heading">
@@ -193,7 +230,13 @@ export function WithdrawModal({
             <div className="flex items-start justify-between gap-4 py-3.5">
               <dt className="text-ui-sm text-muted-text">Processing fee</dt>
               <dd className="text-right text-ui-sm font-medium text-main-heading">
-                Deducted by Monnify
+                {quote ? formatNaira(quote.creatorFeeAmount) : "—"}
+              </dd>
+            </div>
+            <div className="flex items-start justify-between gap-4 py-3.5">
+              <dt className="text-ui-sm text-muted-text">You receive</dt>
+              <dd className="text-right text-ui-sm font-medium text-main-heading">
+                {quote ? formatNaira(quote.bankAmount) : "—"}
               </dd>
             </div>
             <div className="flex items-start justify-between gap-4 py-3.5">
@@ -218,7 +261,7 @@ export function WithdrawModal({
               loading={submitting}
               loadingText="Requesting…"
               onClick={confirm}>
-              Request withdrawal
+              Confirm withdrawal
             </Button>
           </div>
         </>
