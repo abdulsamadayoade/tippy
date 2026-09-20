@@ -18,6 +18,10 @@ pool.on("error", (error) => {
 
 export const db = drizzle(pool, { schema: { ...schema, ...authSchema } });
 
+export type DbExecutor =
+  | typeof db
+  | Parameters<Parameters<typeof db.transaction>[0]>[0];
+
 export const LOCK_KEYS = {
   autoPayouts: 727001,
   monitorSweep: 727002,
