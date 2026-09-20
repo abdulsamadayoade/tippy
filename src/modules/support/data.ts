@@ -17,7 +17,6 @@ const LINKS = [
   { label: "Refund & Dispute Policy", href: "/refunds" },
   { label: "Terms", href: "/terms" },
   { label: "Privacy", href: "/privacy" },
-  { label: "Status", href: "/status" },
 ];
 
 const TOPICS = [
