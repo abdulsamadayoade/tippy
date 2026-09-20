@@ -1,6 +1,13 @@
+import type { PayoutEnvironment } from "@/lib/payout-fees";
 import type { BankAccount, Payout } from "@/types";
 
+type PayoutDestination = { id: string; revision: number };
+
 type PayoutsProps = {
+  identityVerified: boolean;
+  environment: PayoutEnvironment;
+  destination: PayoutDestination | null;
+  payoutBlockReason: string | null;
   balance: number;
   account: BankAccount | null;
   autoPayout: boolean;
@@ -8,6 +15,7 @@ type PayoutsProps = {
 };
 
 type BalanceBannerProps = {
+  blockedReason: string | null;
   total: number;
   hasAccount: boolean;
   autoPayout: boolean;
@@ -25,9 +33,13 @@ type WithdrawModalProps = {
   onClose: () => void;
   balance: number;
   account: BankAccount | null;
+  destination: PayoutDestination | null;
+  environment: PayoutEnvironment;
 };
 
 type PayoutAccountCardProps = {
+  automaticPayoutBlocked: boolean;
+  identityVerified: boolean;
   account: BankAccount | null;
   autoPayout: boolean;
 };
