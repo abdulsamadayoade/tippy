@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Blobatar } from "@blobatar/react";
 import { ChevronDownIcon } from "@/components/icons/chevron-down";
 import { cn } from "@/lib/cn";
 import { formatNaira } from "@/lib/utils";
@@ -47,14 +48,9 @@ function TipListRow({ tip }: { tip: Tip }) {
   const content = (
     <>
       <span
-        className={cn(
-          "flex size-10 shrink-0 items-center justify-center rounded-full text-base font-medium text-white",
-          tip.shade === "strong" && "bg-main-heading",
-          tip.shade === "default" && "bg-body-text",
-          tip.shade === "subtle" && "bg-muted-text",
-        )}
+        className="flex size-10 shrink-0 overflow-hidden rounded-full bg-soft"
         aria-hidden="true">
-        {tip.initial}
+        <Blobatar className="size-full" name={tip.avatarSeed} alt="" />
       </span>
       <div className="min-w-0 flex-1">
         <h3 className="text-sm font-medium text-main-heading">

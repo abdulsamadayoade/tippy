@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { Blobatar } from "@blobatar/react";
 import { cn } from "@/lib/cn";
 
 type AvatarSize = "small" | "medium" | "large";
@@ -14,11 +15,13 @@ const SIZE_IN_PIXELS: Record<AvatarSize, number> = {
 
 export function CreatorAvatar({
   name,
+  seed,
   photoUrl,
   size = "large",
   loading = "lazy",
 }: {
   name: string;
+  seed?: string;
   photoUrl?: string | null;
   size?: AvatarSize;
   loading?: "eager" | "lazy";
@@ -34,21 +37,24 @@ export function CreatorAvatar({
   return (
     <span
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-main-heading font-medium text-white",
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-medium text-white",
+        showImage ? "bg-main-heading" : "bg-soft",
         size === "large" && "size-16 text-2xl",
         size === "medium" && "size-11 text-lg",
         size === "small" && "size-8 text-sm",
       )}>
-      <span
-        className={cn(
-          "transition-opacity duration-150",
-          imageLoaded ? "opacity-0" : "opacity-100",
-        )}
-        role={showImage ? undefined : "img"}
-        aria-label={showImage ? undefined : name}
-        aria-hidden={showImage ? true : undefined}>
-        {initial}
-      </span>
+      {showImage ? (
+        <span
+          className={cn(
+            "transition-opacity duration-150",
+            imageLoaded ? "opacity-0" : "opacity-100",
+          )}
+          aria-hidden="true">
+          {initial}
+        </span>
+      ) : (
+        <Blobatar className="size-full" name={seed ?? name} alt={name} />
+      )}
 
       {showImage ? (
         <Image

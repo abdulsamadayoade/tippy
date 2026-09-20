@@ -44,6 +44,7 @@ type SuccessProps = {
 
 type CheckoutPanelProps = {
   creatorName: string;
+  creatorUsername: string;
   creatorPhotoUrl?: string | null;
   amount: number;
   message: string;

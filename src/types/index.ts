@@ -4,8 +4,7 @@ type Tip = {
   amount: number;
   note: string;
   anonymous: boolean;
-  initial: string;
-  shade: "strong" | "default" | "subtle";
+  avatarSeed: string;
   time: string;
   createdAt: string;
   reference: string;
@@ -33,10 +32,7 @@ type TipSummary = {
 
 type TipPeriod = "day" | "week" | "month" | "year";
 
-type TipPeriodTotals = Record<
-  TipPeriod,
-  { total: number; count: number }
->;
+type TipPeriodTotals = Record<TipPeriod, { total: number; count: number }>;
 
 type TipStats = {
   summary: TipSummary;

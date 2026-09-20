@@ -95,6 +95,7 @@ export function CreatorAccountMenu({
         <CreatorAvatar
           size="small"
           name={displayName}
+          seed={username}
           photoUrl={avatarUrl}
           loading="eager"
         />
