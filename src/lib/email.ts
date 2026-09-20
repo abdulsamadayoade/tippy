@@ -61,7 +61,7 @@ function magicLinkHtml(url: string) {
                 You&rsquo;re receiving this because someone entered your email on
                 tippy.cash. If it wasn&rsquo;t you, you can safely ignore this
                 email &mdash; nothing happens without the link. Tippy is
-                operated by Nightshift Industries.
+                operated by Very Serious Company.
               </td>
             </tr>
           </table>
@@ -87,7 +87,7 @@ export async function sendMagicLinkEmail({
       to: [email],
       subject: "Your one-tap sign-in link",
       html: magicLinkHtml(url),
-      text: `Sign in to Tippy: ${url}\n\nThis link expires in 5 minutes and can only be used once. If you didn't request it, you can safely ignore this email.\n\nTippy is operated by Nightshift Industries.`,
+      text: `Sign in to Tippy: ${url}\n\nThis link expires in 5 minutes and can only be used once. If you didn't request it, you can safely ignore this email.\n\nTippy is operated by Very Serious Company.`,
     },
     { idempotencyKey: `magic-link/${token}` },
   );
@@ -158,7 +158,7 @@ function tipReceivedHtml({
             <tr>
               <td style="font-size:12px;line-height:1.55;color:#7f7f7f;padding:20px 8px 0;">
                 You&rsquo;re receiving this because you have a creator page on
-                tippy.cash. Tippy is operated by Nightshift Industries.
+                tippy.cash. Tippy is operated by Very Serious Company.
               </td>
             </tr>
           </table>
@@ -255,7 +255,7 @@ export async function sendTipReceivedEmail({
         amount,
         note,
       }),
-      text: `${tipperDisplayName} sent you ${formatEmailAmount(amount)}.${note ? `\n\nTheir note: “${note}”` : ""}\n\nSee it on your dashboard: ${APP_URL}/overview\n\nTippy is operated by Nightshift Industries.`,
+      text: `${tipperDisplayName} sent you ${formatEmailAmount(amount)}.${note ? `\n\nTheir note: “${note}”` : ""}\n\nSee it on your dashboard: ${APP_URL}/overview\n\nTippy is operated by Very Serious Company.`,
       tags: [{ name: "kind", value: "tip-received" }],
     },
     { idempotencyKey: `tip-received/${paymentReference}` },
@@ -296,7 +296,7 @@ export async function sendTipReceiptEmail({
         note,
         paymentReference,
       }),
-      text: `Your ${formatEmailAmount(amount)} tip to ${creatorDisplayName} went through. Thanks for the support.${note ? `\n\nYour note: “${note}”` : ""}\n\nReceipt no. ${paymentReference}\nTip ${creatorDisplayName} again: ${APP_URL}/${creatorUsername}\n\nTippy is operated by Nightshift Industries.`,
+      text: `Your ${formatEmailAmount(amount)} tip to ${creatorDisplayName} went through. Thanks for the support.${note ? `\n\nYour note: “${note}”` : ""}\n\nReceipt no. ${paymentReference}\nTip ${creatorDisplayName} again: ${APP_URL}/${creatorUsername}\n\nTippy is operated by Very Serious Company.`,
       tags: [{ name: "kind", value: "tip-receipt" }],
     },
     { idempotencyKey: `tip-receipt/${paymentReference}` },
@@ -312,11 +312,13 @@ export async function sendTipReceiptEmail({
 
 function payoutPaidHtml({
   amount,
+  creatorFeeAmount,
   bankName,
   maskedAccount,
   paymentReference,
 }: {
   amount: number;
+  creatorFeeAmount: number;
   bankName: string;
   maskedAccount: string;
   paymentReference: string;
@@ -338,7 +340,8 @@ function payoutPaidHtml({
               <td style="font-size:14px;line-height:1.55;color:#274c5e;padding-bottom:24px;">
                 <strong style="color:#064e5b;">${formatEmailAmount(amount)}</strong>
                 is on its way to your ${escapeHtml(bankName)} account
-                ${maskedAccount}. Bank transfers usually land within minutes.
+                ${maskedAccount}. Bank transfers usually land within minutes.<br>
+                Balance debit: ${formatEmailAmount(amount + creatorFeeAmount)}. Transfer fee: ${formatEmailAmount(creatorFeeAmount)}.
               </td>
             </tr>
             <tr>
@@ -358,7 +361,7 @@ function payoutPaidHtml({
             <tr>
               <td style="font-size:12px;line-height:1.55;color:#7f7f7f;padding:20px 8px 0;">
                 You&rsquo;re receiving this because you have a creator page on
-                tippy.cash. Tippy is operated by Nightshift Industries.
+                tippy.cash. Tippy is operated by Very Serious Company.
               </td>
             </tr>
           </table>
@@ -372,12 +375,14 @@ function payoutPaidHtml({
 export async function sendPayoutPaidEmail({
   to,
   amount,
+  creatorFeeAmount,
   bankName,
   accountNumber,
   paymentReference,
 }: {
   to: string;
   amount: number;
+  creatorFeeAmount: number;
   bankName: string;
   accountNumber: string;
   paymentReference: string;
@@ -391,11 +396,12 @@ export async function sendPayoutPaidEmail({
       subject: `Your ${formatEmailAmount(amount)} payout is on the way`,
       html: payoutPaidHtml({
         amount,
+        creatorFeeAmount,
         bankName,
         maskedAccount,
         paymentReference,
       }),
-      text: `Your ${formatEmailAmount(amount)} payout is on its way to your ${bankName} account ${maskedAccount}. Bank transfers usually land within minutes.\n\nReference: ${paymentReference}\nView your payouts: ${APP_URL}/payouts\n\nTippy is operated by Nightshift Industries.`,
+      text: `Your ${formatEmailAmount(amount)} payout is on its way to your ${bankName} account ${maskedAccount}. Bank transfers usually land within minutes.\n\nBalance debit: ${formatEmailAmount(amount + creatorFeeAmount)}. Transfer fee: ${formatEmailAmount(creatorFeeAmount)}.\n\nReference: ${paymentReference}\nView your payouts: ${APP_URL}/payouts\n\nTippy is operated by Very Serious Company.`,
       tags: [{ name: "kind", value: "payout-paid" }],
     },
     { idempotencyKey: `payout-paid/${paymentReference}` },
