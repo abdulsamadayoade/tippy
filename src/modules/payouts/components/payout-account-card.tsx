@@ -137,7 +137,7 @@ export function PayoutAccountCard({
 
   return (
     <>
-      <article className="mt-4 rounded-surface bg-white shadow-surface">
+      <article className="mt-4 rounded-surface bg-card-bg shadow-surface">
         {account ? (
           <div className="flex items-center justify-between gap-3 px-4.5 py-4">
             <div className="min-w-0">
@@ -184,7 +184,7 @@ export function PayoutAccountCard({
           </div>
         )}
 
-        <div className="flex items-center justify-between gap-3 border-t border-line px-4.5 py-4">
+        <div className="flex items-center justify-between gap-3 border-t border-divider px-4.5 py-4">
           <div className="min-w-0">
             <span className="block text-ui-sm text-muted-text">
               Automatic payout
@@ -215,7 +215,7 @@ export function PayoutAccountCard({
         labelledBy={`${uid}-form-title`}
         describedBy={`${uid}-form-desc`}
         initialFocusRef={bankFieldRef}
-        className="w-full max-w-105 rounded-[20px] bg-white p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
+        className="w-full max-w-105 rounded-[20px] bg-card-bg p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
         <h2
           className="text-xl font-medium tracking-display text-main-heading"
           id={`${uid}-form-title`}>
@@ -304,9 +304,9 @@ export function PayoutAccountCard({
         labelledBy={`${uid}-delete-title`}
         describedBy={`${uid}-delete-desc`}
         initialFocusRef={cancelDeleteRef}
-        className="w-full max-w-95 rounded-[20px] bg-white p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
+        className="w-full max-w-95 rounded-[20px] bg-card-bg p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
         <span
-          className="mx-auto flex size-12 items-center justify-center rounded-full bg-danger-soft text-danger"
+          className="mx-auto flex size-12 items-center justify-center rounded-full bg-danger-soft dark:bg-danger dark:text-danger-soft text-danger"
           aria-hidden="true">
           <TrashIcon className="size-5" />
         </span>
