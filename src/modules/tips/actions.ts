@@ -15,6 +15,6 @@ export async function fetchTipsPage(
   const parsed = pageRequestSchema.safeParse(request);
   if (!parsed.success) return { error: "Couldn’t load tips. Try again." };
 
-  const { filter, cursor, loadedCount } = parsed.data;
-  return getTipsPage(creator.id, { filter, cursor, shadeOffset: loadedCount });
+  const { filter, cursor } = parsed.data;
+  return getTipsPage(creator.id, { filter, cursor });
 }

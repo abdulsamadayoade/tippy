@@ -51,7 +51,6 @@ export function useTipsFeed({
     const result = await fetchTipsPage({
       filter: targetFilter,
       cursor: null,
-      loadedCount: 0,
     });
 
     if (seq !== requestSeq.current) return;
@@ -110,7 +109,6 @@ export function useTipsFeed({
     const result = await fetchTipsPage({
       filter: activeFilter,
       cursor: feed.cursor,
-      loadedCount: feed.tips.length,
     });
 
     if (seq !== requestSeq.current) return;
