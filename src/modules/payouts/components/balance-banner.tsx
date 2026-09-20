@@ -36,7 +36,7 @@ export function BalanceBanner({
               : `Automatic payouts are off · min ${formatNaira(MINIMUM_WITHDRAWAL)}`}
         </small>
       </div>
-      {hasAccount ? (
+      {hasAccount && (
         <button
           className="major-button major-button-light inline-flex cursor-pointer items-center gap-1.75 rounded-full bg-white px-3.5 py-2 text-ui-sm font-medium text-main-heading transition-transform duration-100 active:scale-[0.98] disabled:cursor-default disabled:opacity-70"
           type="button"
@@ -56,9 +56,9 @@ export function BalanceBanner({
                 ? "Withdraw now"
                 : total
                   ? `${formatNaira(MINIMUM_WITHDRAWAL - total)} to go`
-                  : "No balance yet"}
+                  : "No balance"}
         </button>
-      ) : null}
+      )}
     </article>
   );
 }
