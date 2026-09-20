@@ -113,6 +113,13 @@
       "when": 1789870391977,
       "tag": "0015_drop_verification_consent_version",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1789872973227,
+      "tag": "0016_restrict_money_deletes_rename_creator_fee",
+      "breakpoints": true
     }
   ]
 }
