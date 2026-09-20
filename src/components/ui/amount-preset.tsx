@@ -25,6 +25,7 @@ export function AmountPreset({
     <button
       type="button"
       aria-pressed={selected}
+      data-cuelume-toggle="tick"
       onClick={onSelect}
       className={cn(
         "flex min-h-17.25 cursor-pointer flex-col items-start gap-0.5 rounded-surface px-3.5 py-3.25 text-left transition-[background-color,box-shadow,transform] duration-150 hover:-translate-y-px",

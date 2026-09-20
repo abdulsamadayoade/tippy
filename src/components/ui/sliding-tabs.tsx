@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, type KeyboardEvent } from "react";
+import { play } from "cuelume";
 import { cn } from "@/lib/cn";
 
 type TabOption<Value extends string> = {
@@ -90,6 +91,8 @@ export function SlidingTabs<Value extends string>({
 
     event.preventDefault();
     const nextOption = options[nextIndex];
+    // Arrow keys switch tabs without the click data-cuelume-toggle listens for.
+    play("toggle");
     onChange(nextOption.value);
     window.requestAnimationFrame(() =>
       tabRefs.current.get(nextOption.value)?.focus(),
@@ -127,6 +130,7 @@ export function SlidingTabs<Value extends string>({
             role="tab"
             aria-controls={`${idPrefix}-${option.value}-panel`}
             aria-selected={selected}
+            data-cuelume-toggle=""
             tabIndex={selected ? 0 : -1}
             onClick={() => onChange(option.value)}
             onKeyDown={(event) => handleKeyDown(event, index)}>

@@ -110,6 +110,7 @@ export function PillNavigation({
               href={href}
               id={id}
               key={href}
+              data-cuelume-toggle=""
               aria-current={active ? "page" : undefined}>
               {label}
             </Link>

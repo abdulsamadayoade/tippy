@@ -33,6 +33,7 @@ export function Switch({
       type="button"
       role="switch"
       aria-checked={checked}
+      data-cuelume-toggle=""
       disabled={disabled}
       onClick={() => {
         setInteracted(true);

@@ -1,11 +1,11 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { useTheme } from "next-themes";
 import { cn } from "@/lib/cn";
+import { useSoundPreference } from "@/hooks/use-sound-preference";
 import { Button } from "./button";
-import { SunIcon } from "../icons/sun";
-import { MoonIcon } from "../icons/moon";
+import { VolumeIcon } from "../icons/volume";
+import { VolumeOffIcon } from "../icons/volume-off";
 
 const subscribe = () => () => {};
 const getSnapshot = () => true;
@@ -16,18 +16,16 @@ const ICON =
 const SHOWN = "scale-100 opacity-100 blur-[0px]";
 const HIDDEN = "scale-25 opacity-0 blur-[4px]";
 
-export function ThemeToggle() {
+export function SoundToggle() {
   const mounted = useSyncExternalStore(
     subscribe,
     getSnapshot,
     getServerSnapshot,
   );
-  const { resolvedTheme, setTheme } = useTheme();
-  const ready = mounted && Boolean(resolvedTheme);
-  const isDark = resolvedTheme === "dark";
-  const label = ready
-    ? `Switch to ${isDark ? "light" : "dark"} mode`
-    : "Switch color theme";
+  const { enabled, toggle } = useSoundPreference();
+  const label = mounted
+    ? `Turn sound effects ${enabled ? "off" : "on"}`
+    : "Toggle sound effects";
 
   return (
     <Button
@@ -37,18 +35,18 @@ export function ThemeToggle() {
       className="size-6 min-h-6 active:scale-[0.96] motion-reduce:transform-none"
       aria-label={label}
       title={label}
-      disabled={!ready}
-      onClick={() => setTheme(isDark ? "light" : "dark")}>
+      disabled={!mounted}
+      onClick={toggle}>
       <span
         className="relative flex size-5 items-center justify-center"
         aria-hidden="true">
-        {ready && (
+        {mounted && (
           <>
-            <span className={cn(ICON, isDark ? SHOWN : HIDDEN)}>
-              <SunIcon />
+            <span className={cn(ICON, enabled ? SHOWN : HIDDEN)}>
+              <VolumeIcon />
             </span>
-            <span className={cn(ICON, isDark ? HIDDEN : SHOWN)}>
-              <MoonIcon />
+            <span className={cn(ICON, enabled ? HIDDEN : SHOWN)}>
+              <VolumeOffIcon />
             </span>
           </>
         )}
