@@ -1,12 +1,8 @@
-import { db } from "@/lib/db";
+import type { DbExecutor } from "@/lib/db";
 import { auditLog } from "@/lib/db/schema";
 import { reportError } from "@/lib/monitoring";
 
-type DbExecutor =
-  | typeof db
-  | Parameters<Parameters<typeof db.transaction>[0]>[0];
-
-export type AuditEntry = {
+type AuditEntry = {
   actorType: "admin" | "creator" | "system";
   actorUserId?: string | null;
   action: string;
@@ -17,7 +13,7 @@ export type AuditEntry = {
   userAgent?: string | null;
 };
 
-export async function writeAudit(
+async function writeAudit(
   executor: DbExecutor,
   entry: AuditEntry,
 ): Promise<void> {
@@ -33,7 +29,7 @@ export async function writeAudit(
   });
 }
 
-export async function writeAuditSafe(
+async function writeAuditSafe(
   executor: DbExecutor,
   entry: AuditEntry,
 ): Promise<void> {
@@ -46,3 +42,5 @@ export async function writeAuditSafe(
     });
   }
 }
+
+export { type AuditEntry, writeAudit, writeAuditSafe };
