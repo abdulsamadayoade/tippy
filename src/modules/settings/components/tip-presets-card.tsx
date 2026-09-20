@@ -7,49 +7,23 @@ import {
   type SubmitEvent,
 } from "react";
 import { play } from "cuelume";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { AmountInput } from "@/components/ui/amount-input";
-import { TextInput } from "@/components/ui/text-input";
-import { formatNaira } from "@/lib/utils";
-import { MAXIMUM_TIP, MINIMUM_TIP } from "@/data/constants";
-import {
-  POPULAR_PRESET_INDEX,
-  PRESET_LABEL_MAX_LENGTH,
-} from "@/modules/profile/data";
+import { validatePresets } from "../utils";
 import {
   resetTipPresets,
   setAllowCustomAmount,
   updateTipPresets,
 } from "../actions";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { AmountInput } from "@/components/ui/amount-input";
+import { TextInput } from "@/components/ui/text-input";
+import { MAXIMUM_TIP } from "@/data/constants";
+import {
+  POPULAR_PRESET_INDEX,
+  PRESET_LABEL_MAX_LENGTH,
+} from "@/modules/profile/data";
 import type { TipPreset } from "@/types";
 import type { PresetFormErrors, TipPresetsCardProps } from "../types";
-
-function validate(values: TipPreset[]): PresetFormErrors {
-  const errors: PresetFormErrors = {};
-
-  values.forEach(({ amount, label }, index) => {
-    const slot: { amount?: string; label?: string } = {};
-    if (amount < MINIMUM_TIP) {
-      slot.amount = `Each amount needs to be at least ${formatNaira(MINIMUM_TIP)}.`;
-    } else if (amount > MAXIMUM_TIP) {
-      slot.amount = `Each amount can’t be more than ${formatNaira(MAXIMUM_TIP)}.`;
-    }
-    if (!label.trim()) {
-      slot.label = "Add a short label.";
-    }
-    if (slot.amount || slot.label) {
-      (errors.slots ??= {})[index] = slot;
-    }
-  });
-
-  const amounts = values.map(({ amount }) => amount);
-  if (!errors.slots && new Set(amounts).size !== amounts.length) {
-    errors.form = "Each preset needs a different amount.";
-  }
-
-  return errors;
-}
 
 export function TipPresetsCard({
   presets,
@@ -71,7 +45,7 @@ export function TipPresetsCard({
     useOptimistic(allowCustomAmount);
   const [togglePending, startToggleTransition] = useTransition();
 
-  const clientErrors = validate(values);
+  const clientErrors = validatePresets(values);
   const errors: PresetFormErrors = submitAttempted
     ? {
         slots: { ...clientErrors.slots, ...serverErrors.slots },
@@ -81,6 +55,12 @@ export function TipPresetsCard({
   const hasClientErrors =
     Boolean(clientErrors.form) ||
     Object.keys(clientErrors.slots ?? {}).length > 0;
+
+  const isDirty = values.some(
+    ({ amount, label }, index) =>
+      amount !== presets[index].amount ||
+      label.trim() !== presets[index].label.trim(),
+  );
 
   function setSlot(index: number, patch: Partial<TipPreset>) {
     setSaved(false);
@@ -95,6 +75,7 @@ export function TipPresetsCard({
     event.preventDefault();
     setSubmitAttempted(true);
     setServerErrors({});
+    if (!isDirty) return;
     if (hasClientErrors || saving) return;
 
     setSaving(true);
@@ -179,21 +160,22 @@ export function TipPresetsCard({
           ))}
         </div>
 
-        {errors.form ? (
+        {errors.form && (
           <p className="mt-3 text-xs text-danger" role="alert">
             {errors.form}
           </p>
-        ) : null}
+        )}
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Button
             type="submit"
+            size="sm"
+            disabled={!isDirty || saving}
             loading={saving}
-            loadingText="Saving…"
-            size="sm">
+            loadingText="Saving…">
             Save presets
           </Button>
-          {usingDefaults ? null : (
+          {!usingDefaults && (
             <button
               className="cursor-pointer text-ui-sm font-medium text-muted-text transition-colors duration-100 hover:text-body-text disabled:cursor-default disabled:opacity-60"
               type="button"
@@ -212,7 +194,9 @@ export function TipPresetsCard({
 
       <div className="flex items-center justify-between gap-3 border-t border-line px-4.5 py-4">
         <div className="min-w-0">
-          <span className="block text-ui-sm text-muted-text">Custom amount</span>
+          <span className="block text-ui-sm text-muted-text">
+            Custom amount
+          </span>
           <strong className="mt-0.5 block text-[15px] font-medium text-main-heading">
             {customAmountShown
               ? "Supporters can type any amount"

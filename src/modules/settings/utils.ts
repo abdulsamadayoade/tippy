@@ -1,7 +1,14 @@
+import { MAXIMUM_TIP, MINIMUM_TIP } from "@/data/constants";
+import { formatNaira } from "@/lib/utils";
 import { BIO_MAX_LENGTH } from "@/modules/onboarding/data";
-import type { ProfileValues, ProfileFormErrors } from "./types";
+import type { TipPreset } from "@/types";
+import type {
+  PresetFormErrors,
+  ProfileFormErrors,
+  ProfileValues,
+} from "./types";
 
-function validate(values: ProfileValues): ProfileFormErrors {
+function validateProfile(values: ProfileValues): ProfileFormErrors {
   const errors: ProfileFormErrors = {};
 
   if (!values.displayName.trim()) {
@@ -17,4 +24,30 @@ function validate(values: ProfileValues): ProfileFormErrors {
   return errors;
 }
 
-export { validate };
+function validatePresets(values: TipPreset[]): PresetFormErrors {
+  const errors: PresetFormErrors = {};
+
+  values.forEach(({ amount, label }, index) => {
+    const slot: { amount?: string; label?: string } = {};
+    if (amount < MINIMUM_TIP) {
+      slot.amount = `Each amount needs to be at least ${formatNaira(MINIMUM_TIP)}.`;
+    } else if (amount > MAXIMUM_TIP) {
+      slot.amount = `Each amount can’t be more than ${formatNaira(MAXIMUM_TIP)}.`;
+    }
+    if (!label.trim()) {
+      slot.label = "Add a short label.";
+    }
+    if (slot.amount || slot.label) {
+      (errors.slots ??= {})[index] = slot;
+    }
+  });
+
+  const amounts = values.map(({ amount }) => amount);
+  if (!errors.slots && new Set(amounts).size !== amounts.length) {
+    errors.form = "Each preset needs a different amount.";
+  }
+
+  return errors;
+}
+
+export { validatePresets, validateProfile };

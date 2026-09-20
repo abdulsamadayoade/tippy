@@ -11,7 +11,7 @@ import { CameraIcon } from "@/components/icons/camera";
 import { compressAvatar } from "@/modules/onboarding/utils";
 import { BIO_MAX_LENGTH } from "@/modules/onboarding/data";
 import { changeAvatar, updateProfile } from "../actions";
-import { validate } from "../utils";
+import { validateProfile } from "../utils";
 import type {
   ProfileCardProps,
   ProfileFormErrors,
@@ -32,7 +32,7 @@ export function ProfileCard({ creator, categories }: ProfileCardProps) {
   const [photoSaving, setPhotoSaving] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
 
-  const clientErrors = validate(values);
+  const clientErrors = validateProfile(values);
   const errors: ProfileFormErrors = submitAttempted
     ? { ...clientErrors, ...serverErrors }
     : {};
