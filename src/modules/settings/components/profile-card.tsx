@@ -130,31 +130,33 @@ export function ProfileCard({ creator, categories }: ProfileCardProps) {
         className="mt-5 flex flex-col gap-3.5"
         onSubmit={handleSubmit}
         noValidate>
-        <TextInput
-          label="Display name"
-          controlClassName="min-h-12"
-          type="text"
-          autoComplete="name"
-          maxLength={50}
-          placeholder="Ada Obi"
-          value={values.displayName}
-          error={errors.displayName}
-          hint={`Your link stays tippy.cash/${creator.username}`}
-          onChange={(event) => setValue({ displayName: event.target.value })}
-        />
+        <div className="grid grid-cols-2 gap-2.5 max-phone:grid-cols-1 max-phone:gap-3.5">
+          <TextInput
+            label="Display name"
+            controlClassName="min-h-12"
+            type="text"
+            autoComplete="name"
+            maxLength={50}
+            placeholder="Ada Obi"
+            value={values.displayName}
+            error={errors.displayName}
+            hint={`Your link stays tippy.cash/${creator.username}`}
+            onChange={(event) => setValue({ displayName: event.target.value })}
+          />
 
-        <Select
-          label="What do you create?"
-          placeholder="Select a category"
-          value={values.categoryId}
-          error={errors.categoryId}
-          onChange={(event) => setValue({ categoryId: event.target.value })}>
-          {categories.map((option) => (
-            <option key={option.id} value={option.id}>
-              {option.name}
-            </option>
-          ))}
-        </Select>
+          <Select
+            label="What do you create?"
+            placeholder="Select a category"
+            value={values.categoryId}
+            error={errors.categoryId}
+            onChange={(event) => setValue({ categoryId: event.target.value })}>
+            {categories.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.name}
+              </option>
+            ))}
+          </Select>
+        </div>
 
         <TextArea
           className="min-h-24"

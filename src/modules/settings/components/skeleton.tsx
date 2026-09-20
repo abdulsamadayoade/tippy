@@ -15,8 +15,10 @@ export function SettingsSkeleton() {
           </div>
         </div>
         <div className="mt-5 flex flex-col gap-3.5">
-          <Skeleton className="h-12 w-full rounded-xl" />
-          <Skeleton className="h-12 w-full rounded-xl" />
+          <div className="grid grid-cols-2 gap-2.5 max-phone:grid-cols-1 max-phone:gap-3.5">
+            <Skeleton className="h-12 w-full rounded-xl" />
+            <Skeleton className="h-12 w-full rounded-xl" />
+          </div>
           <Skeleton className="h-24 w-full rounded-xl" />
           <Skeleton className="mt-1 h-12 w-36 rounded-full" />
         </div>
