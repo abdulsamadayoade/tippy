@@ -42,7 +42,7 @@ export function PastPayouts({ payouts }: PastPayoutsProps) {
                 <strong className="text-right text-base font-medium whitespace-nowrap text-main-heading max-phone:col-start-2 max-phone:row-span-2 max-phone:row-start-1">
                   {formatNaira(payout.amount)}
                   <span className="block text-xs font-normal text-muted-text">
-                    Monnify fee {formatNaira(payout.providerFeeAmount)}
+                    Transfer fee {formatNaira(payout.creatorFeeAmount)}
                   </span>
                 </strong>
               </article>
