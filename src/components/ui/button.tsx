@@ -19,11 +19,18 @@ const sizes = {
   icon: "size-9 min-h-9 p-0",
 } as const;
 
+const sounds = {
+  press: { "data-cuelume-press": "", "data-cuelume-release": "" },
+  toggle: { "data-cuelume-toggle": "" },
+  none: {},
+} as const;
+
 type ButtonStyleProps = {
   variant?: keyof typeof variants;
   size?: keyof typeof sizes;
   fullWidth?: boolean;
   className?: string;
+  sound?: keyof typeof sounds;
 };
 
 type ButtonProps = ComponentPropsWithoutRef<"button"> &
@@ -63,6 +70,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       loading = false,
       loadingText,
       disabled,
+      sound = "press",
       children,
       ...props
     },
@@ -71,6 +79,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       type={type}
+      {...sounds[sound]}
       className={buttonClassName({
         variant,
         size,
@@ -99,11 +108,19 @@ Button.displayName = "Button";
 
 export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
   (
-    { variant = "primary", size = "default", fullWidth, className, ...props },
+    {
+      variant = "primary",
+      size = "default",
+      fullWidth,
+      className,
+      sound = "press",
+      ...props
+    },
     ref,
   ) => (
     <Link
       ref={ref}
+      {...sounds[sound]}
       className={buttonClassName({
         variant,
         size,

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
 import { Geist } from "next/font/google";
+import { Sounds } from "@/components/layout/sounds";
 import { SITE_URL, isProductionSite } from "@/lib/site";
 import "./globals.css";
 
@@ -54,6 +55,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
+          <Sounds />
           <Analytics />
         </ThemeProvider>
       </body>
