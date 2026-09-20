@@ -90,11 +90,6 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
     );
   }
 
-  /**
-   * The Monnify webhook settles the transaction; this only watches our own
-   * database for that settlement — Monnify's status API is never called
-   * from here.
-   */
   async function confirmTip(paymentReference: string) {
     for (let attempt = 0; attempt < 12; attempt++) {
       let status = "pending";
