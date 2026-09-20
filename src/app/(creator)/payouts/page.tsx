@@ -20,7 +20,7 @@ export default async function PayoutsPage() {
 
   await reconcileStalePayouts(creator.id);
 
-  const { balance, account, payouts, identityVerified, destinationKey } =
+  const { balance, account, payouts, identityVerified, destination } =
     await getPayoutData(creator.id);
 
   return (
@@ -32,7 +32,7 @@ export default async function PayoutsPage() {
           : null
       }
       identityVerified={identityVerified}
-      destinationKey={destinationKey}
+      destination={destination}
       balance={balance}
       account={account}
       autoPayout={creator.autoPayout}
