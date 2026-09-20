@@ -2,7 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import { useMenuState } from "@/hooks/use-menu-state";
+import { useMounted } from "@/hooks/use-mounted";
 import { useSoundPreference } from "@/hooks/use-sound-preference";
 import { cn } from "@/lib/cn";
 import { authClient } from "@/lib/auth-client";
@@ -10,7 +12,9 @@ import { CreatorAvatar } from "@/components/ui/creator-avatar";
 import Link from "next/link";
 import { LinkIcon } from "@/components/icons/link";
 import { LogoutIcon } from "@/components/icons/logout";
+import { MoonIcon } from "@/components/icons/moon";
 import { SettingsIcon } from "@/components/icons/settings";
+import { SunIcon } from "@/components/icons/sun";
 import { VolumeIcon } from "@/components/icons/volume";
 import { VolumeOffIcon } from "@/components/icons/volume-off";
 import type { CreatorAccountMenuProps } from "../types";
@@ -26,6 +30,10 @@ export function CreatorAccountMenu({
   const { state, toggle, beginClose, containerRef, triggerRef } =
     useMenuState();
   const sound = useSoundPreference();
+  const mounted = useMounted();
+  const { resolvedTheme, setTheme } = useTheme();
+  const themeReady = mounted && Boolean(resolvedTheme);
+  const isDark = themeReady && resolvedTheme === "dark";
 
   async function signOut() {
     if (signingOut) return;
@@ -96,6 +104,20 @@ export function CreatorAccountMenu({
           <SettingsIcon className="size-4" />
           Settings
         </Link>
+        <button
+          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft disabled:cursor-default"
+          role="menuitemcheckbox"
+          type="button"
+          aria-checked={isDark}
+          disabled={!themeReady}
+          data-cuelume-toggle=""
+          onClick={() => setTheme(isDark ? "light" : "dark")}>
+          {isDark ? <MoonIcon /> : <SunIcon />}
+          Dark mode
+          <span className="ml-auto text-xs font-normal text-muted-text">
+            {themeReady ? (isDark ? "On" : "Off") : ""}
+          </span>
+        </button>
         <button
           className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft"
           role="menuitemcheckbox"

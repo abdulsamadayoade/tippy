@@ -1,15 +1,11 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/cn";
+import { useMounted } from "@/hooks/use-mounted";
 import { useSoundPreference } from "@/hooks/use-sound-preference";
 import { Button } from "./button";
 import { VolumeIcon } from "../icons/volume";
 import { VolumeOffIcon } from "../icons/volume-off";
-
-const subscribe = () => () => {};
-const getSnapshot = () => true;
-const getServerSnapshot = () => false;
 
 const ICON =
   "absolute inset-0 inline-flex items-center justify-center transition-[opacity,scale,filter] duration-300 ease-(--ease-smooth) motion-reduce:transition-none";
@@ -17,11 +13,7 @@ const SHOWN = "scale-100 opacity-100 blur-[0px]";
 const HIDDEN = "scale-25 opacity-0 blur-[4px]";
 
 export function SoundToggle() {
-  const mounted = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot,
-  );
+  const mounted = useMounted();
   const { enabled, toggle } = useSoundPreference();
   const label = mounted
     ? `Turn sound effects ${enabled ? "off" : "on"}`
