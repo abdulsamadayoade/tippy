@@ -1,27 +1,32 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { bankAccount, creator } from "@/lib/db/schema";
+import { bankAccount, creator, payout } from "@/lib/db/schema";
 import { validateBankAccount } from "@/lib/monnify";
 import { reportError } from "@/lib/monitoring";
 import { createPendingPayout, submitPayout } from "@/lib/payouts";
 import { getSessionCreator } from "@/lib/session";
 import { writeAuditSafe } from "@/lib/audit";
-import { accountSchema } from "./schema";
+import { verifyCreatorBank } from "@/lib/bank-verification";
+import {
+  accountSchema,
+  withdrawalQuoteSchema,
+  verificationSchema,
+} from "./schema";
 import { BANKS } from "@/data/constants";
 import type { FormErrors } from "./types";
+import type { WithdrawalQuote } from "@/lib/payout-fees";
 
 function revalidatePayoutViews() {
   revalidatePath("/payouts");
   revalidatePath("/overview");
 }
 
-export async function savePayoutAccount(values: {
+async function savePayoutAccount(values: {
   bank: string;
   accountNumber: string;
-  accountName: string;
 }): Promise<{ errors?: FormErrors }> {
   const { creator: sessionCreator } = await getSessionCreator();
   if (!sessionCreator) return { errors: { bank: "Sign in and try again." } };
@@ -32,11 +37,7 @@ export async function savePayoutAccount(values: {
     const errors: FormErrors = {};
     for (const issue of parsed.error.issues) {
       const field = issue.path[0];
-      if (
-        field === "bank" ||
-        field === "accountNumber" ||
-        field === "accountName"
-      ) {
+      if (field === "bank" || field === "accountNumber") {
         errors[field] ??= issue.message;
       }
     }
@@ -45,8 +46,6 @@ export async function savePayoutAccount(values: {
 
   const bankCode = BANKS.find(({ name }) => name === parsed.data.bank)!.code;
 
-  // Name enquiry via Monnify — the resolved name is what payouts are sent to,
-  // so the "Verified" badge in the UI is backed by the bank's own record.
   let resolved;
   try {
     resolved = await validateBankAccount(parsed.data.accountNumber, bankCode);
@@ -64,7 +63,11 @@ export async function savePayoutAccount(values: {
     };
   }
 
-  if (!resolved) {
+  if (
+    !resolved ||
+    resolved.accountNumber !== parsed.data.accountNumber ||
+    resolved.bankCode !== bankCode
+  ) {
     return {
       errors: {
         accountNumber: `We couldn’t find that account at ${parsed.data.bank}. Check the number and bank.`,
@@ -79,18 +82,42 @@ export async function savePayoutAccount(values: {
     accountNumber: parsed.data.accountNumber,
   };
 
-  const previous = await db.query.bankAccount.findFirst({
-    where: eq(bankAccount.creatorId, sessionCreator.id),
-    columns: { bankName: true, accountNumber: true },
-  });
-
-  await db
-    .insert(bankAccount)
-    .values({ creatorId: sessionCreator.id, ...accountValues })
-    .onConflictDoUpdate({
-      target: bankAccount.creatorId,
-      set: accountValues,
+  const previous = await db.transaction(async (tx) => {
+    await tx.execute(
+      sql`select ${creator.id} from ${creator} where ${creator.id} = ${sessionCreator.id} for update`,
+    );
+    const previous = await tx.query.bankAccount.findFirst({
+      where: eq(bankAccount.creatorId, sessionCreator.id),
     });
+
+    const changed =
+      !previous ||
+      previous.bankCode !== bankCode ||
+      previous.accountNumber !== accountValues.accountNumber;
+    await tx
+      .insert(bankAccount)
+      .values({ creatorId: sessionCreator.id, ...accountValues })
+      .onConflictDoUpdate({
+        target: bankAccount.creatorId,
+        set: {
+          ...accountValues,
+          ...(changed
+            ? {
+                revision: (previous?.revision ?? 0) + 1,
+                verificationStatus: "unverified" as const,
+                verificationEnvironment: null,
+                verificationRevision: null,
+                verifiedAt: null,
+                verificationReference: null,
+                verificationAttemptId: null,
+                verificationConsentAt: null,
+                verificationConsentVersion: null,
+              }
+            : {}),
+        },
+      });
+    return previous;
+  });
 
   // Best-effort trail for fraud review — account numbers masked to last-4.
   await writeAuditSafe(db, {
@@ -117,14 +144,33 @@ export async function savePayoutAccount(values: {
   return {};
 }
 
-export async function removePayoutAccount(): Promise<{ error?: string }> {
+async function removePayoutAccount(): Promise<{ error?: string }> {
   const { creator: sessionCreator } = await getSessionCreator();
   if (!sessionCreator) return { error: "Sign in and try again." };
 
-  const removed = await db
-    .delete(bankAccount)
-    .where(eq(bankAccount.creatorId, sessionCreator.id))
-    .returning({ bankName: bankAccount.bankName });
+  const removed = await db.transaction(async (tx) => {
+    await tx.execute(
+      sql`select ${creator.id} from ${creator} where ${creator.id} = ${sessionCreator.id} for update`,
+    );
+
+    const existingPayout = await tx.query.payout.findFirst({
+      where: eq(payout.creatorId, sessionCreator.id),
+      columns: { id: true },
+    });
+
+    if (existingPayout) return null;
+
+    return tx
+      .delete(bankAccount)
+      .where(eq(bankAccount.creatorId, sessionCreator.id))
+      .returning({ bankName: bankAccount.bankName });
+  });
+
+  if (!removed)
+    return {
+      error:
+        "This account has payout history. Edit your bank details to replace it instead.",
+    };
 
   if (removed.length > 0) {
     await writeAuditSafe(db, {
@@ -141,9 +187,7 @@ export async function removePayoutAccount(): Promise<{ error?: string }> {
   return {};
 }
 
-export async function setAutoPayout(
-  enabled: boolean,
-): Promise<{ error?: string }> {
+async function setAutoPayout(enabled: boolean): Promise<{ error?: string }> {
   const { creator: sessionCreator } = await getSessionCreator();
   if (!sessionCreator) return { error: "Sign in and try again." };
 
@@ -156,43 +200,62 @@ export async function setAutoPayout(
   return {};
 }
 
-export async function requestWithdrawal(amount: number): Promise<{
-  error?: string;
-  withdrawal?: { bankAmount: number; providerFeeAmount: number };
-}> {
+async function requestWithdrawal(
+  expectedQuote: WithdrawalQuote,
+): Promise<{ error?: string }> {
   const { creator: sessionCreator } = await getSessionCreator();
+
   if (!sessionCreator) return { error: "Sign in and try again." };
-  if (sessionCreator.suspended) {
-    return { error: "Your account is suspended. Contact hello@tippy.cash." };
-  }
-  if (sessionCreator.payoutsFrozen) {
+
+  const parsed = withdrawalQuoteSchema.safeParse(expectedQuote);
+
+  if (!parsed.success)
     return {
-      error:
-        "Withdrawals are temporarily paused on your account while we review recent activity. Contact hello@tippy.cash.",
+      error: "We couldn’t start this withdrawal. Refresh and try again.",
     };
-  }
 
-  const created = await createPendingPayout(sessionCreator.id, amount);
-  if ("error" in created) return { error: created.error };
+  const created = await createPendingPayout(
+    sessionCreator.id,
+    parsed.data.balanceDebit,
+    { expectedQuote: parsed.data },
+  );
 
-  // The reserved row is visible immediately; the transfer outcome updates it.
   revalidatePayoutViews();
+
+  if ("error" in created) return { error: created.error };
   const submitted = await submitPayout(created.submission);
   revalidatePayoutViews();
 
-  if (!submitted.ok) {
-    return {
-      error:
-        submitted.error ??
-        "We couldn’t start this withdrawal. Try again shortly.",
-    };
-  }
-
-  return {
-    withdrawal: {
-      bankAmount: created.submission.amount,
-      providerFeeAmount:
-        submitted.providerFeeAmount ?? created.submission.providerFeeAmount,
-    },
-  };
+  if (!submitted.ok)
+    return { error: submitted.error ?? "We couldn’t start this withdrawal." };
+  return {};
 }
+
+async function verifyPayoutIdentity(values: {
+  bvn: string;
+  consent: boolean;
+}): Promise<{ error?: string; verified?: boolean }> {
+  const { creator: sessionCreator } = await getSessionCreator();
+  if (!sessionCreator) return { error: "Sign in and try again." };
+
+  const parsed = verificationSchema.safeParse(values);
+
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const result = await verifyCreatorBank(
+    sessionCreator.id,
+    sessionCreator.userId,
+    parsed.data.bvn,
+    parsed.data.consent,
+  );
+
+  revalidatePayoutViews();
+  return result;
+}
+
+export {
+  savePayoutAccount,
+  removePayoutAccount,
+  setAutoPayout,
+  requestWithdrawal,
+  verifyPayoutIdentity,
+};
