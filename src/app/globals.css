@@ -54,16 +54,30 @@
   --color-body-text: #274c5e;
   --color-muted-text: #5b7280;
   --color-muted-text-2: #7f7f7f;
-  --color-white: #ffffff;
+  --color-bg: #ffffff; /* ✅ */
   --color-logo: #064e5b;
 
-  --color-ink: #292929;
+  --color-ink: #292929; /* ✅ */
   --color-copy: #5d5d5d;
   --color-line: #f2f2f2;
-  --color-soft: #f5f5f5;
+  --color-soft: #f5f5f5; /* ✅ */
 
-  --color-selection-bg: #292929;
-  --color-selection-text: #ffffff;
+  --color-selection-bg: #292929; /* ✅ */
+  --color-selection-text: #ffffff; /* ✅ */
+
+  --color-pill-bg: #f1f1f1; /* ✅ */
+  --color-pill-active-bg: #ffffff; /* ✅ */
+  --color-pill-active-text: #0f0f0f; /* ✅ */
+  --color-pill-inactive-text: #0f0f0f; /* ✅ */
+
+  --color-card-bg: #ffffff; /* ✅ */
+  --color-divider: #f0f0f0; /* ✅ */
+
+  --color-form-input-bg: #ffffff; /* ✅ */
+
+  --color-menu-bg: #ffffff;
+  --color-menu-item-text: #274c5e; /* ✅ */
+  --color-menu-item-hover: #f4f4f5; /* ✅ */
 
   --page-background-light: url("/images/bg-light.png");
   --page-background-dark: url("/images/bg-dark.png");
@@ -83,16 +97,30 @@
   --color-body-text: #ffffffbf;
   --color-muted-text: #9aa0a8;
   --color-muted-text-2: #7f7f7f;
-  --color-white: #232427;
+  --color-bg: #121212; /* ✅ */
   --color-logo: #ffffff;
 
-  /* --color-ink: #ffffff; */
+  --color-ink: #ffffff; /* ✅ */
   --color-copy: #91959c;
   --color-line: #ffffff2e;
-  /* --color-soft: #f5f5f5; */
+  --color-soft: #ffffff14; /* ✅ */
 
-  --color-selection-bg: #064e5b;
-  --color-selection-text: #ffffff;
+  --color-selection-bg: #064e5b; /* ✅ */
+  --color-selection-text: #ffffff; /* ✅ */
+
+  --color-pill-bg: #202020; /* ✅ */
+  --color-pill-active-bg: #454545; /* ✅ */
+  --color-pill-active-text: #ffffff; /* ✅ */
+  --color-pill-inactive-text: #c1c1c1cc; /* ✅ */
+
+  --color-card-bg: #181818; /* ✅ */
+  --color-divider: #262626; /* ✅ */
+
+  --color-form-input-bg: #1f1f1f; /* ✅ */
+
+  --color-menu-bg: #202020;
+  --color-menu-item-text: #fbfbfb; /* ✅ */
+  --color-menu-item-hover: #ffffff0a; /* ✅ */
 
   --page-background-dark-opacity: 1;
 
@@ -102,6 +130,14 @@
   --shadow-surface-raised:
     inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.2),
     0 2px 4px rgba(0, 0, 0, 0.25);
+  /* // style={
+        //   {
+        //     "--menu-shadow":
+        //       "0 0 0 1px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.05), 0 4px 42px rgba(0,0,0,0.24)",
+        //     boxShadow:
+        //       "var(--menu-shadow), inset 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 0 rgba(255,255,255,0.03)",
+        //   } as React.CSSProperties
+        // } */
 }
 
 @theme inline {
@@ -110,13 +146,27 @@
   --color-body-text: var(--color-body-text);
   --color-muted-text: var(--color-muted-text);
   --color-muted-text-2: var(--color-muted-text-2);
-  --color-white: var(--color-white);
+  --color-bg: var(--color-bg);
   --color-logo: var(--color-logo);
 
   --color-ink: var(--color-ink);
   --color-copy: var(--color-copy);
   --color-line: var(--color-line);
   --color-soft: var(--color-soft);
+
+  --color-pill-bg: var(--color-pill-bg);
+  --color-pill-active-bg: var(--color-pill-active-bg);
+  --color-pill-active-text: var(--color-pill-active-text);
+  --color-pill-inactive-text: var(--color-pill-inactive-text);
+
+  --color-card-bg: var(--color-card-bg);
+  --color-divider: var(--color-divider);
+
+  --color-form-input-bg: var(--color-form-input-bg);
+
+  --color-menu-bg: var(--color-menu-bg);
+  --color-menu-item-text: var(--color-menu-item-text);
+  --color-menu-item-hover: var(--color-menu-item-hover);
 
   --color-success: #29612d;
   --color-success-soft: oklch(0.97 0.03 145);
@@ -132,6 +182,7 @@
   --tracking-label: 0.03em;
 
   --radius-surface: 0.875rem;
+  --radius-pill: 3rem;
 
   --breakpoint-phone-sm: 22.5rem;
   --breakpoint-phone: 28.75rem;
@@ -158,7 +209,7 @@
   body {
     isolation: isolate;
     min-width: 320px;
-    background-color: var(--color-white);
+    background-color: var(--color-bg);
     color: var(--color-body-text);
     font-family: var(--font-sans);
     font-size: 14px;

@@ -72,7 +72,7 @@ export function AccountMenu({ onEdit, onRemove }: AccountMenuProps) {
         data-origin="top-right"
         inert={state === "closed"}
         className={cn(
-          "t-dropdown absolute top-full right-0 z-30 mt-1.5 min-w-44 rounded-2xl border border-line bg-white p-1 shadow-[0_16px_44px_-16px_rgba(41,41,41,0.32)]",
+          "t-dropdown absolute top-full right-0 z-30 mt-1.5 min-w-44 rounded-2xl bg-menu-bg p-1 shadow-menu",
           state === "open" && "is-open",
           state === "closing" && "is-closing",
         )}>
