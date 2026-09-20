@@ -2,10 +2,11 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { tip } from "@/lib/db/schema";
 import { getTransactionByPaymentReference } from "@/lib/monnify";
-import { sendTipSettledEmails } from "@/lib/notifications";
+import { reportWarning } from "@/lib/monitoring";
+import { notifyTipSettled } from "@/lib/notifications";
 
-export type TipSettlementStatus = "success" | "failed" | "pending" | "unknown";
-export type TipSettlementFacts = {
+type TipSettlementStatus = "success" | "failed" | "pending" | "unknown";
+type TipSettlementFacts = {
   providerReference: string | null;
   amountPaid?: number | null;
   settlementAmount?: number | null;
@@ -13,7 +14,7 @@ export type TipSettlementFacts = {
 
 const PENDING_STATUSES = new Set(["PENDING", "PARTIALLY_PAID"]);
 
-export async function markTipSettled(
+async function markTipSettled(
   tipId: string,
   paymentReference: string,
   facts: TipSettlementFacts,
@@ -33,11 +34,11 @@ export async function markTipSettled(
 
   if (updated.length === 0) return false;
 
-  await sendTipSettledEmails(paymentReference);
+  await notifyTipSettled(paymentReference);
   return true;
 }
 
-export async function reconcileTipWithMonnify(
+async function reconcileTipWithMonnify(
   paymentReference: string,
 ): Promise<TipSettlementStatus> {
   const row = await db.query.tip.findFirst({
@@ -52,10 +53,20 @@ export async function reconcileTipWithMonnify(
 
   if (!transaction) return "pending";
 
-  if (
-    transaction.paymentStatus === "PAID" &&
-    transaction.amountPaid >= row.amount
-  ) {
+  if (transaction.paymentStatus === "PAID") {
+    if (transaction.amountPaid < row.amount) {
+      reportWarning(`Underpaid tip ${paymentReference}`, {
+        category: "tip.settlement",
+        tags: { kind: "underpaid-tip" },
+        extra: {
+          paymentReference,
+          amountPaid: transaction.amountPaid,
+          expected: row.amount,
+        },
+        fingerprint: ["reconcile-underpaid-tip"],
+      });
+      return "pending";
+    }
     await markTipSettled(row.id, paymentReference, {
       providerReference: transaction.transactionReference,
       amountPaid: transaction.amountPaid,
@@ -75,3 +86,10 @@ export async function reconcileTipWithMonnify(
     .where(and(eq(tip.id, row.id), eq(tip.status, "pending")));
   return "failed";
 }
+
+export {
+  type TipSettlementStatus,
+  type TipSettlementFacts,
+  markTipSettled,
+  reconcileTipWithMonnify,
+};

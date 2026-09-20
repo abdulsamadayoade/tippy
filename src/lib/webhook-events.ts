@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { webhookEvent } from "@/lib/db/schema";
 import { reportError } from "@/lib/monitoring";
 
-export type WebhookOutcome =
+type WebhookOutcome =
   | "settled"
   | "reconciled"
   | "ignored"
@@ -19,7 +19,7 @@ type ParsedWebhookEvent = {
   };
 };
 
-export async function recordWebhookEvent({
+async function recordWebhookEvent({
   rawBody,
   parsed,
   signatureValid,
@@ -63,7 +63,7 @@ export async function recordWebhookEvent({
   }
 }
 
-export async function finishWebhookEvent(
+async function finishWebhookEvent(
   id: string | null,
   outcome: WebhookOutcome,
   errorMessage?: string,
@@ -87,3 +87,5 @@ export async function finishWebhookEvent(
     });
   }
 }
+
+export { type WebhookOutcome, recordWebhookEvent, finishWebhookEvent };
