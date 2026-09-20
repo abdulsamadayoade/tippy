@@ -53,8 +53,7 @@ async function assertAdmin(): Promise<void> {
 export type ReferenceLookup = {
   tip: (typeof tip.$inferSelect & { creator: CreatorSummary | null }) | null;
   payout:
-    | (typeof payout.$inferSelect & { creator: CreatorSummary | null })
-    | null;
+    (typeof payout.$inferSelect & { creator: CreatorSummary | null }) | null;
   events: Array<typeof webhookEvent.$inferSelect>;
 };
 
@@ -240,6 +239,9 @@ export async function getCreatorDetail(creatorId: string, tipPage = 1) {
       where: eq(bankAccount.creatorId, creatorId),
       columns: {
         bankName: true,
+        verificationStatus: true,
+        verificationEnvironment: true,
+        verifiedAt: true,
         accountName: true,
         accountNumber: true,
         updatedAt: true,
@@ -283,6 +285,9 @@ export async function getCreatorDetail(creatorId: string, tipPage = 1) {
     bankAccount: account
       ? {
           bankName: account.bankName,
+          verificationStatus: account.verificationStatus,
+          verificationEnvironment: account.verificationEnvironment,
+          verifiedAt: account.verifiedAt,
           accountName: account.accountName,
           accountNumberLast4: account.accountNumber.slice(-4),
           updatedAt: account.updatedAt,

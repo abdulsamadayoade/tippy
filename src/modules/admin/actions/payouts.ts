@@ -35,7 +35,7 @@ export async function payOutBelowMinimumAction(
       targetId: creatorId,
       details: {
         bankAmount: created.submission.amount,
-        providerFeeAmount: created.submission.providerFeeAmount,
+        creatorFeeAmount: created.submission.creatorFeeAmount,
         balanceDebit: created.submission.balanceDebit,
         paymentReference: created.submission.paymentReference,
         belowMinimum: created.submission.balanceDebit < MINIMUM_WITHDRAWAL,
@@ -47,7 +47,7 @@ export async function payOutBelowMinimumAction(
 
     return submitted.ok
       ? {
-          result: `Sent ${formatNaira(created.submission.amount)} to the creator’s bank; Monnify charged ${formatNaira(submitted.providerFeeAmount ?? created.submission.providerFeeAmount)}.`,
+          result: `Sent ${formatNaira(created.submission.amount)} to the creator’s bank; creator transfer fee ${formatNaira(created.submission.creatorFeeAmount)}.`,
         }
       : { error: submitted.error ?? "The transfer didn't go through." };
   } catch (error) {
