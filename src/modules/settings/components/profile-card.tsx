@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type SubmitEvent } from "react";
+import { play } from "cuelume";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
 import { TextArea } from "@/components/ui/text-area";
@@ -76,10 +77,12 @@ export function ProfileCard({ creator, categories }: ProfileCardProps) {
     setSaving(false);
 
     if (result.errors) {
+      play("error");
       setServerErrors(result.errors);
       return;
     }
 
+    play("success");
     setSaved(true);
   }
 

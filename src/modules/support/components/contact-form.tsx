@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type SubmitEvent } from "react";
+import { play } from "cuelume";
 import { Button } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
 import { TextArea } from "@/components/ui/text-area";
@@ -50,8 +51,10 @@ export function ContactForm() {
         throw new Error(result.message);
       }
 
+      play("success");
       setStatus("sent");
     } catch (error) {
+      play("error");
       setStatus("idle");
       setServerError(
         error instanceof Error && error.message

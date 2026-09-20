@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState, type SubmitEvent } from "react";
+import { play } from "cuelume";
 import { isValidEmail } from "@/modules/auth/utils";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
@@ -63,8 +64,10 @@ export function ReportPage({ username }: { username: string }) {
         throw new Error(result.message);
       }
 
+      play("success");
       setStatus("sent");
     } catch (error) {
+      play("error");
       setStatus("idle");
       setServerError(
         error instanceof Error && error.message

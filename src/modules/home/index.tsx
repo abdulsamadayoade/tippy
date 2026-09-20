@@ -2,6 +2,7 @@
 
 import { useRef, useState, type SubmitEvent } from "react";
 import { flushSync } from "react-dom";
+import { play } from "cuelume";
 import { cn } from "@/lib/cn";
 import { ArrowRightIcon } from "@/components/icons/arrow-right";
 import { CloseIcon } from "@/components/icons/close";
@@ -9,6 +10,7 @@ import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
+import { SoundToggle } from "@/components/ui/sound-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ProductPreview } from "./components/product-preview";
 import { Features } from "./components/features";
@@ -48,6 +50,7 @@ export function Home() {
     if (canContinue) return;
 
     event.preventDefault();
+    play("error");
     setError("Choose a username with at least 4 characters.");
     inputRef.current?.focus();
   }
@@ -63,6 +66,7 @@ export function Home() {
             <ButtonLink variant="secondary" size="xs" href="/register">
               Claim my Link
             </ButtonLink>
+            <SoundToggle />
             <ThemeToggle />
           </div>
         </div>

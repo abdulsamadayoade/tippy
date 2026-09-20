@@ -6,6 +6,7 @@ import {
   useTransition,
   type SubmitEvent,
 } from "react";
+import { play } from "cuelume";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AmountInput } from "@/components/ui/amount-input";
@@ -103,10 +104,12 @@ export function TipPresetsCard({
     setSaving(false);
 
     if (result.errors) {
+      play("error");
       setServerErrors(result.errors);
       return;
     }
 
+    play("success");
     setSaved(true);
   }
 

@@ -41,6 +41,8 @@ export function CheckoutPanel({
           className="inline-flex size-10 text-black cursor-pointer items-center justify-center rounded-full bg-soft disabled:cursor-not-allowed disabled:opacity-45"
           type="button"
           aria-label="Close checkout"
+          data-cuelume-press=""
+          data-cuelume-release=""
           disabled={paying}
           onClick={onClose}>
           <CloseIcon className="size-5" />

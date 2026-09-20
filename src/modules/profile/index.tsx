@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
+import { play } from "cuelume";
 import { cn } from "@/lib/cn";
 import { formatNaira } from "@/lib/utils";
 import { reportError } from "@/lib/monitoring";
@@ -21,6 +22,7 @@ import { Header } from "./components/header";
 import { ReportPage } from "./components/report-modal";
 import { Secured } from "@/components/elements/secured";
 import { Nav } from "@/components/layout/nav";
+import { SoundToggle } from "@/components/ui/sound-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { CheckoutPanel } from "./components/checkout-panel";
 import { Success } from "./components/success";
@@ -81,10 +83,12 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
     releasePaying();
     setCheckoutOpen(false);
     setStep("success");
+    play("success");
   }
 
   function failTip() {
     releasePaying();
+    play("error");
     setPaymentError(
       "Your payment didn’t complete, so no tip was sent. You can try again.",
     );
@@ -125,11 +129,13 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
     if (paying) return;
 
     if (!monnify) {
+      play("error");
       setPaymentError("Payments aren’t available right now. Try again later.");
       return;
     }
 
     if (!window.MonnifySDK) {
+      play("error");
       setPaymentError(
         "We couldn’t load the secure payment window. Check your connection and try again.",
       );
@@ -170,6 +176,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
         category: "checkout.start",
         tags: { creator: creator.username },
       });
+      play("error");
       setPaymentError(
         error instanceof Error && error.message
           ? error.message
@@ -235,6 +242,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
                 Claim my Link
               </ButtonLink>
             )}
+            <SoundToggle />
             <ThemeToggle />
           </div>
         </Nav>
