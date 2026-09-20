@@ -90,7 +90,7 @@ export function AccountMenu({ onEdit, onRemove }: AccountMenuProps) {
           type="button"
           data-cuelume-toggle="tick"
           onClick={() => select(onRemove)}
-          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-ui-sm font-medium text-danger transition-colors duration-100 hover:bg-danger-soft">
+          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-ui-sm font-medium text-red-600 dark:text-red-800 transition-colors duration-100 hover:bg-danger-soft">
           <TrashIcon className="size-4" />
           Remove
         </button>
