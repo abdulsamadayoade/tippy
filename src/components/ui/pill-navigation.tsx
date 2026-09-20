@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { cn } from "@/lib/cn";
+import Link from "next/link";
 
 export type PillNavigationItem = {
   href: string;
@@ -36,7 +36,10 @@ function positionPill(
   pill.style.width = `${link.offsetWidth}px`;
 }
 
-function findActiveHref(pathname: string, links: readonly PillNavigationItem[]) {
+function findActiveHref(
+  pathname: string,
+  links: readonly PillNavigationItem[],
+) {
   return links.reduce<string | undefined>((activeHref, link) => {
     const matches =
       pathname === link.href || pathname.startsWith(`${link.href}/`);
@@ -88,10 +91,10 @@ export function PillNavigation({
     <nav
       className={cn("text-ui-sm font-medium", className)}
       aria-label={ariaLabel}>
-      <div className="relative inline-flex items-center gap-0.75 rounded-[48px] bg-line p-0.75">
+      <div className="relative inline-flex items-center gap-0.75 rounded-pill bg-pill-bg p-0.75">
         <span
           ref={pillRef}
-          className="pointer-events-none absolute top-0.75 left-0 z-0 h-7.5 w-0 rounded-[48px] bg-white transition-[transform,width] duration-250 ease-(--ease-smooth) will-change-[transform,width] motion-reduce:transition-none"
+          className="pointer-events-none absolute top-0.75 left-0 z-0 h-7.5 w-0 rounded-pill bg-pill-active-bg transition-[transform,width] duration-250 ease-(--ease-smooth) will-change-[transform,width] motion-reduce:transition-none"
           aria-hidden="true"
         />
         {links.map(({ href, label, id }) => {
@@ -104,8 +107,8 @@ export function PillNavigation({
                 else linkRefs.current.delete(href);
               }}
               className={cn(
-                "relative z-1 h-7.5 cursor-pointer rounded-[48px] px-3 pt-1.5 pb-1 text-center whitespace-nowrap text-body-text/80 transition-colors duration-250 ease-(--ease-smooth) hover:text-main-heading motion-reduce:transition-none",
-                active && "text-main-heading",
+                "relative z-1 h-7.5 cursor-pointer rounded-pill px-3 pt-1.5 pb-1 text-center whitespace-nowrap text-pill-inactive-text transition-colors duration-250 ease-(--ease-smooth) hover:text-main-heading motion-reduce:transition-none",
+                active && "text-pill-active-text",
               )}
               href={href}
               id={id}
