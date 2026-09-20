@@ -37,7 +37,7 @@ export function OverviewSkeleton() {
           <article
             key={index}
             className={cn(
-              "rounded-surface bg-white p-4.5 shadow-surface",
+              "rounded-surface bg-card-bg p-4.5 shadow-surface",
               index === 2 && "max-dashboard:col-span-2 max-phone-sm:col-span-1",
             )}>
             <Skeleton className="h-4 w-24 max-w-full" />
@@ -46,7 +46,7 @@ export function OverviewSkeleton() {
         ))}
       </div>
 
-      <article className="mt-3 flex flex-wrap items-center justify-between gap-3.5 rounded-surface bg-white px-4.5 py-4 shadow-surface">
+      <article className="mt-3 flex flex-wrap items-center justify-between gap-3.5 rounded-surface bg-card-bg px-4.5 py-4 shadow-surface">
         <div>
           <Skeleton className="h-4.5 w-32 max-w-full" />
           <Skeleton className="mt-0.75 h-6 w-44 max-w-full" />
@@ -59,7 +59,7 @@ export function OverviewSkeleton() {
           <Skeleton className="h-6 w-24" />
           <Skeleton className="h-4 w-14" />
         </div>
-        <div className="mt-3 flex flex-col rounded-surface bg-white p-1 shadow-surface">
+        <div className="mt-3 flex flex-col rounded-surface bg-card-bg p-1 shadow-surface">
           {Array.from({ length: OVERVIEW_RECENT_TIPS }, (_, index) => (
             <div
               key={index}

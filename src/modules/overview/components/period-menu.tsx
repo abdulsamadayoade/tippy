@@ -36,7 +36,7 @@ export function PeriodMenu({ period, onPeriodChange }: PeriodMenuProps) {
         aria-label="Tips period"
         inert={state === "closed"}
         className={cn(
-          "t-dropdown absolute top-full left-0 z-30 mt-1.5 min-w-40 rounded-2xl border border-line bg-white p-1 text-left normal-case shadow-[0_16px_44px_-16px_rgba(41,41,41,0.32)]",
+          "t-dropdown absolute top-full left-0 z-30 mt-1.5 min-w-40 rounded-2xl bg-menu-bg p-1 text-left normal-case shadow-menu",
           state === "open" && "is-open",
           state === "closing" && "is-closing",
         )}>

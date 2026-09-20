@@ -14,7 +14,7 @@ export function MetricCard({
   return (
     <article
       className={cn(
-        "rounded-surface bg-white p-4.5 shadow-surface",
+        "rounded-surface bg-card-bg p-4.5 shadow-surface",
         className,
       )}>
       <span className="block text-ui-sm text-muted-text">{label}</span>

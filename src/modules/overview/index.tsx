@@ -66,13 +66,13 @@ export function Overview({
             id="recent-tips-heading">
             Latest tips
           </h2>
-          {summary.count > tips.length ? (
+          {summary.count > tips.length && (
             <Link
               className="text-ui-sm font-medium text-body-text/80 transition-colors duration-150 hover:text-main-heading"
               href="/tips">
               View all
             </Link>
-          ) : null}
+          )}
         </div>
         <TipList className="mt-3" tips={tips} />
       </section>

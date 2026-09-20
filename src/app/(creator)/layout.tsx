@@ -21,8 +21,8 @@ export default async function CreatorLayout({
   if (!creator) redirect("/onboarding");
 
   return (
-    <main className="min-h-screen bg-white" id="main-content">
-      <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-[10px]">
+    <main className="min-h-screen bg-bg" id="main-content">
+      <header className="sticky top-0 z-20 bg-bg backdrop-blur-[10px]">
         <div className="mx-auto flex max-w-160 items-center gap-5.5 px-5.5 py-3 max-dashboard:flex-wrap max-dashboard:gap-2.5 max-dashboard:px-4 max-dashboard:pt-3 max-dashboard:pb-2.5">
           <Link href="/overview">
             <Logo />
