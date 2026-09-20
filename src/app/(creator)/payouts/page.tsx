@@ -20,7 +20,7 @@ export default async function PayoutsPage() {
 
   await reconcileStalePayouts(creator.id);
 
-  const { balance, account, payouts, verification, destinationKey } =
+  const { balance, account, payouts, identityVerified, destinationKey } =
     await getPayoutData(creator.id);
 
   return (
@@ -31,7 +31,7 @@ export default async function PayoutsPage() {
           ? "Withdrawals are paused on your account. Contact hello@tippy.cash."
           : null
       }
-      verification={verification}
+      identityVerified={identityVerified}
       destinationKey={destinationKey}
       balance={balance}
       account={account}

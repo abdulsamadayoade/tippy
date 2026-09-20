@@ -1,4 +1,5 @@
 import type { PayoutStatus } from "@/types";
+import type { BankAccount } from "@/types";
 
 const STATUS_CHIPS: Record<PayoutStatus, { label: string; className: string }> =
   {
@@ -11,4 +12,10 @@ const STATUS_CHIPS: Record<PayoutStatus, { label: string; className: string }> =
     failed: { label: "Failed", className: "bg-danger-soft text-danger" },
   };
 
-export { STATUS_CHIPS };
+const EMPTY_PAYOUT_FORM: BankAccount = {
+  bank: "",
+  accountName: "",
+  accountNumber: "",
+};
+
+export { STATUS_CHIPS, EMPTY_PAYOUT_FORM };
