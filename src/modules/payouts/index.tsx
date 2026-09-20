@@ -16,10 +16,12 @@ export function Payouts({
   payouts,
   identityVerified,
   environment,
-  destinationKey,
+  destination,
   payoutBlockReason,
 }: PayoutsProps) {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
+
+  const destinationKey = `${destination?.id ?? "none"}:${destination?.revision ?? 0}:${environment}`;
   const blockedReason =
     payoutBlockReason ??
     (account && !identityVerified
@@ -78,6 +80,8 @@ export function Payouts({
         onClose={() => setWithdrawOpen(false)}
         balance={balance}
         account={account}
+        destination={destination}
+        environment={environment}
       />
     </section>
   );
