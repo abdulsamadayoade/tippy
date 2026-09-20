@@ -166,13 +166,33 @@ export default async function AdminLookupPage({
                   value={formatNaira(result.payout.amount)}
                 />
                 <Field
-                  label="Monnify fee"
-                  value={formatNaira(result.payout.providerFeeAmount)}
+                  label="Creator transfer fee"
+                  value={formatNaira(result.payout.creatorFeeAmount)}
+                />
+                <Field
+                  label="Actual provider fee"
+                  value={
+                    result.payout.actualProviderFeeAmount === null
+                      ? "Not reported"
+                      : formatNaira(result.payout.actualProviderFeeAmount)
+                  }
+                />
+                <Field
+                  label="Provider difference (+ = Tippy cost)"
+                  value={
+                    result.payout.actualProviderFeeAmount === null
+                      ? "Unknown"
+                      : `${result.payout.actualProviderFeeAmount >= result.payout.creatorFeeAmount ? "+" : "−"}${formatNaira(Math.abs(result.payout.actualProviderFeeAmount - result.payout.creatorFeeAmount))}`
+                  }
+                />
+                <Field
+                  label="Fee policy"
+                  value={`${result.payout.environment ?? "historical"} · ${result.payout.feePolicyVersion}`}
                 />
                 <Field
                   label="Total balance debit"
                   value={formatNaira(
-                    result.payout.amount + result.payout.providerFeeAmount,
+                    result.payout.amount + result.payout.creatorFeeAmount,
                   )}
                 />
                 <Field

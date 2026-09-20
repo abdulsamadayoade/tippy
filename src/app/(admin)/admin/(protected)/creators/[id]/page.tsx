@@ -131,6 +131,12 @@ export default async function AdminCreatorDetailPage({
               : "None linked"}
           </p>
           {bankAccount && (
+            <p className="mt-1 text-xs text-muted-text">
+              Identity: {bankAccount.verificationStatus} ·{" "}
+              {bankAccount.verificationEnvironment ?? "not verified"}
+            </p>
+          )}
+          {bankAccount && (
             <p className="mt-0.5 text-xs text-muted-text">
               Updated{" "}
               <time dateTime={bankAccount.updatedAt.toISOString()}>
@@ -190,7 +196,9 @@ export default async function AdminCreatorDetailPage({
                     <TableRow>
                       <TableHead>Date</TableHead>
                       <TableHead>To bank</TableHead>
-                      <TableHead>Monnify fee</TableHead>
+                      <TableHead>Creator fee</TableHead>
+                      <TableHead>Provider fee</TableHead>
+                      <TableHead>Difference</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Reference</TableHead>
                     </TableRow>
@@ -207,7 +215,17 @@ export default async function AdminCreatorDetailPage({
                           {formatNaira(payout.amount)}
                         </TableCell>
                         <TableCell className="text-body-text">
-                          {formatNaira(payout.providerFeeAmount)}
+                          {formatNaira(payout.creatorFeeAmount)}
+                        </TableCell>
+                        <TableCell className="text-body-text">
+                          {payout.actualProviderFeeAmount === null
+                            ? "Not reported"
+                            : formatNaira(payout.actualProviderFeeAmount)}
+                        </TableCell>
+                        <TableCell className="text-body-text">
+                          {payout.actualProviderFeeAmount === null
+                            ? "Unknown"
+                            : `${payout.actualProviderFeeAmount >= payout.creatorFeeAmount ? "+" : "−"}${formatNaira(Math.abs(payout.actualProviderFeeAmount - payout.creatorFeeAmount))}`}
                         </TableCell>
                         <TableCell className="text-body-text">
                           {payout.status}
