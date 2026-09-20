@@ -1,8 +1,8 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useTheme } from "next-themes";
+import { cn } from "@/lib/cn";
 import { Button } from "./button";
 import { SunIcon } from "../icons/sun";
 import { MoonIcon } from "../icons/moon";
@@ -11,6 +11,11 @@ const subscribe = () => () => {};
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
 
+const ICON =
+  "absolute inset-0 inline-flex items-center justify-center transition-[opacity,scale,filter] duration-300 ease-(--ease-smooth) motion-reduce:transition-none";
+const SHOWN = "scale-100 opacity-100 blur-[0px]";
+const HIDDEN = "scale-25 opacity-0 blur-[4px]";
+
 export function ThemeToggle() {
   const mounted = useSyncExternalStore(
     subscribe,
@@ -18,7 +23,6 @@ export function ThemeToggle() {
     getServerSnapshot,
   );
   const { resolvedTheme, setTheme } = useTheme();
-  const reduceMotion = useReducedMotion();
   const ready = mounted && Boolean(resolvedTheme);
   const isDark = resolvedTheme === "dark";
   const label = ready
@@ -38,21 +42,14 @@ export function ThemeToggle() {
         className="relative flex size-5 items-center justify-center"
         aria-hidden="true">
         {ready && (
-          <AnimatePresence initial={false}>
-            <motion.span
-              key={isDark ? "sun" : "moon"}
-              className="absolute inset-0 inline-flex items-center justify-center"
-              initial={{ opacity: 0, scale: 0.25, filter: "blur(4px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 0.25, filter: "blur(4px)" }}
-              transition={
-                reduceMotion
-                  ? { duration: 0 }
-                  : { type: "spring", duration: 0.3, bounce: 0 }
-              }>
-              {isDark ? <SunIcon /> : <MoonIcon />}
-            </motion.span>
-          </AnimatePresence>
+          <>
+            <span className={cn(ICON, isDark ? SHOWN : HIDDEN)}>
+              <SunIcon />
+            </span>
+            <span className={cn(ICON, isDark ? HIDDEN : SHOWN)}>
+              <MoonIcon />
+            </span>
+          </>
         )}
       </span>
     </Button>
