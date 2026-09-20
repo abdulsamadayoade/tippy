@@ -1,12 +1,8 @@
 "use client";
 
 import { useRef, useState, type SubmitEvent } from "react";
-import {
-  AnimatePresence,
-  LayoutGroup,
-  motion,
-  useReducedMotion,
-} from "motion/react";
+import { flushSync } from "react-dom";
+import { cn } from "@/lib/cn";
 import { ArrowRightIcon } from "@/components/icons/arrow-right";
 import { CloseIcon } from "@/components/icons/close";
 import { Nav } from "@/components/layout/nav";
@@ -18,18 +14,34 @@ import { ProductPreview } from "./components/product-preview";
 import { Features } from "./components/features";
 import { Secured } from "@/components/elements/secured";
 
+function withViewTransition(update: () => void) {
+  if (
+    !("startViewTransition" in document) ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    update();
+    return;
+  }
+  document.startViewTransition(() => flushSync(update));
+}
+
 export function Home() {
   const [claiming, setClaiming] = useState(false);
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const reduceMotion = useReducedMotion();
   const canContinue = username.trim().length > 3;
 
+  function openClaimFlow() {
+    withViewTransition(() => setClaiming(true));
+  }
+
   function closeClaimFlow() {
-    setClaiming(false);
-    setUsername("");
-    setError("");
+    withViewTransition(() => {
+      setClaiming(false);
+      setUsername("");
+      setError("");
+    });
   }
 
   function submitUsername(event: SubmitEvent<HTMLFormElement>) {
@@ -39,10 +51,6 @@ export function Home() {
     setError("Choose a username with at least 4 characters.");
     inputRef.current?.focus();
   }
-
-  const layoutTransition = reduceMotion
-    ? { duration: 0 }
-    : { type: "spring" as const, stiffness: 380, damping: 32, mass: 0.8 };
 
   return (
     <>
@@ -77,126 +85,96 @@ export function Home() {
             from your fans included, payouts straight to your bank. No more
             dropping your account number in the comments.
           </p>
-          <LayoutGroup id="home-claim-flow">
-            <motion.div
-              layout
-              className="mt-7 flex w-full flex-wrap items-start justify-center gap-2.5"
-              transition={layoutTransition}>
-              <AnimatePresence initial={false} mode="popLayout">
-                {claiming ? (
-                  <motion.form
-                    key="username-form"
-                    layoutId="claim-control"
-                    className="w-72 max-w-full"
-                    action="/register"
-                    method="get"
-                    autoComplete="off"
-                    noValidate
-                    initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
-                    transition={layoutTransition}
-                    onSubmit={submitUsername}>
-                    <TextInput
-                      ref={inputRef}
-                      label="Choose your username for https://tippy.cash/"
-                      visuallyHideLabel
-                      containerClassName="text-left"
-                      controlClassName="min-h-12 rounded-full"
-                      className="h-12"
-                      leadingContent={
-                        <span aria-hidden="true">https://tippy.cash/</span>
+          <div className="mt-7 flex w-full flex-wrap items-start justify-center gap-2.5">
+            {claiming ? (
+              <form
+                className="w-72 max-w-full [view-transition-name:claim-control]"
+                action="/register"
+                method="get"
+                autoComplete="off"
+                noValidate
+                onSubmit={submitUsername}>
+                <TextInput
+                  ref={inputRef}
+                  label="Choose your username for https://tippy.cash/"
+                  visuallyHideLabel
+                  containerClassName="text-left"
+                  controlClassName="min-h-12 rounded-full"
+                  className="h-12"
+                  leadingContent={
+                    <span aria-hidden="true">https://tippy.cash/</span>
+                  }
+                  name="username"
+                  type="text"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  aria-autocomplete="none"
+                  spellCheck={false}
+                  autoFocus
+                  required
+                  minLength={4}
+                  maxLength={30}
+                  placeholder="yourname"
+                  value={username}
+                  error={error}
+                  trailingAction={
+                    <Button
+                      size="icon"
+                      type={canContinue ? "submit" : "button"}
+                      aria-label={
+                        canContinue
+                          ? "Continue with this username"
+                          : "Close username field"
                       }
-                      name="username"
-                      type="text"
-                      autoComplete="off"
-                      autoCapitalize="none"
-                      autoCorrect="off"
-                      aria-autocomplete="none"
-                      spellCheck={false}
-                      autoFocus
-                      required
-                      minLength={4}
-                      maxLength={30}
-                      placeholder="yourname"
-                      value={username}
-                      error={error}
-                      trailingAction={
-                        <Button
-                          size="icon"
-                          type={canContinue ? "submit" : "button"}
-                          aria-label={
+                      onClick={canContinue ? undefined : closeClaimFlow}>
+                      <span
+                        className="relative inline-flex size-4.5"
+                        aria-hidden="true">
+                        <span
+                          className={cn(
+                            "absolute inset-0 inline-flex transition-[opacity,scale,rotate] duration-160 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none",
                             canContinue
-                              ? "Continue with this username"
-                              : "Close username field"
-                          }
-                          onClick={canContinue ? undefined : closeClaimFlow}>
-                          <AnimatePresence initial={false} mode="wait">
-                            <motion.span
-                              key={canContinue ? "arrow" : "close"}
-                              className="inline-flex"
-                              initial={
-                                reduceMotion
-                                  ? false
-                                  : { opacity: 0, scale: 0.65, rotate: -20 }
-                              }
-                              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                              exit={
-                                reduceMotion
-                                  ? undefined
-                                  : { opacity: 0, scale: 0.65, rotate: 20 }
-                              }
-                              transition={
-                                reduceMotion
-                                  ? { duration: 0 }
-                                  : { duration: 0.16, ease: [0.16, 1, 0.3, 1] }
-                              }>
-                              {canContinue ? (
-                                <ArrowRightIcon
-                                  className="size-4.5"
-                                  aria-hidden="true"
-                                />
-                              ) : (
-                                <CloseIcon
-                                  className="size-4.5"
-                                  aria-hidden="true"
-                                />
-                              )}
-                            </motion.span>
-                          </AnimatePresence>
-                        </Button>
-                      }
-                      onChange={(event) => {
-                        setUsername(event.target.value);
-                        if (error) setError("");
-                      }}
-                    />
-                  </motion.form>
-                ) : (
-                  <motion.div
-                    key="claim-button"
-                    layoutId="claim-control"
-                    exit={
-                      reduceMotion ? undefined : { opacity: 0, scale: 0.96 }
-                    }
-                    transition={layoutTransition}>
-                    <Button onClick={() => setClaiming(true)}>
-                      Claim your link
+                              ? "scale-100 rotate-0 opacity-100"
+                              : "scale-65 -rotate-20 opacity-0",
+                          )}>
+                          <ArrowRightIcon className="size-4.5" />
+                        </span>
+                        <span
+                          className={cn(
+                            "absolute inset-0 inline-flex transition-[opacity,scale,rotate] duration-160 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none",
+                            canContinue
+                              ? "scale-65 rotate-20 opacity-0"
+                              : "scale-100 rotate-0 opacity-100",
+                          )}>
+                          <CloseIcon className="size-4.5" />
+                        </span>
+                      </span>
                     </Button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  }
+                  onChange={(event) => {
+                    setUsername(event.target.value);
+                    if (error) setError("");
+                  }}
+                />
+              </form>
+            ) : (
+              <div className="[view-transition-name:claim-control]">
+                <Button onClick={openClaimFlow}>Claim your link</Button>
+              </div>
+            )}
 
-              <motion.div layout="position" transition={layoutTransition}>
-                <ButtonLink variant="secondary" href="/abdul">
-                  See a sample page
-                </ButtonLink>
-              </motion.div>
-            </motion.div>
-          </LayoutGroup>
-          <Secured text="Payments secured by" />
-          <ProductPreview />
-          <Features />
+            <div className="[view-transition-name:sample-link]">
+              <ButtonLink variant="secondary" href="/abdul">
+                See a sample page
+              </ButtonLink>
+            </div>
+          </div>
+          <div className="flex w-full flex-col items-center [view-transition-name:hero-rest]">
+            <Secured text="Payments secured by" />
+            <ProductPreview />
+            <Features />
+          </div>
         </section>
         <Footer />
       </main>

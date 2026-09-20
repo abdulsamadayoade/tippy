@@ -606,6 +606,24 @@ select:-webkit-autofill {
   }
 }
 
+::view-transition-group(claim-control),
+::view-transition-group(sample-link),
+::view-transition-group(hero-rest) {
+  animation-duration: 320ms;
+  animation-timing-function: var(--ease-smooth);
+}
+
+::view-transition-group(claim-control) {
+  overflow: clip;
+  border-radius: 9999px;
+}
+::view-transition-old(claim-control),
+::view-transition-new(claim-control) {
+  height: 100%;
+  object-fit: none;
+  overflow: clip;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
