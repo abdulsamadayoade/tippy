@@ -27,7 +27,7 @@ export function TipListSkeleton({
   return (
     <div
       className={cn(
-        "flex flex-col rounded-surface bg-white p-1 shadow-surface",
+        "flex flex-col rounded-surface bg-card-bg p-1 shadow-surface",
         className,
       )}>
       {Array.from({ length: rows }, (_, index) => (
@@ -48,7 +48,7 @@ export function TipsSkeleton() {
           <article
             key={index}
             className={cn(
-              "rounded-surface bg-white p-4.5 shadow-surface",
+              "rounded-surface bg-card-bg p-4.5 shadow-surface",
               index === 0 && "max-dashboard:col-span-2 max-phone-sm:col-span-1",
             )}>
             <Skeleton className="h-4 w-24 max-w-full" />

@@ -24,7 +24,7 @@ export function TipList({
   return (
     <div
       className={cn(
-        "flex flex-col rounded-surface bg-white p-1 shadow-surface",
+        "flex flex-col rounded-surface bg-card-bg p-1 shadow-surface",
         className,
       )}
       id={id}

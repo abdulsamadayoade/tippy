@@ -56,7 +56,7 @@ export function Tips({
       {status === "switching" ? (
         <TipListSkeleton className="mt-3.5" />
       ) : status === "switchError" ? (
-        <div className="mt-3.5 flex flex-col items-center rounded-surface bg-white px-4 py-8 text-center shadow-surface">
+        <div className="mt-3.5 flex flex-col items-center rounded-surface bg-card-bg px-4 py-8 text-center shadow-surface">
           <p className="text-muted-text">
             Couldn’t load tips. Check your connection and try again.
           </p>
