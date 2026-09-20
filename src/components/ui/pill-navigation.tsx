@@ -61,17 +61,22 @@ export function PillNavigation({
   const pillRef = useRef<HTMLSpanElement>(null);
   const linkRefs = useRef(new Map<string, HTMLAnchorElement>());
   const hasMeasured = useRef(false);
-  const activeHref = findActiveHref(pathname, links) ?? links[0]?.href;
+  const activeHref = findActiveHref(pathname, links);
 
   useLayoutEffect(() => {
-    if (!activeHref) return;
-
     const pill = pillRef.current;
-    const link = linkRefs.current.get(activeHref);
-    if (!pill || !link) return;
+    if (!pill) return;
+
+    const link = activeHref ? linkRefs.current.get(activeHref) : undefined;
+    if (!link) {
+      pill.style.opacity = "0";
+      hasMeasured.current = false;
+      return;
+    }
 
     positionPill(pill, link, hasMeasured.current);
     hasMeasured.current = true;
+    pill.style.opacity = "1";
   }, [activeHref]);
 
   useEffect(() => {
@@ -94,7 +99,7 @@ export function PillNavigation({
       <div className="relative inline-flex items-center gap-0.75 rounded-pill bg-pill-bg p-0.75">
         <span
           ref={pillRef}
-          className="pointer-events-none absolute top-0.75 left-0 z-0 h-7.5 w-0 rounded-pill bg-pill-active-bg transition-[transform,width] duration-250 ease-(--ease-smooth) will-change-[transform,width] motion-reduce:transition-none"
+          className="pointer-events-none absolute top-0.75 left-0 z-0 h-7.5 w-0 rounded-pill bg-pill-active-bg transition-[transform,width,opacity] duration-250 ease-(--ease-smooth) will-change-[transform,width] motion-reduce:transition-none"
           aria-hidden="true"
         />
         {links.map(({ href, label, id }) => {

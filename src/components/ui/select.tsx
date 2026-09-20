@@ -79,7 +79,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
         <div
           className={cn(
-            "relative flex w-full items-center rounded-xl bg-white shadow-surface transition-[box-shadow,opacity] duration-150 ease-out",
+            "relative flex w-full items-center rounded-xl bg-form-input-bg shadow-surface transition-[box-shadow,opacity] duration-150 ease-out",
             controlSizes[size],
             invalid
               ? "shadow-[inset_0_0_0_1px_var(--color-danger)] focus-within:shadow-[inset_0_0_0_1px_var(--color-danger),0_0_0_4px_rgba(143,48,48,0.09),0_4px_12px_rgba(143,48,48,0.07)]"
