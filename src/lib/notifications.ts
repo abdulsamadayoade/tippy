@@ -30,9 +30,8 @@ async function notifyTipSettled(paymentReference: string): Promise<void> {
 
     if (!row) return;
 
-    const tipperDisplayName = row.anonymous
-      ? "Anonymous"
-      : row.tipperName?.trim() || "Someone";
+    const tipperDisplayName =
+      (!row.anonymous && row.tipperName?.trim()) || "Anonymous";
 
     try {
       await sendTipReceivedEmail({

@@ -14,15 +14,15 @@ import type {
   TipsPage,
 } from "@/types";
 
-const TIP_SHADES = ["strong", "default", "subtle"] as const;
-
 function settledTipsFor(creatorId: string) {
   return and(eq(tip.creatorId, creatorId), eq(tip.status, "success"));
 }
 
+const anonymousTipSql = sql<boolean>`(${tip.anonymous} or nullif(trim(${tip.tipperName}), '') is null)`;
+
 function tipFilterCondition(filter: TipFilter) {
   if (filter === "notes") return and(isNotNull(tip.note), ne(tip.note, ""));
-  if (filter === "anonymous") return eq(tip.anonymous, true);
+  if (filter === "anonymous") return anonymousTipSql;
   return undefined;
 }
 
@@ -31,12 +31,10 @@ async function getTipsPage(
   {
     filter = "all",
     cursor = null,
-    shadeOffset = 0,
     limit = 20,
   }: {
     filter?: TipFilter;
     cursor?: TipCursor | null;
-    shadeOffset?: number;
     limit?: number;
   } = {},
 ): Promise<TipsPage> {
@@ -73,19 +71,18 @@ async function getTipsPage(
   const lastRow = pageRows.at(-1);
 
   return {
-    tips: pageRows.map((row, index) => {
-      const name = row.anonymous
-        ? "Anonymous"
-        : row.tipperName?.trim() || "Someone";
+    tips: pageRows.map((row) => {
+      const tipperName = row.tipperName?.trim() ?? "";
+      const anonymous = row.anonymous || !tipperName;
+      const name = anonymous ? "Anonymous" : tipperName;
 
       return {
         id: row.id,
         name,
         amount: row.amount,
         note: row.note ?? "",
-        anonymous: row.anonymous,
-        initial: row.anonymous ? "?" : name.charAt(0).toUpperCase(),
-        shade: TIP_SHADES[(shadeOffset + index) % TIP_SHADES.length],
+        anonymous,
+        avatarSeed: anonymous ? row.id : tipperName,
         time: formatRelativeTime(row.createdAt.toISOString()),
         createdAt: row.createdAt.toISOString(),
         reference: row.paymentReference,
@@ -121,7 +118,7 @@ async function getTipStats(creatorId: string): Promise<TipStats> {
       count: sql<number>`count(*)`.mapWith(Number),
       largest: sql<number>`coalesce(max(${tip.amount}), 0)`.mapWith(Number),
       supporters:
-        sql<number>`count(distinct case when ${tip.anonymous} then ${tip.id}::text else lower(coalesce(nullif(trim(${tip.tipperName}), ''), 'someone')) end)`.mapWith(
+        sql<number>`count(distinct case when ${anonymousTipSql} then ${tip.id}::text else lower(trim(${tip.tipperName})) end)`.mapWith(
           Number,
         ),
       dayTotal: periodTotalSql("day"),
