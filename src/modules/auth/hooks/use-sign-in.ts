@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { play } from "cuelume";
 import {
   inboxUrl,
   isValidEmail,
@@ -44,6 +45,7 @@ export function useSignIn(mode: "sign-in" | "sign-up") {
 
   async function sendEmailLink() {
     if (!isValidEmail(email)) {
+      play("error");
       setError("Enter a valid email address.");
       return;
     }
@@ -53,10 +55,12 @@ export function useSignIn(mode: "sign-in" | "sign-up") {
     setSending(false);
 
     if (failure) {
+      play("error");
       setError(failure);
       return;
     }
 
+    play("success");
     setSecondsLeft(RESEND_SECONDS);
     setSent(true);
   }
@@ -66,6 +70,7 @@ export function useSignIn(mode: "sign-in" | "sign-up") {
     const failure = await requestMagicLink(email.trim(), claimUsername);
 
     if (failure) {
+      play("error");
       setSent(false);
       setError(failure);
     }
@@ -77,8 +82,12 @@ export function useSignIn(mode: "sign-in" | "sign-up") {
 
     try {
       const failure = await signInWithGoogle({ mode, claimUsername });
-      if (failure) setGoogleError(failure);
+      if (failure) {
+        play("error");
+        setGoogleError(failure);
+      }
     } catch {
+      play("error");
       setGoogleError("We couldn’t continue with Google. Try again.");
     } finally {
       setConnectingToGoogle(false);

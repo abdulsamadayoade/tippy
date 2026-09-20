@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { play } from "cuelume";
 import { CheckIcon } from "@/components/icons/check";
 import { CopyIcon } from "@/components/icons/copy";
 
@@ -24,6 +25,7 @@ export function ShareLinkCard({ username }: { username: string }) {
       textArea.remove();
     }
 
+    play("success", { volume: 0.6 });
     setCopied(true);
     window.clearTimeout(copyTimer.current);
     copyTimer.current = window.setTimeout(() => setCopied(false), 1600);
@@ -46,6 +48,7 @@ export function ShareLinkCard({ username }: { username: string }) {
       <button
         className="major-button inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-2.5 py-1 text-ui-sm font-medium text-white transition-[background-color,transform] duration-150 active:scale-[0.985]"
         type="button"
+        data-cuelume-press=""
         onClick={copyTipLink}>
         {copied ? (
           <CheckIcon className="size-3.5 stroke-2" />

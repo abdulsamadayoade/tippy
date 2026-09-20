@@ -25,6 +25,7 @@ export function PeriodMenu({ period, onPeriodChange }: PeriodMenuProps) {
         aria-label="Change tips period"
         aria-haspopup="menu"
         aria-expanded={state === "open"}
+        data-cuelume-toggle="tick"
         onClick={toggle}>
         {PERIOD_LABELS[period]}
         <ChevronDownIcon className="size-3.5" aria-hidden="true" />
@@ -52,6 +53,7 @@ export function PeriodMenu({ period, onPeriodChange }: PeriodMenuProps) {
               role="menuitemradio"
               type="button"
               aria-checked={selected}
+              data-cuelume-toggle="tick"
               onClick={() => select(value)}>
               {label}
               {selected ? (
