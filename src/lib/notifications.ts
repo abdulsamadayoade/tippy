@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { bankAccount, creator, payout, tip } from "@/lib/db/schema";
 import { user } from "@/lib/db/auth-schema";
@@ -9,9 +9,7 @@ import {
 } from "@/lib/email";
 import { reportError } from "@/lib/monitoring";
 
-export async function sendTipSettledEmails(
-  paymentReference: string,
-): Promise<void> {
+async function notifyTipSettled(paymentReference: string): Promise<void> {
   try {
     const [row] = await db
       .select({
@@ -79,16 +77,15 @@ export async function sendTipSettledEmails(
   }
 }
 
-export async function sendPayoutPaidEmails(
-  paymentReference: string,
-): Promise<void> {
+async function notifyPayoutPaid(paymentReference: string): Promise<void> {
   try {
     const [row] = await db
       .select({
         amount: payout.amount,
+        creatorFeeAmount: payout.creatorFeeAmount,
         creatorEmail: user.email,
-        bankName: bankAccount.bankName,
-        accountNumber: bankAccount.accountNumber,
+        bankName: sql<string>`coalesce(${payout.destinationBankName}, ${bankAccount.bankName})`,
+        accountNumber: sql<string>`coalesce(${payout.destinationLast4}, right(${bankAccount.accountNumber}, 4))`,
       })
       .from(payout)
       .innerJoin(creator, eq(payout.creatorId, creator.id))
@@ -99,13 +96,22 @@ export async function sendPayoutPaidEmails(
 
     if (!row) return;
 
-    await sendPayoutPaidEmail({
-      to: row.creatorEmail,
-      amount: row.amount,
-      bankName: row.bankName,
-      accountNumber: row.accountNumber,
-      paymentReference,
-    });
+    try {
+      await sendPayoutPaidEmail({
+        to: row.creatorEmail,
+        amount: row.amount,
+        creatorFeeAmount: row.creatorFeeAmount,
+        bankName: row.bankName,
+        accountNumber: row.accountNumber,
+        paymentReference,
+      });
+    } catch (error) {
+      reportError(error, {
+        category: "payout.notification",
+        tags: { kind: "payout-paid" },
+        extra: { paymentReference },
+      });
+    }
   } catch (error) {
     reportError(error, {
       category: "payout.notification",
@@ -114,3 +120,5 @@ export async function sendPayoutPaidEmails(
     });
   }
 }
+
+export { notifyTipSettled, notifyPayoutPaid };
