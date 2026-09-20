@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { play } from "cuelume";
 import { formatAmountInput, sanitizeAmountInput } from "@/lib/amount-input";
 import { cn } from "@/lib/cn";
 import { formatNaira, maskAccountNumber } from "@/lib/utils";
@@ -87,11 +88,14 @@ export function WithdrawModal({
     try {
       const result = await requestWithdrawal(quote);
       if (result.error) {
+        play("error");
         setServerError(result.error);
         return;
       }
+      play("success");
       setDone(true);
     } catch {
+      play("error");
       setServerError(
         "We couldn’t confirm the request. Check your payout history before trying again.",
       );

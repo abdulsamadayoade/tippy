@@ -8,6 +8,7 @@ import {
   useTransition,
   type SubmitEvent,
 } from "react";
+import { play } from "cuelume";
 import { TrashIcon } from "@/components/icons/trash";
 import { PlusIcon } from "@/components/icons/plus";
 import { CheckIcon } from "@/components/icons/check";
@@ -104,10 +105,12 @@ export function PayoutAccountCard({
     setSaving(false);
 
     if (result.errors) {
+      play("error");
       setServerErrors(result.errors);
       return;
     }
 
+    play("success");
     setFormOpen(false);
   }
 
@@ -117,6 +120,7 @@ export function PayoutAccountCard({
     const result = await removePayoutAccount();
     setRemoving(false);
     if (result.error) {
+      play("error");
       setRemoveError(result.error);
       return;
     }
@@ -335,6 +339,8 @@ export function PayoutAccountCard({
           <button
             className="major-button major-button-danger inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-danger px-4 py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-70"
             type="button"
+            data-cuelume-press=""
+            data-cuelume-release=""
             disabled={removing}
             onClick={confirmDelete}>
             {removing ? "Removing…" : "Remove"}

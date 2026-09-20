@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useMenuState } from "@/hooks/use-menu-state";
+import { useSoundPreference } from "@/hooks/use-sound-preference";
 import { cn } from "@/lib/cn";
 import { authClient } from "@/lib/auth-client";
 import { CreatorAvatar } from "@/components/ui/creator-avatar";
@@ -10,6 +11,8 @@ import Link from "next/link";
 import { LinkIcon } from "@/components/icons/link";
 import { LogoutIcon } from "@/components/icons/logout";
 import { SettingsIcon } from "@/components/icons/settings";
+import { VolumeIcon } from "@/components/icons/volume";
+import { VolumeOffIcon } from "@/components/icons/volume-off";
 import type { CreatorAccountMenuProps } from "../types";
 
 export function CreatorAccountMenu({
@@ -22,6 +25,7 @@ export function CreatorAccountMenu({
   const [signingOut, setSigningOut] = useState(false);
   const { state, toggle, beginClose, containerRef, triggerRef } =
     useMenuState();
+  const sound = useSoundPreference();
 
   async function signOut() {
     if (signingOut) return;
@@ -47,6 +51,7 @@ export function CreatorAccountMenu({
         aria-label="Account menu"
         aria-haspopup="menu"
         aria-expanded={state === "open"}
+        data-cuelume-toggle="tick"
         onClick={toggle}>
         <CreatorAvatar
           size="small"
@@ -77,6 +82,7 @@ export function CreatorAccountMenu({
           className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft"
           role="menuitem"
           href={`/${username}`}
+          data-cuelume-toggle="tick"
           onClick={beginClose}>
           <LinkIcon className="size-4" />
           View tip page
@@ -85,15 +91,34 @@ export function CreatorAccountMenu({
           className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft"
           role="menuitem"
           href="/settings"
+          data-cuelume-toggle="tick"
           onClick={beginClose}>
           <SettingsIcon className="size-4" />
           Settings
         </Link>
         <button
+          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft"
+          role="menuitemcheckbox"
+          type="button"
+          aria-checked={sound.enabled}
+          data-cuelume-toggle=""
+          onClick={sound.toggle}>
+          {sound.enabled ? (
+            <VolumeIcon className="size-4" />
+          ) : (
+            <VolumeOffIcon className="size-4" />
+          )}
+          Sound effects
+          <span className="ml-auto text-xs font-normal text-muted-text">
+            {sound.enabled ? "On" : "Off"}
+          </span>
+        </button>
+        <button
           className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft disabled:cursor-default disabled:opacity-60"
           role="menuitem"
           type="button"
           disabled={signingOut}
+          data-cuelume-toggle="tick"
           onClick={signOut}>
           <LogoutIcon className="size-4" />
           {signingOut ? "Signing out…" : "Log out"}

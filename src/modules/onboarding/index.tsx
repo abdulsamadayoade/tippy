@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { play } from "cuelume";
 import { ClaimLinkStep } from "./components/claim-link-step";
 import { ProfileStep } from "./components/profile-step";
 import { checkUsernameAvailability, completeOnboarding } from "./actions";
@@ -50,6 +51,7 @@ export function Onboarding({ categories }: { categories: CategoryOption[] }) {
     setChecking(false);
 
     if (!result.available) {
+      play("error");
       setUsernameError(result.message);
       return;
     }
@@ -73,6 +75,7 @@ export function Onboarding({ categories }: { categories: CategoryOption[] }) {
     setFinishing(false);
 
     if (result?.error) {
+      play("error");
       if (result.error.field === "username") {
         setUsernameError(result.error.message);
         setStep(1);

@@ -60,6 +60,7 @@ export function AccountMenu({ onEdit, onRemove }: AccountMenuProps) {
         aria-label="Account options"
         aria-haspopup="menu"
         aria-expanded={state === "open"}
+        data-cuelume-toggle="tick"
         onClick={toggle}
         className="inline-flex size-8 cursor-pointer items-center justify-center rounded-full text-muted-text transition-colors duration-150 hover:bg-soft hover:text-body-text">
         <MoreIcon className="size-4" />
@@ -78,6 +79,7 @@ export function AccountMenu({ onEdit, onRemove }: AccountMenuProps) {
         <button
           role="menuitem"
           type="button"
+          data-cuelume-toggle="tick"
           onClick={() => select(onEdit)}
           className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft">
           <EditIcon className="size-4" />
@@ -86,6 +88,7 @@ export function AccountMenu({ onEdit, onRemove }: AccountMenuProps) {
         <button
           role="menuitem"
           type="button"
+          data-cuelume-toggle="tick"
           onClick={() => select(onRemove)}
           className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-ui-sm font-medium text-danger transition-colors duration-100 hover:bg-danger-soft">
           <TrashIcon className="size-4" />

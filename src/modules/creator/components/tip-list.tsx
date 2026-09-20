@@ -110,6 +110,7 @@ function TipListRow({ tip }: { tip: Tip }) {
           type="button"
           aria-controls={noteId}
           aria-expanded={expanded}
+          data-cuelume-toggle="tick"
           onClick={() => setExpanded((current) => !current)}>
           {content}
           <span className="sr-only">

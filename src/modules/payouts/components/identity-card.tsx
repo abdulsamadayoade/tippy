@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, type SubmitEvent } from "react";
+import { play } from "cuelume";
 import { verifyPayoutIdentity } from "../actions";
 import { TextInput } from "@/components/ui/text-input";
 import { Button } from "@/components/ui/button";
@@ -18,12 +19,16 @@ export function IdentityCard() {
     startTransition(async () => {
       try {
         const result = await verifyPayoutIdentity({ bvn, consent });
-        if (!result.verified)
-          setError(
-            result.error ??
-              "We couldn't verify your identity. Please try again.",
-          );
+        if (result.verified) {
+          play("success");
+          return;
+        }
+        play("error");
+        setError(
+          result.error ?? "We couldn't verify your identity. Please try again.",
+        );
       } catch {
+        play("error");
         setError(
           "We couldn't complete verification. Please try again shortly.",
         );
