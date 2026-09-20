@@ -15,7 +15,7 @@ import { fireConfetti } from "./components/confetti";
 import { Button } from "@/components/ui/button";
 import { TextArea } from "@/components/ui/text-area";
 import { TextInput } from "@/components/ui/text-input";
-import { AmountInput } from "@/components/ui/amount-input";
+import { AmountCustom } from "@/components/ui/amount-custom";
 import { AmountPreset } from "@/components/ui/amount-preset";
 import { Switch } from "@/components/ui/switch";
 import { Header } from "./components/header";
@@ -30,6 +30,9 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
   const presets = resolvePresets(creator.tipPresets, creator.categoryName);
   const defaultAmount = presets[POPULAR_PRESET_INDEX].amount;
   const [amount, setAmount] = useState(defaultAmount);
+  // Tracked separately from the amount so typing ₦1,000 keeps the custom tile
+  // selected instead of lighting up the ₦1,000 preset.
+  const [customSelected, setCustomSelected] = useState(false);
   const [message, setMessage] = useState("");
   const [tipperName, setTipperName] = useState("");
   const [tipperEmail, setTipperEmail] = useState("");
@@ -47,6 +50,16 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
     ? amount >= MINIMUM_TIP && amount <= MAXIMUM_TIP
     : presets.some((preset) => preset.amount === amount);
   const emailIsValid = tipperEmail.trim() === "" || isValidEmail(tipperEmail);
+
+  function selectPreset(presetAmount: number) {
+    setCustomSelected(false);
+    setAmount(presetAmount);
+  }
+
+  function changeCustomAmount(customAmount: number) {
+    setCustomSelected(true);
+    setAmount(customAmount);
+  }
 
   function openCheckout() {
     if (!amountIsValid || !emailIsValid) return;
@@ -211,6 +224,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
 
   function reset() {
     setAmount(defaultAmount);
+    setCustomSelected(false);
     setMessage("");
     setTipperName("");
     setTipperEmail("");
@@ -248,38 +262,37 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
 
             <div
               className="mt-4 grid grid-cols-2 gap-2"
-              aria-label="Tip amount presets">
+              role="group"
+              aria-label="Tip amount">
               {presets.map((preset, index) => (
                 <AmountPreset
                   key={index}
                   amount={preset.amount}
                   label={preset.label}
                   popular={preset.popular}
-                  selected={amount === preset.amount}
-                  onSelect={() => setAmount(preset.amount)}
+                  selected={!customSelected && amount === preset.amount}
+                  onSelect={() => selectPreset(preset.amount)}
                 />
               ))}
+              {creator.allowCustomAmount && (
+                <AmountCustom
+                  className="col-span-2"
+                  value={amount}
+                  selected={customSelected}
+                  onSelect={() => changeCustomAmount(0)}
+                  onValueChange={changeCustomAmount}
+                  max={MAXIMUM_TIP}
+                  error={
+                    customSelected && amount > 0 && amount < MINIMUM_TIP
+                      ? `Enter at least ${formatNaira(MINIMUM_TIP)}.`
+                      : undefined
+                  }
+                />
+              )}
             </div>
 
-            {creator.allowCustomAmount && (
-              <AmountInput
-                containerClassName="mt-4"
-                label="Other amount"
-                name="amount"
-                value={amount}
-                onValueChange={setAmount}
-                max={MAXIMUM_TIP}
-                error={
-                  amountIsValid
-                    ? undefined
-                    : `Enter at least ${formatNaira(MINIMUM_TIP)}.`
-                }
-                hint={`Enter any amount up to ${formatNaira(MAXIMUM_TIP)}.`}
-              />
-            )}
-
             <TextArea
-              containerClassName={creator.allowCustomAmount ? "mt-2.5" : "mt-4"}
+              containerClassName="mt-4"
               label={`Add a note for ${creator.displayName}`}
               visuallyHideLabel
               showCount
