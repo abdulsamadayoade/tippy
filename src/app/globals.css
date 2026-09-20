@@ -85,10 +85,13 @@
 
   --shadow-surface:
     inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.04),
-    0 1px 2px rgba(0, 0, 0, 0.04);
+    0 1px 2px rgba(0, 0, 0, 0.04); /* ✅ */
   --shadow-surface-raised:
     inset 0 0 0 1px rgba(255, 255, 255, 0.65), 0 0 0 1px rgba(0, 0, 0, 0.04),
-    0 2px 4px rgba(0, 0, 0, 0.04);
+    0 2px 4px rgba(0, 0, 0, 0.04); /* ✅ */
+  --shadow-menu:
+    0 0 0 1px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.05),
+    0 4px 42px rgba(0, 0, 0, 0.06); /* ✅ */
 }
 
 .dark {
@@ -126,18 +129,14 @@
 
   --shadow-surface:
     inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.15),
-    0 1px 2px rgba(0, 0, 0, 0.2);
+    0 1px 2px rgba(0, 0, 0, 0.2); /* ✅ */
   --shadow-surface-raised:
     inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.2),
-    0 2px 4px rgba(0, 0, 0, 0.25);
-  /* // style={
-        //   {
-        //     "--menu-shadow":
-        //       "0 0 0 1px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.05), 0 4px 42px rgba(0,0,0,0.24)",
-        //     boxShadow:
-        //       "var(--menu-shadow), inset 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 0 rgba(255,255,255,0.03)",
-        //   } as React.CSSProperties
-        // } */
+    0 2px 4px rgba(0, 0, 0, 0.25); /* ✅ */
+  --shadow-menu:
+    0 0 0 1px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.05),
+    0 4px 42px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.03); /* ✅ */
 }
 
 @theme inline {
@@ -190,6 +189,7 @@
 
   --shadow-surface: var(--shadow-surface);
   --shadow-surface-raised: var(--shadow-surface-raised);
+  --shadow-menu: var(--shadow-menu);
 
   --animate-rise-in: rise-in 260ms ease both;
 }

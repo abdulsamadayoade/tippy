@@ -19,6 +19,9 @@ import { VolumeIcon } from "@/components/icons/volume";
 import { VolumeOffIcon } from "@/components/icons/volume-off";
 import type { CreatorAccountMenuProps } from "../types";
 
+const MENU_ITEM =
+  "flex w-full text-menu-item-text hover:bg-menu-item-hover cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium transition-colors duration-100 disabled:cursor-default disabled:opacity-60";
+
 export function CreatorAccountMenu({
   displayName,
   username,
@@ -50,6 +53,34 @@ export function CreatorAccountMenu({
     router.refresh();
   }
 
+  const links = [
+    { href: `/${username}`, label: "View tip page", Icon: LinkIcon },
+    { href: "/settings", label: "Settings", Icon: SettingsIcon },
+  ];
+
+  const toggles = [
+    {
+      label: "Dark mode",
+      checked: isDark,
+      disabled: !themeReady,
+      status: themeReady ? (isDark ? "On" : "Off") : "",
+      icon: isDark ? <MoonIcon /> : <SunIcon />,
+      onClick: () => setTheme(isDark ? "light" : "dark"),
+    },
+    {
+      label: "Sound effects",
+      checked: sound.enabled,
+      disabled: false,
+      status: sound.enabled ? "On" : "Off",
+      icon: sound.enabled ? (
+        <VolumeIcon className="size-4" />
+      ) : (
+        <VolumeOffIcon className="size-4" />
+      ),
+      onClick: sound.toggle,
+    },
+  ];
+
   return (
     <div ref={containerRef} className="relative">
       <button
@@ -75,7 +106,7 @@ export function CreatorAccountMenu({
         data-origin="top-right"
         inert={state === "closed"}
         className={cn(
-          "t-dropdown absolute top-full right-0 z-30 mt-2 min-w-56 rounded-2xl border border-line bg-white p-1 shadow-[0_16px_44px_-16px_rgba(41,41,41,0.32)]",
+          "t-dropdown absolute top-full shadow-menu right-0 z-30 mt-2 min-w-56 rounded-2xl bg-menu-bg p-1",
           state === "open" && "is-open",
           state === "closing" && "is-closing",
         )}>
@@ -85,58 +116,38 @@ export function CreatorAccountMenu({
           </p>
           <p className="truncate text-xs text-muted-text">{tipUrl}</p>
         </div>
-        <div className="my-1 h-px bg-line" />
-        <Link
-          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft"
-          role="menuitem"
-          href={`/${username}`}
-          data-cuelume-toggle="tick"
-          onClick={beginClose}>
-          <LinkIcon className="size-4" />
-          View tip page
-        </Link>
-        <Link
-          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft"
-          role="menuitem"
-          href="/settings"
-          data-cuelume-toggle="tick"
-          onClick={beginClose}>
-          <SettingsIcon className="size-4" />
-          Settings
-        </Link>
+        <div className="my-1 h-px bg-divider" />
+        {links.map(({ href, label, Icon }) => (
+          <Link
+            className={MENU_ITEM}
+            role="menuitem"
+            href={href}
+            key={href}
+            data-cuelume-toggle="tick"
+            onClick={beginClose}>
+            <Icon className="size-4" />
+            {label}
+          </Link>
+        ))}
+        {toggles.map(({ label, checked, disabled, status, icon, onClick }) => (
+          <button
+            className={MENU_ITEM}
+            role="menuitemcheckbox"
+            type="button"
+            key={label}
+            aria-checked={checked}
+            disabled={disabled}
+            data-cuelume-toggle=""
+            onClick={onClick}>
+            {icon}
+            {label}
+            <span className="ml-auto text-xs font-normal text-muted-text">
+              {status}
+            </span>
+          </button>
+        ))}
         <button
-          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft disabled:cursor-default"
-          role="menuitemcheckbox"
-          type="button"
-          aria-checked={isDark}
-          disabled={!themeReady}
-          data-cuelume-toggle=""
-          onClick={() => setTheme(isDark ? "light" : "dark")}>
-          {isDark ? <MoonIcon /> : <SunIcon />}
-          Dark mode
-          <span className="ml-auto text-xs font-normal text-muted-text">
-            {themeReady ? (isDark ? "On" : "Off") : ""}
-          </span>
-        </button>
-        <button
-          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft"
-          role="menuitemcheckbox"
-          type="button"
-          aria-checked={sound.enabled}
-          data-cuelume-toggle=""
-          onClick={sound.toggle}>
-          {sound.enabled ? (
-            <VolumeIcon className="size-4" />
-          ) : (
-            <VolumeOffIcon className="size-4" />
-          )}
-          Sound effects
-          <span className="ml-auto text-xs font-normal text-muted-text">
-            {sound.enabled ? "On" : "Off"}
-          </span>
-        </button>
-        <button
-          className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-ui-sm font-medium text-body-text transition-colors duration-100 hover:bg-soft disabled:cursor-default disabled:opacity-60"
+          className={MENU_ITEM}
           role="menuitem"
           type="button"
           disabled={signingOut}
