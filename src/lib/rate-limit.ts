@@ -1,12 +1,12 @@
 import { sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 
-export type RateLimitRule = { window: number; max: number };
-export type RateLimitDecision = { allowed: boolean; retryAfter: number | null };
+type RateLimitRule = { window: number; max: number };
+type RateLimitDecision = { allowed: boolean; retryAfter: number | null };
 
 const RATE_LIMIT_RETENTION_MS = 60 * 60 * 1000;
 
-export async function consumeRateLimit(
+async function consumeRateLimit(
   key: string,
   { window, max }: RateLimitRule,
 ): Promise<RateLimitDecision> {
@@ -37,7 +37,7 @@ export async function consumeRateLimit(
   return { allowed: false, retryAfter };
 }
 
-export function getClientIp(request: Request): string {
+function getClientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {
     const first = forwarded.split(",")[0]?.trim();
@@ -50,9 +50,17 @@ export function getClientIp(request: Request): string {
   );
 }
 
-export async function pruneRateLimits(): Promise<void> {
+async function pruneRateLimits(): Promise<void> {
   await db.execute(sql`
     DELETE FROM rate_limit
     WHERE "window_start" < ${Date.now() - RATE_LIMIT_RETENTION_MS}
   `);
 }
+
+export {
+  type RateLimitRule,
+  type RateLimitDecision,
+  consumeRateLimit,
+  getClientIp,
+  pruneRateLimits,
+};
