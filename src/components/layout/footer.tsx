@@ -6,7 +6,7 @@ const links = [
   { href: "/refunds", label: "Refunds" },
   { href: "/terms", label: "Terms" },
   { href: "/privacy", label: "Privacy" },
-] as const;
+];
 
 export function Footer() {
   return (
@@ -16,7 +16,7 @@ export function Footer() {
         aria-label="Site">
         {links.map(({ href, label }, index) => (
           <span key={href} className="flex items-center gap-1.5">
-            {index > 0 ? <span aria-hidden="true">·</span> : null}
+            {index > 0 && <span aria-hidden="true">·</span>}
             <Link className="hover:underline" href={href}>
               {label}
             </Link>
@@ -24,7 +24,7 @@ export function Footer() {
         ))}
       </nav>
       <p className="mt-2 text-xs text-muted-text-2">
-        © {new Date().getFullYear()} Nightshift Industries
+        © {new Date().getFullYear()} Very Serious Company
       </p>
     </footer>
   );
