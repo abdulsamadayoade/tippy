@@ -18,6 +18,7 @@ export type ErrorCategory =
   | "webhook.signature"
   | "wallet.balance"
   | "monitor.sweep"
+  | "risk.monitoring"
   | "avatar.upload"
   | "avatar.delete"
   | "abuse.report"
