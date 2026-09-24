@@ -157,9 +157,7 @@ export async function POST(request: Request) {
       paymentReference,
       amount: parsed.data.amount,
       customerFullName: "Tippy Supporter",
-      customerEmail:
-        parsed.data.tipperEmail ||
-        `${paymentReference.toLowerCase()}@guest.tippy.cash`,
+      customerEmail: parsed.data.tipperEmail || "hello@tippy.cash",
     },
     { status: 201 },
   );
