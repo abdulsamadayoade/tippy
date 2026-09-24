@@ -12,6 +12,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { TextInput } from "@/components/ui/text-input";
 import { ProductPreview } from "./components/product-preview";
 import { Features } from "./components/features";
+import { Faq } from "./components/faq";
 import { Secured } from "@/components/elements/secured";
 
 function withViewTransition(update: () => void) {
@@ -57,22 +58,15 @@ export function Home() {
     <>
       <Nav />
 
-      <main className="flex min-h-screen w-full max-w-full flex-col py-16">
+      <main className="flex min-h-screen w-full max-w-full flex-col pt-16 pb-5">
         <section className="mx-auto flex w-full max-w-180 flex-1 flex-col items-center px-5 text-center">
           <h1 className="my-5 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-main-heading">
-            Get{" "}
-            <div className="inline-block bg-primary text-white px-2 py-0.5">
-              tipped
-            </div>{" "}
-            by the people who
-            <div className="inline-block bg-primary text-white px-2 py-0.5">
-              love your work.
-            </div>
+            Your work deserves more than likes.
           </h1>
           <p className="max-w-lg text-base font-medium leading-normal text-body-text/75 text-pretty">
-            Tippy gives you one simple link to collect tips in naira — notes
-            from your fans included, payouts straight to your bank. No more
-            dropping your account number in the comments.
+            Give your audience one simple link to support what you create. Get
+            tipped in naira, receive messages from supporters, and withdraw
+            straight to your bank.
           </p>
           <div className="mt-7 flex w-full flex-wrap items-start justify-center gap-2.5">
             {claiming ? (
@@ -165,8 +159,9 @@ export function Home() {
             <Features />
           </div>
         </section>
-        <Footer />
+        <Faq />
       </main>
+      <Footer />
     </>
   );
 }

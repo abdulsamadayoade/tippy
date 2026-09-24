@@ -28,10 +28,19 @@ const terms: LegalSection[] = [
     ],
   },
   {
-    heading: "Fees",
+    heading: "Supporter collection fees",
     paragraphs: [
-      "Creators receive the full tip amount. Monnify charges the supporter a separate payment-processing fee.",
-      "Tippy deducts the quoted transfer fee from your selected withdrawal before instructing Monnify to send the remaining amount to your bank. Live transfer fees are ₦10 below ₦10,000, ₦20 from ₦10,000 to ₦49,999.99, and ₦40 from ₦50,000, based on the amount selected. Manual withdrawals show the fee and bank amount before confirmation; automatic payouts use the same schedule. Your selected amount is the total balance debit. If Monnify charges a different fee, Tippy records the difference without changing your approved debit. Tippy covers any excess and does not automatically refund a lower provider fee.",
+      "When you send a tip, you pay the tip amount plus Monnify’s collection (payment-processing) fee. Monnify displays the fee and total payable at checkout before you complete payment.",
+      "Monnify sets and calculates the collection fee for the selected payment method. Its published rates are available on [Monnify’s pricing page](https://monnify.com/pricing). Review the total shown at checkout, including any applicable taxes, before paying.",
+      "The creator’s Tippy balance is credited with the full tip amount after payment is confirmed. The collection fee is paid to Monnify and is not part of the creator’s tip.",
+    ],
+  },
+  {
+    heading: "Creator withdrawal fees",
+    paragraphs: [
+      "Tippy deducts the quoted transfer fee from your selected withdrawal before instructing Monnify to send the remaining amount to your bank. Live transfer fees are ₦10 below ₦10,000, ₦20 from ₦10,000 to ₦49,999.99, and ₦40 from ₦50,000, based on the amount selected.",
+      "Manual withdrawals show the fee and bank amount before confirmation; automatic payouts use the same schedule. Your selected amount is the total balance debit.",
+      "If Monnify charges a different fee, Tippy records the difference without changing your approved debit. Tippy covers any excess and does not automatically refund a lower provider fee.",
     ],
   },
   {

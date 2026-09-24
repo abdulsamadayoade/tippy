@@ -13,7 +13,7 @@ export default function TermsPage() {
     <LegalPage
       title="Terms of Service"
       intro="The short, plain-language rules for using Tippy."
-      updated="24 August 2026"
+      updated="24 September 2026"
       sections={terms}
       crossLinks={[
         { label: "Privacy Policy", href: "/privacy" },
