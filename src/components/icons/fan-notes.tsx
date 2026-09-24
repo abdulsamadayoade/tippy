@@ -1,12 +1,12 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
-export function PaySuccessIcon({ className, ...props }: ComponentProps<"svg">) {
+export function FanNotesIcon({ className, ...props }: ComponentProps<"svg">) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="48"
-      height="48"
+      width="40"
+      height="40"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -18,10 +18,10 @@ export function PaySuccessIcon({ className, ...props }: ComponentProps<"svg">) {
       className={cn("text-[#064e5b] dark:text-[#bce9e8]", className)}
       {...props}>
       <g className="fill-[#d6f1ef] dark:fill-[#17454d]" stroke="none">
-        <circle cx="12" cy="12" r="8.5" />
+        <path d="M6.5 4.5H17.5A3 3 0 0 1 20.5 7.5V14A3 3 0 0 1 17.5 17H11L6.8 20.3V17H6.5A3 3 0 0 1 3.5 14V7.5A3 3 0 0 1 6.5 4.5Z" />
       </g>
-      <circle cx="12" cy="12" r="8.5" />
-      <path pathLength={20} d="M8 12L10.7 14.7L16 9.5" />
+      <path d="M6.5 4.5H17.5A3 3 0 0 1 20.5 7.5V14A3 3 0 0 1 17.5 17H11L6.8 20.3V17H6.5A3 3 0 0 1 3.5 14V7.5A3 3 0 0 1 6.5 4.5Z" />
+      <path d="M7.7 9H16.3M7.7 12.8H12.5" />
     </svg>
   );
 }

@@ -1,22 +1,27 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
-export function CheckIcon({ className, ...props }: ComponentProps<"svg">) {
+export function CheckIcon({
+  className,
+  size = 16,
+  ...props
+}: ComponentProps<"svg"> & { size?: 16 | 24 }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width="32"
-      height="32"
-      color="currentColor"
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
       fill="none"
       stroke="currentColor"
-      strokeWidth="1"
+      strokeWidth={size === 16 ? 1.5 : 1.8}
       strokeLinecap="round"
       strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
       className={cn(className)}
       {...props}>
-      <path d="M5 13.2592L7.58583 15.9568C8.2525 16.6523 8.58583 17.0001 9.00004 17.0001C9.41425 17.0001 9.74759 16.6523 10.4143 15.9568L19 7.00006"></path>
+      <path d={size === 16 ? "M3 8L6.2 11.2L13 4.5" : "M5 12L9.5 16.5L19 7"} />
     </svg>
   );
 }

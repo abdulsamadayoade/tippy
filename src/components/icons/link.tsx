@@ -5,19 +5,19 @@ export function LinkIcon({ className, ...props }: ComponentProps<"svg">) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width="32"
-      height="32"
-      color="currentColor"
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
       className={cn(className)}
       {...props}>
-      <path d="M14.9961 17H16.9961C19.7575 17 21.9961 14.7614 21.9961 12C21.9961 9.23858 19.7575 7 16.9961 7H14.9961M8.99609 17H6.99609C4.23467 17 1.99609 14.7614 1.99609 12C1.99609 9.23858 4.23467 7 6.99609 7H8.99609"></path>
-      <path d="M8.49609 12H15.4961"></path>
+      <path d="M6.8 9.2C5.8 8.2 5.8 6.9 6.8 5.9L9.1 3.6C10.1 2.6 11.7 2.6 12.7 3.6S13.7 6.2 12.7 7.2L11.4 8.5M9.2 6.8C10.2 7.8 10.2 9.1 9.2 10.1L6.9 12.4C5.9 13.4 4.3 13.4 3.3 12.4S2.3 9.8 3.3 8.8L4.6 7.5" />
     </svg>
   );
 }

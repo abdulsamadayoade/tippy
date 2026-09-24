@@ -1,24 +1,33 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
-export function TrashIcon({ className, ...props }: ComponentProps<"svg">) {
+export function TrashIcon({
+  className,
+  size = 16,
+  ...props
+}: ComponentProps<"svg"> & { size?: 16 | 24 }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width="32"
-      height="32"
-      color="currentColor"
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
       fill="none"
       stroke="currentColor"
-      strokeWidth="1"
+      strokeWidth={size === 16 ? 1.5 : 1.8}
       strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
       className={cn(className)}
       {...props}>
-      <path d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5"></path>
-      <path d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5"></path>
-      <path d="M9.5 16.5L9.5 10.5"></path>
-      <path d="M14.5 16.5L14.5 10.5"></path>
+      <path
+        d={
+          size === 16
+            ? "M2.5 4.5H13.5M6 4.5V3C6 2.4 6.4 2 7 2H9C9.6 2 10 2.4 10 3V4.5M4 4.5L4.6 12.6C4.7 13.4 5.3 14 6.1 14H9.9C10.7 14 11.3 13.4 11.4 12.6L12 4.5M6.5 7V11M9.5 7V11"
+            : "M4 6.5H20M9 6.5V4.5C9 3.7 9.7 3 10.5 3H13.5C14.3 3 15 3.7 15 4.5V6.5M6 6.5L6.8 18.6C6.9 20 7.8 21 9.2 21H14.8C16.2 21 17.1 20 17.2 18.6L18 6.5M10 10V17M14 10V17"
+        }
+      />
     </svg>
   );
 }

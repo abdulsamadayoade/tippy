@@ -5,20 +5,20 @@ export function VolumeIcon({ className, ...props }: ComponentProps<"svg">) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
       width="16"
       height="16"
-      color="currentColor"
+      viewBox="0 0 16 16"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
       className={cn(className)}
       {...props}>
-      <path d="M3 9.5H6.5L11 5.5V18.5L6.5 14.5H3V9.5Z"></path>
-      <path d="M14.75 9.5C16.08 10.9 16.08 13.1 14.75 14.5"></path>
-      <path d="M17.5 7C20.17 9.8 20.17 14.2 17.5 17"></path>
+      <path d="M2 6H4.5L7.5 3.5V12.5L4.5 10H2V6Z" />
+      <path d="M10 6C11 7.1 11 8.9 10 10M12 4C14.1 6.2 14.1 9.8 12 12" />
     </svg>
   );
 }

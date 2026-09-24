@@ -5,19 +5,20 @@ export function UserIcon({ className, ...props }: ComponentProps<"svg">) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
       width="16"
       height="16"
-      color="currentColor"
+      viewBox="0 0 16 16"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
       className={cn(className)}
       {...props}>
-      <path d="M20 21.0001C19.713 17.269 16.7289 14.3151 12.995 14.0662L12 13.9999C11.6446 14.0096 11.3134 14.0225 11.0008 14.0378C7.3 14.2192 4.28417 17.3057 4 21.0001"></path>
-      <circle cx="12" cy="6.99988" r="4"></circle>
+      <circle cx="8" cy="5" r="2.5" />
+      <path d="M3 13.5C3 10.7 5.2 9.5 8 9.5S13 10.7 13 13.5" />
     </svg>
   );
 }

@@ -1,17 +1,23 @@
-export function MoonIcon() {
+import type { ComponentProps } from "react";
+import { cn } from "@/lib/cn";
+
+export function MoonIcon({ className, ...props }: ComponentProps<"svg">) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
       width="16"
       height="16"
-      color="currentColor"
+      viewBox="0 0 16 16"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
-      strokeLinejoin="round">
-      <path d="M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z"></path>
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+      className={cn(className)}
+      {...props}>
+      <path d="M7 2C4.1 2.5 2 5 2 8C2 11.3 4.7 14 8 14C11 14 13.5 11.9 14 9C13.3 9.3 12.6 9.5 11.8 9.5C8.9 9.5 6.5 7.1 6.5 4.2C6.5 3.4 6.7 2.7 7 2Z" />
     </svg>
   );
 }
