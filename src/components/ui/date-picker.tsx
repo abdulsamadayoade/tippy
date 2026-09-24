@@ -62,7 +62,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
             aria-label={pickerLabel}
             disabled={disabled}
             onClick={openPicker}>
-            <CalendarIcon className="size-4.5" aria-hidden="true" />
+            <CalendarIcon className="size-5" aria-hidden="true" />
           </button>
         }
       />

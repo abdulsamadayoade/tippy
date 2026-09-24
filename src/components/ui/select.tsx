@@ -114,7 +114,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
           <ChevronDownIcon
             className={cn(
-              "pointer-events-none absolute size-4.5 text-muted-text-2",
+              "pointer-events-none absolute size-4 text-muted-text-2",
               size === "sm" ? "right-3" : "right-3.5",
             )}
             aria-hidden="true"
