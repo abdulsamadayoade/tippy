@@ -118,7 +118,7 @@ export function WithdrawModal({
           <span
             className="mx-auto flex size-12 items-center justify-center rounded-full bg-success-soft text-success"
             aria-hidden="true">
-            <CheckIcon className="size-6" />
+            <CheckIcon size={24} />
           </span>
           <h2
             className="mt-4 text-center text-xl font-medium tracking-display text-main-heading"

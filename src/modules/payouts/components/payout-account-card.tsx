@@ -12,6 +12,7 @@ import { play } from "cuelume";
 import { TrashIcon } from "@/components/icons/trash";
 import { PlusIcon } from "@/components/icons/plus";
 import { CheckIcon } from "@/components/icons/check";
+import { BankBuildingIcon } from "@/components/icons/bank-building";
 import { Modal } from "@/components/ui/modal";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -141,7 +142,8 @@ export function PayoutAccountCard({
         {account ? (
           <div className="flex items-center justify-between gap-3 px-4.5 py-4">
             <div className="min-w-0">
-              <span className="block text-ui-sm text-muted-text">
+              <span className="flex items-center gap-1.5 text-ui-sm text-muted-text">
+                <BankBuildingIcon className="size-4 shrink-0" />
                 Payout account
               </span>
               <strong className="mt-0.5 block truncate text-[15px] font-medium text-main-heading">
@@ -152,11 +154,7 @@ export function PayoutAccountCard({
             <div className="flex shrink-0 items-center gap-1.5">
               <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2.5 py-1 text-xs font-medium text-success">
                 {identityVerified && (
-                  <CheckIcon
-                    className="size-3.5"
-                    strokeWidth="2"
-                    aria-hidden="true"
-                  />
+                  <CheckIcon className="size-4" aria-hidden="true" />
                 )}
                 {identityVerified ? "Verified" : "Name checked"}
               </span>
@@ -308,7 +306,7 @@ export function PayoutAccountCard({
         <span
           className="mx-auto flex size-12 items-center justify-center rounded-full bg-danger-soft dark:bg-danger dark:text-danger-soft text-danger"
           aria-hidden="true">
-          <TrashIcon className="size-5" />
+          <TrashIcon size={24} />
         </span>
         <h2
           className="mt-4 text-center text-xl font-medium tracking-display text-main-heading"

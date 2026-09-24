@@ -1,5 +1,5 @@
 import { CheckIcon } from "@/components/icons/check";
-import { BankBuildingIcon } from "@/components/icons/bank-building";
+import { PayoutsIcon } from "@/components/icons/payouts";
 import { MINIMUM_WITHDRAWAL } from "@/data/constants";
 import { formatDate, formatNaira, getNextPayoutDate } from "@/lib/utils";
 import type { BalanceBannerProps } from "../types";
@@ -46,9 +46,9 @@ export function BalanceBanner({
           disabled={!canWithdraw}
           onClick={onWithdraw}>
           {withdrawalRequested ? (
-            <CheckIcon className="size-4 stroke-2" />
+            <CheckIcon className="size-4" />
           ) : (
-            <BankBuildingIcon className="size-4" />
+            <PayoutsIcon className="size-4" />
           )}
           {withdrawalRequested
             ? "Withdrawal pending"
