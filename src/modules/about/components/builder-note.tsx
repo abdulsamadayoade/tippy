@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRightIcon } from "@/components/icons/arrow-right";
 import { builderSocialLinks } from "../data";
 
-function BuilderNote() {
+export function BuilderNote() {
   return (
     <div className="mt-5">
       <div className="flex items-center gap-3.5">
@@ -35,9 +35,11 @@ function BuilderNote() {
           href="/abdul"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-main-heading underline decoration-main-heading/30 underline-offset-4 hover:decoration-main-heading">
           My Tippy page
-          <ArrowRightIcon className="size-3.5" aria-hidden="true" />
+          <ArrowRightIcon className="size-4" aria-hidden="true" />
         </Link>
-        <nav className="flex items-center gap-2" aria-label="Abdul’s social links">
+        <nav
+          className="flex items-center gap-2"
+          aria-label="Abdul’s social links">
           {builderSocialLinks.map(({ label, title, href, icon: Icon }) => (
             <a
               key={href}
@@ -55,5 +57,3 @@ function BuilderNote() {
     </div>
   );
 }
-
-export { BuilderNote };

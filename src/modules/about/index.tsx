@@ -7,7 +7,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { BuilderNote } from "./components/builder-note";
 import { steps } from "./data";
 
-function About() {
+export function About() {
   return (
     <>
       <main className="mx-auto w-full max-w-160 flex-1 px-5 pt-12 pb-4 sm:pt-16">
@@ -154,7 +154,7 @@ function About() {
                 href="/support"
                 className="inline-flex items-center gap-1.5 font-medium text-main-heading hover:underline">
                 Get support
-                <ArrowRightIcon className="size-3.5" aria-hidden="true" />
+                <ArrowRightIcon className="size-4" aria-hidden="true" />
               </Link>
             </div>
           </section>
@@ -174,5 +174,3 @@ function About() {
     </>
   );
 }
-
-export { About };
