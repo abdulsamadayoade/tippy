@@ -23,13 +23,13 @@ const features = [
 const sampleNotes = [
   {
     amount: "₦5,000",
-    initial: "T",
+    avatarSeed: "sample-tobiloba",
     name: "Tobiloba",
     note: "Thanks for the late-night gear tips!",
   },
   {
     amount: "₦1,000",
-    initial: "?",
+    avatarSeed: "sample-anonymous",
     name: "Anonymous",
     note: "Your streams get me through night shifts.",
   },

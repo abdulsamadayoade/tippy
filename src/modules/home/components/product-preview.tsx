@@ -1,3 +1,4 @@
+import { Blobatar } from "@blobatar/react";
 import { CreatorAvatar } from "@/components/ui/creator-avatar";
 import { sampleCreator } from "@/data";
 import { sampleNotes } from "../data";
@@ -63,9 +64,15 @@ export function ProductPreview() {
                   className="rounded-xl bg-card-bg p-3 shadow-xs border border-gray-100 dark:border-pill-active-bg backdrop-blur-sm"
                   key={supporter.name}>
                   <div className="flex items-center gap-2">
-                    <div className="size-6 flex items-center justify-center text-white dark:text-primary bg-main-heading rounded-full text-xs font-semibold">
-                      {supporter.initial}
-                    </div>
+                    <span
+                      className="flex size-6 shrink-0 overflow-hidden rounded-full bg-soft"
+                      aria-hidden="true">
+                      <Blobatar
+                        className="size-full"
+                        name={supporter.avatarSeed}
+                        alt=""
+                      />
+                    </span>
                     <strong className="min-w-0 flex-1 truncate text-xs font-medium text-main-heading">
                       {supporter.name}
                     </strong>
