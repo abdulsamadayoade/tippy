@@ -5,49 +5,9 @@
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.35, 0.64, 1);
 
-  --dropdown-open-dur: 250ms;
   --dropdown-close-dur: 150ms;
-  --dropdown-pre-scale: 0.97;
-  --dropdown-closing-scale: 0.99;
-  --dropdown-ease: var(--ease-smooth);
-
-  --panel-open-dur: 400ms;
-  --panel-close-dur: 350ms;
-  --panel-translate-y: calc(187px * 0.5);
-  --panel-blur: 2px;
-  --panel-ease: var(--ease-smooth);
-
-  --acc-expand: 250ms;
-  --acc-collapse: 250ms;
-  --acc-chevron: 250ms;
-  --acc-ease: var(--ease-smooth);
-
-  --check-opacity-dur: 500ms;
-  --check-rotate-dur: 500ms;
-  --check-rotate-from: 80deg;
-  --check-bob-dur: 500ms;
-  --check-y-amount: 40px;
-  --check-blur-dur: 500ms;
-  --check-blur-from: 10px;
-  --check-path-dur: 500ms;
-  --check-path-delay: 80ms;
-  --check-ease-out: var(--ease-smooth);
-  --check-ease-rotate: var(--ease-smooth);
-  --check-ease-bob: var(--ease-spring);
-  --check-ease-path: var(--ease-smooth);
-
-  --modal-open-dur: 250ms;
   --modal-close-dur: 150ms;
-  --modal-scale: 0.96;
-  --modal-scale-close: 0.96;
-  --modal-ease: var(--ease-smooth);
-
-  --toggle-dur: 350ms;
-  --toggle-travel: 16px;
-  --toggle-ov1: 1px;
-  --toggle-ov2: 0px;
-  --toggle-track: 0ms;
-  --toggle-ease: var(--ease-spring);
+  --panel-close-dur: 350ms;
 
   --color-primary: #064e5b;
   --color-main-heading: #0b2239;
@@ -192,6 +152,66 @@
   --shadow-menu: var(--shadow-menu);
 
   --animate-rise-in: rise-in 260ms ease both;
+  --animate-success-reveal:
+    success-reveal 500ms var(--ease-smooth) forwards,
+    success-bob 500ms var(--ease-spring) forwards;
+  --animate-success-draw: success-draw 500ms var(--ease-smooth) 80ms forwards;
+  --animate-switch-on: switch-on 350ms var(--ease-spring) both;
+  --animate-switch-off: switch-off 350ms var(--ease-spring) both;
+
+  @keyframes success-reveal {
+    from {
+      opacity: 0;
+      transform: rotate(80deg);
+      filter: blur(10px);
+    }
+    to {
+      opacity: 1;
+      transform: rotate(0deg);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes success-bob {
+    from {
+      translate: 0 40px;
+    }
+    to {
+      translate: 0 0;
+    }
+  }
+
+  @keyframes success-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes switch-on {
+    0% {
+      translate: 0 0;
+    }
+    55% {
+      translate: 17px 0;
+    }
+    80%,
+    100% {
+      translate: 16px 0;
+    }
+  }
+
+  @keyframes switch-off {
+    0% {
+      translate: 16px 0;
+    }
+    55% {
+      translate: -1px 0;
+    }
+    80%,
+    100% {
+      translate: 0 0;
+    }
+  }
 }
 
 @keyframes rise-in {
@@ -268,10 +288,6 @@
   }
 }
 
-/* Clip the browser's forced autofill background to the text instead of
- * painting over it — an opaque cover-up (the old 1000px inset white shadow)
- * also hides the wrapper's surface border and focus ring, since the input
- * spans the whole control. */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -393,270 +409,6 @@ select:-webkit-autofill {
   }
 }
 
-.t-dropdown {
-  transform-origin: top left;
-  transform: scale(var(--dropdown-pre-scale));
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    transform var(--dropdown-open-dur) var(--dropdown-ease),
-    opacity var(--dropdown-open-dur) var(--dropdown-ease);
-  will-change: transform, opacity;
-}
-.t-dropdown[data-origin="top-right"] {
-  transform-origin: top right;
-}
-.t-dropdown.is-open {
-  transform: scale(1);
-  opacity: 1;
-  pointer-events: auto;
-}
-.t-dropdown.is-closing {
-  transform: scale(var(--dropdown-closing-scale));
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    transform var(--dropdown-close-dur) var(--dropdown-ease),
-    opacity var(--dropdown-close-dur) var(--dropdown-ease);
-}
-
-.t-panel-slide {
-  transform: translateY(var(--panel-translate-y));
-  opacity: 0;
-  filter: blur(var(--panel-blur));
-  pointer-events: none;
-  transition:
-    transform var(--panel-close-dur) var(--panel-ease),
-    opacity var(--panel-close-dur) var(--panel-ease),
-    filter var(--panel-close-dur) var(--panel-ease);
-  will-change: transform, opacity, filter;
-}
-.t-panel-slide[data-open="true"] {
-  transform: translateY(0);
-  opacity: 1;
-  filter: blur(0);
-  pointer-events: auto;
-  transition:
-    transform var(--panel-open-dur) var(--panel-ease),
-    opacity var(--panel-open-dur) var(--panel-ease),
-    filter var(--panel-open-dur) var(--panel-ease);
-}
-
-@starting-style {
-  .t-panel-slide[data-open="true"] {
-    transform: translateY(var(--panel-translate-y));
-    opacity: 0;
-    filter: blur(var(--panel-blur));
-  }
-}
-
-.t-acc-panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows var(--acc-collapse) var(--acc-ease);
-}
-.t-acc[data-open="true"] .t-acc-panel {
-  grid-template-rows: 1fr;
-  transition: grid-template-rows var(--acc-expand) var(--acc-ease);
-}
-.t-acc-panel-inner {
-  overflow: hidden;
-  opacity: 0;
-  filter: blur(2px);
-  transition:
-    opacity var(--acc-collapse) var(--acc-ease),
-    filter var(--acc-collapse) var(--acc-ease);
-}
-.t-acc[data-open="true"] .t-acc-panel-inner {
-  opacity: 1;
-  filter: blur(0);
-  transition:
-    opacity var(--acc-expand) var(--acc-ease),
-    filter var(--acc-expand) var(--acc-ease);
-}
-.t-acc-chevron {
-  display: inline-flex;
-  transform: scaleY(1);
-  transform-origin: center;
-  transition: transform var(--acc-chevron) var(--acc-ease);
-}
-.t-acc-chevron svg path {
-  vector-effect: non-scaling-stroke;
-}
-.t-acc[data-open="true"] .t-acc-chevron {
-  transform: scaleY(-1);
-}
-
-.t-success-check {
-  display: inline-block;
-  transform-origin: center;
-  opacity: 0;
-  will-change: transform, opacity, filter;
-}
-.t-success-check svg {
-  display: block;
-  overflow: visible;
-}
-.t-success-check svg path {
-  stroke-dasharray: 20;
-  stroke-dashoffset: 20;
-}
-.t-success-check[data-state="in"] {
-  animation:
-    t-check-fade var(--check-opacity-dur) var(--check-ease-out) forwards,
-    t-check-rotate var(--check-rotate-dur) var(--check-ease-rotate) forwards,
-    t-check-blur var(--check-blur-dur) var(--check-ease-out) forwards,
-    t-check-bob var(--check-bob-dur) var(--check-ease-bob) forwards;
-}
-.t-success-check[data-state="in"] svg path {
-  animation: t-check-draw var(--check-path-dur) var(--check-ease-path)
-    var(--check-path-delay) forwards;
-}
-
-@keyframes t-check-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes t-check-rotate {
-  from {
-    transform: rotate(var(--check-rotate-from));
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-@keyframes t-check-blur {
-  from {
-    filter: blur(var(--check-blur-from));
-  }
-  to {
-    filter: blur(0);
-  }
-}
-@keyframes t-check-bob {
-  from {
-    translate: 0 var(--check-y-amount);
-  }
-  to {
-    translate: 0 0;
-  }
-}
-@keyframes t-check-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.t-toggle {
-  transition: background-color var(--toggle-track) var(--toggle-ease);
-}
-
-.t-toggle-thumb {
-  translate: 0 0;
-  will-change: translate;
-}
-
-.t-toggle[data-on="true"] .t-toggle-thumb {
-  translate: var(--toggle-travel) 0;
-}
-
-.t-toggle.is-init[data-on="true"] .t-toggle-thumb {
-  animation: t-toggle-on var(--toggle-dur) var(--toggle-ease) both;
-}
-
-.t-toggle.is-init[data-on="false"] .t-toggle-thumb {
-  animation: t-toggle-off var(--toggle-dur) var(--toggle-ease) both;
-}
-
-@keyframes t-toggle-on {
-  0% {
-    translate: 0 0;
-  }
-  55% {
-    translate: calc(var(--toggle-travel) + var(--toggle-ov1)) 0;
-  }
-  80% {
-    translate: calc(var(--toggle-travel) - var(--toggle-ov2)) 0;
-  }
-  100% {
-    translate: var(--toggle-travel) 0;
-  }
-}
-@keyframes t-toggle-off {
-  0% {
-    translate: var(--toggle-travel) 0;
-  }
-  55% {
-    translate: calc(0px - var(--toggle-ov1)) 0;
-  }
-  80% {
-    translate: var(--toggle-ov2) 0;
-  }
-  100% {
-    translate: 0 0;
-  }
-}
-
-.t-modal {
-  transform-origin: center;
-  transform: scale(var(--modal-scale));
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    transform var(--modal-open-dur) var(--modal-ease),
-    opacity var(--modal-open-dur) var(--modal-ease);
-  will-change: transform, opacity;
-}
-.t-modal.is-open {
-  transform: scale(1);
-  opacity: 1;
-  pointer-events: auto;
-}
-.t-modal.is-closing {
-  transform: scale(var(--modal-scale-close));
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    transform var(--modal-close-dur) var(--modal-ease),
-    opacity var(--modal-close-dur) var(--modal-ease);
-}
-
-@starting-style {
-  .t-modal.is-open {
-    transform: scale(var(--modal-scale));
-    opacity: 0;
-  }
-}
-
-.dialog-overlay {
-  opacity: 0;
-  transition: opacity var(--modal-close-dur) var(--modal-ease);
-}
-.dialog-overlay.is-open {
-  opacity: 1;
-  transition-duration: var(--modal-open-dur);
-}
-.dialog-overlay.is-closing {
-  opacity: 0;
-  pointer-events: none;
-}
-.dialog-overlay.dialog-overlay-panel {
-  transition-duration: var(--panel-close-dur);
-}
-.dialog-overlay.dialog-overlay-panel.is-open {
-  transition-duration: var(--panel-open-dur);
-}
-
-@starting-style {
-  .dialog-overlay.is-open {
-    opacity: 0;
-  }
-}
-
 ::view-transition-group(claim-control),
 ::view-transition-group(sample-link),
 ::view-transition-group(hero-rest) {
@@ -680,28 +432,8 @@ select:-webkit-autofill {
     scroll-behavior: auto;
   }
 
-  body::after,
-  .t-dropdown,
-  .t-panel-slide,
-  .t-modal,
-  .dialog-overlay,
-  .t-acc-panel,
-  .t-acc-panel-inner,
-  .t-acc-chevron {
+  body::after {
     transition: none !important;
-  }
-
-  .t-success-check {
-    animation: none !important;
-    opacity: 1;
-  }
-  .t-success-check svg path {
-    animation: none !important;
-    stroke-dashoffset: 0 !important;
-  }
-
-  .t-toggle-thumb {
-    animation: none !important;
   }
 
   *,

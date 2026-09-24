@@ -62,13 +62,18 @@ export function Switch({
 
       <span
         className={cn(
-          "t-toggle relative h-6 w-12 shrink-0 rounded-full",
-          interacted && "is-init",
+          "relative h-6 w-12 shrink-0 rounded-full",
           checked ? "bg-primary" : "bg-line",
         )}
-        data-on={checked ? "true" : "false"}
         aria-hidden="true">
-        <span className="t-toggle-thumb absolute top-1 left-1 h-4 w-6 rounded-full bg-white shadow-[0_1px_2px_rgba(41,41,41,0.25)]" />
+        <span
+          className={cn(
+            "absolute top-1 left-1 h-4 w-6 rounded-full bg-white shadow-[0_1px_2px_rgba(41,41,41,0.25)] will-change-[translate] motion-reduce:animate-none",
+            checked ? "translate-x-4" : "translate-x-0",
+            interacted &&
+              (checked ? "animate-switch-on" : "animate-switch-off"),
+          )}
+        />
       </span>
     </button>
   );

@@ -2,7 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export function useMenuState(closeMs = 130) {
+function readCloseDuration(fallbackDuration: number) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return 0;
+
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue("--dropdown-close-dur")
+    .trim();
+  const value = Number.parseFloat(raw);
+
+  if (!Number.isFinite(value)) return fallbackDuration;
+  return raw.endsWith("ms") ? value : raw.endsWith("s") ? value * 1000 : value;
+}
+
+export function useMenuState(fallbackCloseDuration = 150) {
   const [state, setState] = useState<"closed" | "open" | "closing">("closed");
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -17,9 +29,12 @@ export function useMenuState(closeMs = 130) {
 
   useEffect(() => {
     if (state !== "closing") return;
-    const id = window.setTimeout(() => setState("closed"), closeMs);
+    const id = window.setTimeout(
+      () => setState("closed"),
+      readCloseDuration(fallbackCloseDuration),
+    );
     return () => window.clearTimeout(id);
-  }, [state, closeMs]);
+  }, [state, fallbackCloseDuration]);
 
   useEffect(() => {
     if (state !== "open") return;

@@ -69,8 +69,6 @@ export function useModalTransition(
     isOpening: phase === "opening",
     isOpen: phase === "open",
     isClosing: phase === "closing",
-    phaseClass:
-      phase === "open" ? "is-open" : phase === "closing" ? "is-closing" : "",
     open,
     close,
     dismiss,

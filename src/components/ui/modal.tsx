@@ -39,7 +39,7 @@ export function Modal({
     isMounted,
     isOpen,
     isClosing,
-    phaseClass,
+    phase,
     open: startOpen,
     close: startClose,
   } = useModalTransition(
@@ -128,14 +128,13 @@ export function Modal({
   return (
     <div
       className={cn(
-        "dialog-overlay fixed inset-0 z-50 flex bg-ink/40",
+        "fixed inset-0 z-50 flex bg-ink/40 opacity-0 transition-opacity ease-(--ease-smooth) data-[state=open]:opacity-100 data-[state=closing]:pointer-events-none data-[state=open]:starting:opacity-0 motion-reduce:transition-none",
         panelReveal
-          ? "items-end justify-center overflow-hidden"
-          : "items-center justify-center p-4",
-        panelReveal && "dialog-overlay-panel",
-        phaseClass,
+          ? "items-end justify-center overflow-hidden duration-(--panel-close-dur) data-[state=open]:duration-400"
+          : "items-center justify-center p-4 duration-(--modal-close-dur) data-[state=open]:duration-250",
         overlayClassName,
       )}
+      data-state={phase}
       role="presentation"
       inert={isClosing}
       onMouseDown={(event) => {
@@ -144,11 +143,13 @@ export function Modal({
       <div
         ref={dialogRef}
         className={cn(
-          panelReveal ? "t-panel-slide" : "t-modal",
-          !panelReveal && phaseClass,
+          "pointer-events-none opacity-0 ease-(--ease-smooth) data-[state=open]:pointer-events-auto data-[state=open]:opacity-100 data-[state=open]:starting:opacity-0 motion-reduce:transition-none",
+          panelReveal
+            ? "translate-y-[93.5px] blur-[2px] transition-[translate,opacity,filter] duration-(--panel-close-dur) will-change-[translate,opacity,filter] data-[state=open]:translate-y-0 data-[state=open]:blur-none data-[state=open]:duration-400 data-[state=open]:starting:translate-y-[93.5px] data-[state=open]:starting:blur-[2px]"
+            : "origin-center scale-[0.96] transition-[scale,opacity] duration-250 will-change-[scale,opacity] data-[state=open]:scale-100 data-[state=closing]:duration-(--modal-close-dur) data-[state=open]:starting:scale-[0.96]",
           className,
         )}
-        data-open={panelReveal ? isOpen : undefined}
+        data-state={phase}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}
