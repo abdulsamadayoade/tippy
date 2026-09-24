@@ -40,7 +40,7 @@ export function CheckoutPanel({
         </div>
         <button
           ref={closeRef}
-          className="inline-flex size-10 text-black cursor-pointer items-center justify-center rounded-full bg-soft disabled:cursor-not-allowed disabled:opacity-45"
+          className="inline-flex size-10 text-main-heading cursor-pointer items-center justify-center rounded-full bg-soft disabled:cursor-not-allowed disabled:opacity-45"
           type="button"
           aria-label="Close checkout"
           data-cuelume-press=""

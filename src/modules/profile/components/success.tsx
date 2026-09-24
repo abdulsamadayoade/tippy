@@ -14,7 +14,7 @@ export function Success({
 }: SuccessProps) {
   return (
     <section
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-white p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-bg p-6"
       aria-labelledby="success-title">
       <canvas
         className="pointer-events-none absolute inset-0 size-full"

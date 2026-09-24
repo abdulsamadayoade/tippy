@@ -37,8 +37,8 @@ export function AmountCustom({
         className={cn(
           "flex min-h-17.25 cursor-text flex-col justify-center gap-0.5 rounded-surface px-3.5 py-3.25 transition-[background-color,box-shadow,transform] duration-150",
           selected
-            ? "bg-primary text-white dark:text-[#fff] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_6px_rgba(0,0,0,0.18)] focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_6px_rgba(0,0,0,0.18),0_0_0_4px_rgba(6,78,91,0.16)]"
-            : "cursor-pointer bg-white text-main-heading shadow-surface hover:-translate-y-px focus-within:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_rgba(6,78,91,0.12),0_4px_12px_rgba(6,78,91,0.08)]",
+            ? "bg-primary text-white  shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_6px_rgba(0,0,0,0.18)] focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_6px_rgba(0,0,0,0.18),0_0_0_4px_rgba(6,78,91,0.16)]"
+            : "cursor-pointer bg-card-bg text-main-heading shadow-surface hover:-translate-y-px focus-within:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_rgba(6,78,91,0.12),0_4px_12px_rgba(6,78,91,0.08)]",
         )}
         data-cuelume-toggle={selected ? undefined : "tick"}
         onMouseDown={(event) => {
@@ -56,7 +56,7 @@ export function AmountCustom({
         <span className="flex w-full items-center">
           {selected && (
             <span
-              className="mr-1 text-lg font-medium text-white/56 dark:text-[#fff]"
+              className="mr-1 text-lg font-medium text-white/56"
               aria-hidden="true">
               ₦
             </span>
@@ -67,7 +67,7 @@ export function AmountCustom({
             className={cn(
               "min-w-0 flex-1 border-0 bg-transparent p-0 text-lg font-medium tracking-display tabular-nums outline-none",
               selected
-                ? "caret-current placeholder:text-white/40 dark:placeholder:text-[#fff]/40"
+                ? "caret-current placeholder:text-white/40"
                 : "cursor-pointer placeholder:text-main-heading",
             )}
             name="amount"
@@ -82,7 +82,7 @@ export function AmountCustom({
           />
           {selected && (
             <span
-              className="ml-2 text-xs font-medium text-white/56 dark:text-[#fff]"
+              className="ml-2 text-xs font-medium text-white/56"
               aria-hidden="true">
               NGN
             </span>
@@ -92,7 +92,7 @@ export function AmountCustom({
         <span
           className={cn(
             "text-xs",
-            selected ? "text-white/56 dark:text-[#fff]" : "text-muted-text",
+            selected ? "text-white/56" : "text-muted-text",
           )}
           aria-hidden="true">
           {selected ? "Custom amount" : "Enter your own"}

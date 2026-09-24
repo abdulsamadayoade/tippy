@@ -91,7 +91,7 @@ export function ReportPage({ username }: { username: string }) {
         onClose={() => setOpen(false)}
         dismissible={status !== "sending"}
         labelledBy={`${uid}-title`}
-        className="w-full max-w-105 rounded-[20px] bg-white p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
+        className="w-full max-w-105 rounded-[20px] bg-card-bg p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
         {status === "sent" ? (
           <>
             <h2
