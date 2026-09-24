@@ -51,9 +51,9 @@ export function ShareLinkCard({ username }: { username: string }) {
         data-cuelume-press=""
         onClick={copyTipLink}>
         {copied ? (
-          <CheckIcon className="size-3.5 stroke-2" />
+          <CheckIcon className="size-4" />
         ) : (
-          <CopyIcon className="size-3.5 stroke-2" />
+          <CopyIcon className="size-4" />
         )}
         {copied ? "Link copied" : "Copy link"}
       </button>

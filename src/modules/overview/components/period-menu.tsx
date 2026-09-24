@@ -28,7 +28,7 @@ export function PeriodMenu({ period, onPeriodChange }: PeriodMenuProps) {
         data-cuelume-toggle="tick"
         onClick={toggle}>
         {PERIOD_LABELS[period]}
-        <ChevronDownIcon className="size-3.5" aria-hidden="true" />
+        <ChevronDownIcon className="size-4" aria-hidden="true" />
       </button>
 
       <div
@@ -56,9 +56,7 @@ export function PeriodMenu({ period, onPeriodChange }: PeriodMenuProps) {
               data-cuelume-toggle="tick"
               onClick={() => select(value)}>
               {label}
-              {selected ? (
-                <CheckIcon className="size-4 stroke-2" aria-hidden="true" />
-              ) : null}
+              {selected && <CheckIcon className="size-4" aria-hidden="true" />}
             </button>
           );
         })}
