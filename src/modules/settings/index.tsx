@@ -1,4 +1,5 @@
 import { resolvePresets } from "@/modules/profile/data";
+import { AppInstall } from "@/components/elements/app-install";
 import { ProfileCard } from "./components/profile-card";
 import { TipPresetsCard } from "./components/tip-presets-card";
 import type { SettingsProps } from "./types";
@@ -28,6 +29,7 @@ export function Settings({ creator, categories }: SettingsProps) {
           allowCustomAmount={creator.allowCustomAmount}
         />
       </div>
+      <AppInstall className="mt-7" />
     </section>
   );
 }

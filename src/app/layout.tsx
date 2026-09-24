@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
 import { Geist } from "next/font/google";
 import { Sounds } from "@/components/layout/sounds";
+import { AppInstallProvider } from "@/components/elements/app-install/provider";
 import { SITE_URL, isProductionSite } from "@/lib/site";
 import "./globals.css";
 
@@ -23,6 +24,11 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   applicationName: "Tippy",
+  appleWebApp: {
+    capable: true,
+    title: "Tippy",
+    statusBarStyle: "default",
+  },
   openGraph: {
     siteName: "Tippy",
     type: "website",
@@ -54,9 +60,11 @@ export default function RootLayout({
       suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-          <Sounds />
-          <Analytics />
+          <AppInstallProvider>
+            {children}
+            <Sounds />
+            <Analytics />
+          </AppInstallProvider>
         </ThemeProvider>
       </body>
     </html>

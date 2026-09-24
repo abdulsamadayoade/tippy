@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AppInstall } from "../elements/app-install";
 
 const links = [
   { href: "/about", label: "About" },
@@ -23,6 +24,7 @@ export function Footer() {
           </span>
         ))}
       </nav>
+      <AppInstall className="mt-4" />
       <p className="mt-2">© {new Date().getFullYear()} Very Serious Company</p>
     </footer>
   );
