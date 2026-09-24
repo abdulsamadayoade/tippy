@@ -44,7 +44,7 @@ export function ProfileStep({
 
       <form className="mt-8" noValidate onSubmit={submit}>
         <div className="flex items-center gap-4">
-          <span className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-main-heading text-xl font-medium text-white">
+          <span className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-main-heading text-xl font-medium text-white dark:text-primary">
             {photoUrl ? (
               /* eslint-disable-next-line @next/next/no-img-element*/
               <img

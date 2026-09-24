@@ -12,11 +12,11 @@ export function StepHeader({
   return (
     <header>
       <div className="flex gap-4" aria-hidden="true">
-        <span className="h-1.5 flex-1 rounded-full bg-primary" />
+        <span className="h-1.5 flex-1 rounded-full bg-primary dark:bg-white" />
         <span
           className={cn(
             "h-1.5 flex-1 rounded-full",
-            step === 2 ? "bg-primary" : "bg-line",
+            step === 2 ? "bg-primary dark:bg-white" : "bg-line",
           )}
         />
       </div>

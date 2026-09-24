@@ -58,7 +58,7 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
           Open email app
         </a>
 
-        <p className="mt-5 text-sm text-muted-text">
+        <p className="mt-5 text-sm text-muted-text dark:text-menu-bg">
           Didn&apos;t get it?{" "}
           {secondsLeft > 0 ? (
             <span className="font-semibold text-main-heading">
@@ -75,7 +75,7 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
         </p>
 
         <button
-          className="mt-3 cursor-pointer text-sm font-medium text-muted-text"
+          className="mt-3 cursor-pointer text-sm font-medium text-muted-text dark:text-form-input-bg"
           type="button"
           onClick={useDifferentEmail}>
           Use a different email
@@ -102,7 +102,7 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
         )}
 
         <Button
-          className="w-full bg-white shadow-surface hover:bg-soft"
+          className="w-full"
           variant="secondary"
           type="button"
           loading={connectingToGoogle}
@@ -115,7 +115,7 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
 
       <div className="my-6 flex items-center gap-3" aria-hidden="true">
         <span className="h-px flex-1 bg-line" />
-        <span className="text-ui-sm text-muted-text-2">
+        <span className="text-ui-sm text-muted-text-2 dark:text-muted-text">
           or continue with email
         </span>
         <span className="h-px flex-1 bg-line" />
@@ -158,7 +158,7 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
         </Button>
       </form>
 
-      <p className="mt-5 text-ui-sm text-muted-text-2">
+      <p className="mt-5 text-ui-sm text-muted-text-2 dark:text-divider">
         By continuing you agree to Tippy&apos;s{" "}
         <Link
           className="font-medium text-main-heading hover:underline"
