@@ -131,7 +131,7 @@ export function Home() {
                               ? "scale-100 rotate-0 opacity-100"
                               : "scale-65 -rotate-20 opacity-0",
                           )}>
-                          <ArrowRightIcon className="size-4.5" />
+                          <ArrowRightIcon className="size-4" />
                         </span>
                         <span
                           className={cn(
@@ -140,7 +140,7 @@ export function Home() {
                               ? "scale-65 rotate-20 opacity-0"
                               : "scale-100 rotate-0 opacity-100",
                           )}>
-                          <CloseIcon className="size-4.5" />
+                          <CloseIcon className="size-4" />
                         </span>
                       </span>
                     </Button>

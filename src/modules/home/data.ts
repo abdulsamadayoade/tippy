@@ -1,22 +1,22 @@
-import { MailIcon } from "@/components/icons/mail";
-import { LinkIcon } from "@/components/icons/link";
-import { PaySuccessIcon } from "@/components/icons/pay-success";
+import { AutomaticPayoutsIcon } from "@/components/icons/automatic-payouts";
+import { FanNotesIcon } from "@/components/icons/fan-notes";
+import { PersonalLinkIcon } from "@/components/icons/personal-link";
 import { MINIMUM_WITHDRAWAL } from "@/data/constants";
 import { formatNaira } from "@/lib/utils";
 
 const features = [
   {
-    icon: LinkIcon,
+    icon: PersonalLinkIcon,
     title: "Your own link",
     body: "Share tippy.cash/username anywhere and start collecting tips in minutes.",
   },
   {
-    icon: PaySuccessIcon,
+    icon: AutomaticPayoutsIcon,
     title: "Automatic payouts",
     body: "Money lands in your bank automatically every Friday. Need it sooner? You can withdraw anytime.",
   },
   {
-    icon: MailIcon,
+    icon: FanNotesIcon,
     title: "Notes from fans",
     body: "Every tip can carry a personal message from the people you reach.",
   },

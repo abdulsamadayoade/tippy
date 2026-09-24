@@ -2,45 +2,11 @@
 
 import { useState } from "react";
 import { Blobatar } from "@blobatar/react";
-import { ChevronDownIcon } from "@/components/icons/chevron-down";
 import { cn } from "@/lib/cn";
 import { formatNaira } from "@/lib/utils";
+import { ChevronDownIcon } from "@/components/icons/chevron-down";
+import { TipsIcon } from "@/components/icons/tips";
 import type { Tip } from "@/types";
-
-export function TipList({
-  className,
-  emptyMessage = "No tips yet. Share your link to receive your first one.",
-  footer,
-  id,
-  labelledBy,
-  tips,
-}: {
-  className?: string;
-  emptyMessage?: string;
-  footer?: React.ReactNode;
-  id?: string;
-  labelledBy?: string;
-  tips: Tip[];
-}) {
-  return (
-    <div
-      className={cn(
-        "flex flex-col rounded-surface bg-card-bg p-1 shadow-surface",
-        className,
-      )}
-      id={id}
-      role={labelledBy ? "tabpanel" : undefined}
-      aria-labelledby={labelledBy}
-      aria-live={labelledBy ? "polite" : undefined}>
-      {tips.length ? (
-        tips.map((tip) => <TipListRow key={tip.id} tip={tip} />)
-      ) : (
-        <p className="px-4 py-8 text-center text-muted-text">{emptyMessage}</p>
-      )}
-      {footer}
-    </div>
-  );
-}
 
 function TipListRow({ tip }: { tip: Tip }) {
   const [expanded, setExpanded] = useState(false);
@@ -86,11 +52,11 @@ function TipListRow({ tip }: { tip: Tip }) {
         </strong>
         <span className="mt-px flex items-center justify-end gap-1 text-xs text-muted-text">
           <time dateTime={tip.createdAt}>{tip.time}</time>
-          {tip.note ? (
+          {tip.note && (
             <span className="t-acc-chevron" aria-hidden="true">
               <ChevronDownIcon className="size-4" />
             </span>
-          ) : null}
+          )}
         </span>
       </div>
     </>
@@ -119,5 +85,45 @@ function TipListRow({ tip }: { tip: Tip }) {
         </div>
       )}
     </article>
+  );
+}
+
+export function TipList({
+  className,
+  emptyMessage = "No tips yet. Share your link to receive your first one.",
+  footer,
+  id,
+  labelledBy,
+  tips,
+}: {
+  className?: string;
+  emptyMessage?: string;
+  footer?: React.ReactNode;
+  id?: string;
+  labelledBy?: string;
+  tips: Tip[];
+}) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col rounded-surface bg-card-bg p-1 shadow-surface",
+        className,
+      )}
+      id={id}
+      role={labelledBy ? "tabpanel" : undefined}
+      aria-labelledby={labelledBy}
+      aria-live={labelledBy ? "polite" : undefined}>
+      {tips.length ? (
+        tips.map((tip) => <TipListRow key={tip.id} tip={tip} />)
+      ) : (
+        <div className="flex flex-col items-center px-4 py-8 text-center">
+          <TipsIcon className="size-12" />
+          <p className="mt-3 max-w-80 text-sm leading-relaxed text-muted-text">
+            {emptyMessage}
+          </p>
+        </div>
+      )}
+      {footer}
+    </div>
   );
 }

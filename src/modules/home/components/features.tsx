@@ -7,11 +7,7 @@ export function Features() {
         <div
           className="min-w-0 rounded-2xl bg-card-bg p-5 shadow-surface"
           key={title}>
-          <div
-            className="flex size-10 bg-pill-bg border border-gray-200 dark:border-pill-active-bg items-center justify-center rounded-full"
-            aria-hidden="true">
-            <Icon className="size-4.5 stroke-1" />
-          </div>
+          <Icon className="size-10" aria-hidden="true" />
           <h2 className="mt-3.5 text-sm font-medium text-main-heading">
             {title}
           </h2>

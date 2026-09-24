@@ -124,15 +124,15 @@ export function ProfileStep({
           />
         </div>
 
-        {formError ? (
+        {formError && (
           <div className="mt-5">
             <ErrorMessage>{formError}</ErrorMessage>
           </div>
-        ) : null}
+        )}
 
         <div className="mt-7 flex gap-3">
           <Button variant="secondary" className="px-5" onClick={onBack}>
-            <ArrowLeftIcon className="size-4.5" aria-hidden="true" />
+            <ArrowLeftIcon className="size-5" aria-hidden="true" />
             Back
           </Button>
           <Button
