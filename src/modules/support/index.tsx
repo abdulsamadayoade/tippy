@@ -5,7 +5,7 @@ import { LINKS, QUESTIONS } from "./data";
 export function Support() {
   return (
     <main className="flex flex-1 flex-col justify-end overflow-x-hidden pt-10">
-      <section className="mx-auto mt-8 w-full max-w-130 rounded-t-[18px] bg-white p-5 pb-8 shadow-surface-raised">
+      <section className="mx-auto mt-8 w-full max-w-130 rounded-t-[18px] bg-card-bg p-5 pb-8 shadow-surface-raised">
         <h1 className="text-lg leading-page-heading font-medium tracking-display text-main-heading">
           Support
         </h1>

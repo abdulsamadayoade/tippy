@@ -11,7 +11,7 @@ export function LegalPage({
 }: LegalPageProps) {
   return (
     <main className="flex flex-1 flex-col justify-end overflow-x-hidden pt-10">
-      <section className="mx-auto mt-8 w-full max-w-130 rounded-t-[18px] bg-white p-5 pb-8 shadow-surface-raised">
+      <section className="mx-auto mt-8 w-full max-w-130 rounded-t-[18px] bg-card-bg p-5 pb-8 shadow-surface-raised">
         <h1 className="text-lg leading-page-heading font-medium tracking-display text-main-heading">
           {title}
         </h1>
@@ -50,7 +50,7 @@ export function LegalPage({
             <a
               href="https://veryseriouscompany.co"
               target="_blank"
-              className="border-dashed border-white border-2 px-0.5 bg-body-text text-white">
+              className="border-dashed border-white border-2 px-0.5 bg-body-text dark:bg-primary text-white">
               Very Serious Company
             </a>
             . Questions? Write to us at{" "}

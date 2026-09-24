@@ -6,7 +6,7 @@ export function ProductPreview() {
   return (
     <div className="relative mt-14 w-full min-w-0 max-w-2xl text-left">
       <article
-        className="relative w-full min-w-0 max-w-full shadow-xs overflow-hidden rounded-3xl bg-white p-3"
+        className="relative w-full min-w-0 max-w-full shadow-xs overflow-hidden rounded-3xl bg-card-bg p-3"
         aria-label="Preview of the Tippy creator dashboard">
         <header className="flex items-center justify-between gap-3 px-2 py-1.5">
           <div className="flex min-w-0 items-center gap-2.5">
@@ -60,10 +60,10 @@ export function ProductPreview() {
             <div className="mt-3 space-y-2">
               {sampleNotes.map((supporter) => (
                 <article
-                  className="rounded-xl bg-white/88 p-3 shadow-xs border border-gray-100 backdrop-blur-sm"
+                  className="rounded-xl bg-card-bg p-3 shadow-xs border border-gray-100 dark:border-pill-active-bg backdrop-blur-sm"
                   key={supporter.name}>
                   <div className="flex items-center gap-2">
-                    <div className="size-6 flex items-center justify-center text-white bg-main-heading rounded-full text-xs font-semibold">
+                    <div className="size-6 flex items-center justify-center text-white dark:text-primary bg-main-heading rounded-full text-xs font-semibold">
                       {supporter.initial}
                     </div>
                     <strong className="min-w-0 flex-1 truncate text-xs font-medium text-main-heading">
