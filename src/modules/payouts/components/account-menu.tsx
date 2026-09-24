@@ -1,51 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/cn";
+import { useMenuState } from "@/hooks/use-menu-state";
+import { Dropdown } from "@/components/ui/dropdown";
 import { EditIcon } from "@/components/icons/edit";
 import { TrashIcon } from "@/components/icons/trash";
 import { MoreIcon } from "@/components/icons/more";
 import type { AccountMenuProps } from "../types";
 
 export function AccountMenu({ onEdit, onRemove }: AccountMenuProps) {
-  const [state, setState] = useState<"closed" | "open" | "closing">("closed");
-  const containerRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-
-  function beginClose() {
-    setState((current) => (current === "open" ? "closing" : current));
-  }
-
-  function toggle() {
-    setState((current) => (current === "open" ? "closing" : "open"));
-  }
-
-  useEffect(() => {
-    if (state !== "closing") return;
-    const id = window.setTimeout(() => setState("closed"), 130);
-    return () => window.clearTimeout(id);
-  }, [state]);
-
-  useEffect(() => {
-    if (state !== "open") return;
-
-    function onPointerDown(event: PointerEvent) {
-      if (!containerRef.current?.contains(event.target as Node)) beginClose();
-    }
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        beginClose();
-        triggerRef.current?.focus();
-      }
-    }
-
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [state]);
+  const { state, toggle, beginClose, containerRef, triggerRef } = useMenuState();
 
   function select(action: () => void) {
     beginClose();
@@ -66,16 +29,11 @@ export function AccountMenu({ onEdit, onRemove }: AccountMenuProps) {
         <MoreIcon className="size-4" />
       </button>
 
-      <div
-        role="menu"
+      <Dropdown
         aria-label="Account options"
-        data-origin="top-right"
-        inert={state === "closed"}
-        className={cn(
-          "t-dropdown absolute top-full right-0 z-30 mt-1.5 min-w-44 rounded-2xl bg-menu-bg p-1 shadow-menu",
-          state === "open" && "is-open",
-          state === "closing" && "is-closing",
-        )}>
+        origin="top-right"
+        state={state}
+        className="absolute top-full right-0 z-30 mt-1.5 min-w-44 rounded-2xl bg-menu-bg p-1 shadow-menu">
         <button
           role="menuitem"
           type="button"
@@ -94,7 +52,7 @@ export function AccountMenu({ onEdit, onRemove }: AccountMenuProps) {
           <TrashIcon className="size-4" />
           Remove
         </button>
-      </div>
+      </Dropdown>
     </div>
   );
 }

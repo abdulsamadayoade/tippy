@@ -52,10 +52,9 @@ function AuditLogRow({ entry }: { entry: AuditLogEntry }) {
     <>
       <TableRow
         className={cn(
-          "t-acc transition-colors duration-150",
+          "transition-colors duration-150",
           expandable && "cursor-pointer hover:bg-soft",
         )}
-        data-open={expanded ? "true" : "false"}
         onClick={toggleExpanded}>
         <TableCell className="font-mono text-xs text-muted-text">
           {entry.id}
@@ -87,8 +86,13 @@ function AuditLogRow({ entry }: { entry: AuditLogEntry }) {
                 event.stopPropagation();
                 toggleExpanded();
               }}>
-              <span className="t-acc-chevron" aria-hidden="true">
-                <ChevronDownIcon className="size-4" />
+              <span
+                className={cn(
+                  "inline-flex origin-center transition-transform duration-250 ease-(--ease-smooth) motion-reduce:transition-none",
+                  expanded && "-scale-y-100",
+                )}
+                aria-hidden="true">
+                <ChevronDownIcon className="size-4 [&_path]:[vector-effect:non-scaling-stroke]" />
               </span>
               <span className="sr-only">
                 {expanded ? "Hide entry details" : "Show entry details"}

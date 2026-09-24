@@ -4,6 +4,7 @@ import { cn } from "@/lib/cn";
 import { useMenuState } from "@/hooks/use-menu-state";
 import { CheckIcon } from "@/components/icons/check";
 import { ChevronDownIcon } from "@/components/icons/chevron-down";
+import { Dropdown } from "@/components/ui/dropdown";
 import { PERIOD_LABELS, PERIOD_OPTIONS } from "../data";
 import type { PeriodMenuProps, TipPeriod } from "../types";
 
@@ -31,15 +32,10 @@ export function PeriodMenu({ period, onPeriodChange }: PeriodMenuProps) {
         <ChevronDownIcon className="size-4" aria-hidden="true" />
       </button>
 
-      <div
-        role="menu"
+      <Dropdown
         aria-label="Tips period"
-        inert={state === "closed"}
-        className={cn(
-          "t-dropdown absolute top-full left-0 z-30 mt-1.5 min-w-40 rounded-2xl bg-menu-bg p-1 text-left normal-case shadow-menu",
-          state === "open" && "is-open",
-          state === "closing" && "is-closing",
-        )}>
+        state={state}
+        className="absolute top-full left-0 z-30 mt-1.5 min-w-40 rounded-2xl bg-menu-bg p-1 text-left normal-case shadow-menu">
         {PERIOD_OPTIONS.map(({ value, label }) => {
           const selected = value === period;
 
@@ -60,7 +56,7 @@ export function PeriodMenu({ period, onPeriodChange }: PeriodMenuProps) {
             </button>
           );
         })}
-      </div>
+      </Dropdown>
     </div>
   );
 }

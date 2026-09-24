@@ -6,9 +6,9 @@ import { useTheme } from "next-themes";
 import { useMenuState } from "@/hooks/use-menu-state";
 import { useMounted } from "@/hooks/use-mounted";
 import { useSoundPreference } from "@/hooks/use-sound-preference";
-import { cn } from "@/lib/cn";
 import { authClient } from "@/lib/auth-client";
 import { CreatorAvatar } from "@/components/ui/creator-avatar";
+import { Dropdown } from "@/components/ui/dropdown";
 import Link from "next/link";
 import { LinkIcon } from "@/components/icons/link";
 import { LogoutIcon } from "@/components/icons/logout";
@@ -101,16 +101,11 @@ export function CreatorAccountMenu({
         />
       </button>
 
-      <div
-        role="menu"
+      <Dropdown
         aria-label="Account"
-        data-origin="top-right"
-        inert={state === "closed"}
-        className={cn(
-          "t-dropdown absolute top-full shadow-menu right-0 z-30 mt-2 min-w-56 rounded-2xl bg-menu-bg p-1",
-          state === "open" && "is-open",
-          state === "closing" && "is-closing",
-        )}>
+        origin="top-right"
+        state={state}
+        className="absolute top-full shadow-menu right-0 z-30 mt-2 min-w-56 rounded-2xl bg-menu-bg p-1">
         <div className="min-w-0 px-2.5 py-2">
           <p className="truncate text-sm font-medium text-main-heading">
             {displayName}
@@ -157,7 +152,7 @@ export function CreatorAccountMenu({
           <LogoutIcon className="size-4" />
           {signingOut ? "Signing out…" : "Log out"}
         </button>
-      </div>
+      </Dropdown>
     </div>
   );
 }

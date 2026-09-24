@@ -68,10 +68,9 @@ function CreatorTipRow({ tip }: { tip: CreatorTipEntry }) {
     <>
       <TableRow
         className={cn(
-          "t-acc transition-colors duration-150",
+          "transition-colors duration-150",
           expandable && "cursor-pointer hover:bg-soft",
         )}
-        data-open={expanded ? "true" : "false"}
         onClick={(event) => {
           const target = event.target;
           if (target instanceof Element && target.closest("a, button")) {
@@ -114,8 +113,13 @@ function CreatorTipRow({ tip }: { tip: CreatorTipEntry }) {
               aria-controls={detailsId}
               aria-expanded={expanded}
               onClick={toggleExpanded}>
-              <span className="t-acc-chevron" aria-hidden="true">
-                <ChevronDownIcon className="size-4" />
+              <span
+                className={cn(
+                  "inline-flex origin-center transition-transform duration-250 ease-(--ease-smooth) motion-reduce:transition-none",
+                  expanded && "-scale-y-100",
+                )}
+                aria-hidden="true">
+                <ChevronDownIcon className="size-4 [&_path]:[vector-effect:non-scaling-stroke]" />
               </span>
               <span className="sr-only">
                 {expanded ? "Hide tip details" : "Show tip details"}

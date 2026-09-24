@@ -29,8 +29,16 @@ function TipListRow({ tip }: { tip: Tip }) {
                 {tip.note}
               </p>
             )}
-            <div className="t-acc-panel">
-              <div className="t-acc-panel-inner">
+            <div
+              className={cn(
+                "grid transition-[grid-template-rows] duration-250 ease-(--ease-smooth) motion-reduce:transition-none",
+                expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+              )}>
+              <div
+                className={cn(
+                  "min-h-0 overflow-hidden transition-[opacity,filter] duration-250 ease-(--ease-smooth) motion-reduce:transition-none",
+                  expanded ? "opacity-100 blur-none" : "opacity-0 blur-[2px]",
+                )}>
                 <p className="mt-px text-ui-sm leading-normal whitespace-normal text-muted-text">
                   {tip.note}
                 </p>
@@ -53,8 +61,13 @@ function TipListRow({ tip }: { tip: Tip }) {
         <span className="mt-px flex items-center justify-end gap-1 text-xs text-muted-text">
           <time dateTime={tip.createdAt}>{tip.time}</time>
           {tip.note && (
-            <span className="t-acc-chevron" aria-hidden="true">
-              <ChevronDownIcon className="size-4" />
+            <span
+              className={cn(
+                "inline-flex origin-center transition-transform duration-250 ease-(--ease-smooth) motion-reduce:transition-none",
+                expanded && "-scale-y-100",
+              )}
+              aria-hidden="true">
+              <ChevronDownIcon className="size-4 [&_path]:[vector-effect:non-scaling-stroke]" />
             </span>
           )}
         </span>
@@ -63,9 +76,7 @@ function TipListRow({ tip }: { tip: Tip }) {
   );
 
   return (
-    <article
-      className="t-acc rounded-[10px] transition-colors duration-150 hover:bg-soft"
-      data-open={tip.note && expanded ? "true" : "false"}>
+    <article className="rounded-[10px] transition-colors duration-150 hover:bg-soft">
       {tip.note ? (
         <button
           className="flex min-h-16 w-full cursor-pointer items-start gap-3 rounded-[10px] px-3.5 py-3 text-left max-phone:px-2.5"

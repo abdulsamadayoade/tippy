@@ -24,10 +24,10 @@ export function Success({
       <div className="relative max-w-95 text-center">
         <span
           ref={checkRef}
-          className="t-success-check"
+          className="group/success inline-block origin-center opacity-0 will-change-[transform,translate,opacity,filter] motion-safe:data-[state=in]:animate-success-reveal motion-reduce:opacity-100"
           data-state={checkState}
           aria-hidden="true">
-          <PaySuccessIcon className="size-16" />
+          <PaySuccessIcon className="block size-16 overflow-visible [&_path]:[stroke-dasharray:20] [&_path]:[stroke-dashoffset:20] motion-safe:group-data-[state=in]/success:[&_path]:animate-success-draw motion-reduce:[&_path]:[stroke-dashoffset:0]" />
         </span>
 
         <h2

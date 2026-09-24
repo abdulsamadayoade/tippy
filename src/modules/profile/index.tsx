@@ -306,12 +306,17 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               onChange={(event) => setMessage(event.target.value)}
             />
 
-            <div
-              className="t-acc -mx-1.25 -mb-1.25"
-              data-open={anonymous ? "false" : "true"}
-              inert={anonymous}>
-              <div className="t-acc-panel">
-                <div className="t-acc-panel-inner">
+            <div className="-mx-1.25 -mb-1.25" inert={anonymous}>
+              <div
+                className={cn(
+                  "grid transition-[grid-template-rows] duration-250 ease-(--ease-smooth) motion-reduce:transition-none",
+                  anonymous ? "grid-rows-[0fr]" : "grid-rows-[1fr]",
+                )}>
+                <div
+                  className={cn(
+                    "min-h-0 overflow-hidden transition-[opacity,filter] duration-250 ease-(--ease-smooth) motion-reduce:transition-none",
+                    anonymous ? "opacity-0 blur-[2px]" : "opacity-100 blur-none",
+                  )}>
                   <TextInput
                     containerClassName="mt-2.5 px-1.25 pb-1.25"
                     label="Your name"
