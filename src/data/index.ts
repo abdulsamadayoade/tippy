@@ -6,7 +6,7 @@ const sampleCreator = {
   category: "Software Engineer",
   bio: "Nothing really that much, this is just a sample bio",
   tipUrl: "tippy.cash/abdul",
-  profilePhotoUrl: "/images/user.png",
+  profilePhotoUrl: "/images/abdul-dp.jpg",
 };
 
 export { sampleCreator };

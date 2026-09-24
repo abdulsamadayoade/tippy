@@ -4,6 +4,7 @@ const USERNAME_MAX_LENGTH = 30;
 const BIO_MAX_LENGTH = 160;
 
 const RESERVED_USERNAMES = [
+  "about",
   "admin",
   "api",
   "app",
