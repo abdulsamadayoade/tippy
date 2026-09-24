@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MonnifyLogo } from "@/components/elements/monnify-logo";
 import { ArrowRightIcon } from "@/components/icons/arrow-right";
+import { ScribbleCircleIllustration } from "@/components/elements/scribble-circle";
 import { Footer } from "@/components/layout/footer";
 import { ButtonLink } from "@/components/ui/button";
 import { BuilderNote } from "./components/builder-note";
@@ -11,23 +12,15 @@ function About() {
     <>
       <main className="mx-auto w-full max-w-160 flex-1 px-5 pt-12 pb-4 sm:pt-16">
         <header className="mx-auto max-w-130 text-center">
-          <h1 className="text-4xl font-semibold tracking-display text-balance text-main-heading">
+          <h1 className="text-4xl font-semibold leading-[1.3] tracking-display text-balance text-main-heading">
             Good work deserves a{" "}
-            <span className="relative inline-block whitespace-nowrap">
+            <span className="relative isolate mx-[0.4em] inline-block whitespace-nowrap">
               thank you.
-              <svg
+              <ScribbleCircleIllustration
                 aria-hidden="true"
                 focusable="false"
-                viewBox="0 0 200 18"
-                fill="none"
-                className="pointer-events-none absolute -bottom-2 left-0 h-4 w-[94%] overflow-visible text-[#b87529] dark:text-[#efc478]">
-                <path
-                  d="M3 10C32 4 55 14 83 9S130 5 152 9S181 12 197 6"
-                  stroke="currentColor"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                />
-              </svg>
+                className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[1.55em] w-[calc(100%+1em)] -translate-1/2 text-[#b87529] dark:text-[#efc478]"
+              />
             </span>
           </h1>
           <p className="mt-4 text-base text-pretty text-body-text">

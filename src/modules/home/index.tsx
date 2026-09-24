@@ -6,6 +6,7 @@ import { play } from "cuelume";
 import { cn } from "@/lib/cn";
 import { ArrowRightIcon } from "@/components/icons/arrow-right";
 import { CloseIcon } from "@/components/icons/close";
+import { ScribbleCircleIllustration } from "@/components/elements/scribble-circle";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -60,8 +61,17 @@ export function Home() {
 
       <main className="flex min-h-screen w-full max-w-full flex-col pt-16 pb-5">
         <section className="mx-auto flex w-full max-w-180 flex-1 flex-col items-center px-5 text-center">
-          <h1 className="my-5 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-main-heading">
-            Your work deserves more than likes.
+          <h1 className="my-5 max-w-2xl text-4xl font-semibold leading-[1.3] tracking-tight text-balance text-main-heading">
+            Your work deserves{" "}
+            <span className="relative isolate mx-[0.4em] inline-block whitespace-nowrap">
+              more
+              <ScribbleCircleIllustration
+                aria-hidden="true"
+                focusable="false"
+                className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[1.55em] w-[calc(100%+1em)] -translate-1/2 text-[#b87529] dark:text-[#efc478]"
+              />
+            </span>{" "}
+            than likes.
           </h1>
           <p className="max-w-lg text-base font-medium leading-normal text-body-text/75 text-pretty">
             Give your audience one simple link to support what you create. Get
