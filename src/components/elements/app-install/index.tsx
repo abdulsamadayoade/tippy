@@ -61,7 +61,7 @@ export function AppInstall({ className }: AppInstallProps) {
           className="absolute top-3 right-3"
           aria-label="Close installation instructions"
           onClick={() => setIsOpen(false)}>
-          <CloseIcon className="size-5" aria-hidden="true" />
+          <CloseIcon size={24} className="size-5" aria-hidden="true" />
         </Button>
         <Image
           src="/icons/icon-192.png"
