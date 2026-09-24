@@ -47,7 +47,7 @@ export function CheckoutPanel({
           data-cuelume-release=""
           disabled={paying}
           onClick={onClose}>
-          <CloseIcon className="size-5" />
+          <CloseIcon size={24} className="size-5" />
         </button>
       </div>
 
@@ -68,7 +68,7 @@ export function CheckoutPanel({
 
       <div className="mt-4.5 mb-3.5 flex items-center justify-center gap-2 text-center text-xs text-muted-text-2 dark:text-muted-text">
         <div className="flex items-center gap-1">
-          <LockIcon className="size-4 stroke-2" />
+          <LockIcon className="size-4" />
           <MonnifyLogo className="h-3 w-auto shrink-0 text-main-heading" />
         </div>
         <span>securely processes your payment</span>

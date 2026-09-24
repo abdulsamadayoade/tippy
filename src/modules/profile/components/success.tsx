@@ -1,4 +1,5 @@
 import { formatNaira } from "@/lib/utils";
+import { PaySuccessIcon } from "@/components/icons/pay-success";
 import { Button } from "@/components/ui/button";
 import type { SuccessProps } from "../types";
 
@@ -26,21 +27,7 @@ export function Success({
           className="t-success-check"
           data-state={checkState}
           aria-hidden="true">
-          <span className="flex size-16 items-center justify-center rounded-full bg-success text-white">
-            <svg
-              className="size-8"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round">
-              <path
-                pathLength={20}
-                d="M5 13.2592L7.58583 15.9568C8.2525 16.6523 8.58583 17.0001 9.00004 17.0001C9.41425 17.0001 9.74759 16.6523 10.4143 15.9568L19 7.00006"
-              />
-            </svg>
-          </span>
+          <PaySuccessIcon className="size-16" />
         </span>
 
         <h2
@@ -51,7 +38,7 @@ export function Success({
 
         <p className="mt-2 text-base leading-normal">
           Your{" "}
-          <strong className="font-semibold text-primary">
+          <strong className="font-semibold text-primary dark:text-main-heading">
             {formatNaira(amount)}
           </strong>{" "}
           tip is on its way to {creatorName}. Thanks for the support.

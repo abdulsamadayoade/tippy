@@ -11,12 +11,9 @@ export function Header({ creator }: { creator: PublicCreator }) {
         photoUrl={creator.avatarUrl}
         loading="eager"
       />
-      <div className="mt-4 flex items-center justify-center">
+      <div className="mt-4 flex items-center justify-center gap-1">
         <h1 className="text-lg font-medium">{creator.displayName}</h1>
-
-        <div className="pt-1">
-          <CheckBadgeIcon />
-        </div>
+        <CheckBadgeIcon className="mt-1" />
       </div>
       <p className="mt-1 mb-3 text-sm text-[#F5F7FA] dark:text-body-text">
         @{creator.username} <span aria-hidden="true">·</span>{" "}
