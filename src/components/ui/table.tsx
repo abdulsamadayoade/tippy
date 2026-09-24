@@ -5,17 +5,10 @@ type TableProps = ComponentPropsWithoutRef<"table"> & {
   containerClassName?: string;
 };
 
-export function Table({
-  containerClassName,
-  className,
-  ...props
-}: TableProps) {
+export function Table({ containerClassName, className, ...props }: TableProps) {
   return (
     <div className={cn("w-full overflow-x-auto", containerClassName)}>
-      <table
-        className={cn("w-full text-left text-sm", className)}
-        {...props}
-      />
+      <table className={cn("w-full text-left text-sm", className)} {...props} />
     </div>
   );
 }
@@ -34,7 +27,7 @@ export function TableBody({
   ...props
 }: ComponentPropsWithoutRef<"tbody">) {
   return (
-    <tbody className={cn("divide-y divide-line", className)} {...props} />
+    <tbody className={cn("divide-y divide-divider", className)} {...props} />
   );
 }
 

@@ -145,7 +145,7 @@ export function AdjustmentModal({ creators }: { creators: CreatorOption[] }) {
         describedBy="adjustment-dialog-description"
         dismissible={!busy}
         initialFocusRef={saved ? doneRef : creatorRef}
-        className="max-h-[calc(100vh-2rem)] w-full max-w-130 overflow-y-auto overscroll-contain rounded-[20px] bg-white p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
+        className="max-h-[calc(100vh-2rem)] w-full max-w-130 overflow-y-auto overscroll-contain rounded-[20px] bg-card-bg p-5.5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.4)]">
         {saved ? (
           <>
             <span
