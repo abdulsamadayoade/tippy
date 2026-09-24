@@ -9,9 +9,9 @@ import {
   verifyAdminTotp,
   verifyAdminBackupCode,
 } from "../actions/auth";
-import type { Enrollment } from "../types";
+import type { AdminVerifyFormProps, Enrollment } from "../types";
 
-export function AdminVerifyForm({ mode }: { mode: "enroll" | "verify" }) {
+export function AdminVerifyForm({ mode }: AdminVerifyFormProps) {
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const [starting, setStarting] = useState(false);
   const [code, setCode] = useState("");
@@ -67,7 +67,11 @@ export function AdminVerifyForm({ mode }: { mode: "enroll" | "verify" }) {
           Operator access requires an authenticator app. You&apos;ll scan a QR
           code and confirm a 6-digit code.
         </p>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
+        {error && (
+          <div className="mt-4">
+            <ErrorMessage>{error}</ErrorMessage>
+          </div>
+        )}
         <Button
           className="mt-6 w-full"
           loading={starting}
@@ -92,13 +96,15 @@ export function AdminVerifyForm({ mode }: { mode: "enroll" | "verify" }) {
           </p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            className="mx-auto mt-5 size-44 rounded-md"
+            className="mx-auto mt-5 size-44 rounded-xl bg-white p-2"
             src={enrollment.qrDataUrl}
             alt="TOTP enrollment QR code"
           />
           <p className="mt-3 text-xs break-all text-muted-text">
             Can&apos;t scan? Enter this key manually:{" "}
-            <code className="font-mono">{enrollment.secret}</code>
+            <code className="font-mono text-main-heading">
+              {enrollment.secret}
+            </code>
           </p>
           <div className="mt-5 rounded-md bg-soft p-4 text-left">
             <p className="text-sm font-semibold text-main-heading">

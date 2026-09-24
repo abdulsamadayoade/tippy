@@ -134,7 +134,7 @@ export function AdjustmentModal({ creators }: { creators: CreatorOption[] }) {
   return (
     <>
       <Button onClick={openModal} size="sm">
-        <PlusIcon className="size-4.5" aria-hidden="true" />
+        <PlusIcon className="size-4" aria-hidden="true" />
         Record adjustment
       </Button>
 
@@ -151,7 +151,7 @@ export function AdjustmentModal({ creators }: { creators: CreatorOption[] }) {
             <span
               className="mx-auto flex size-12 items-center justify-center rounded-full bg-success-soft text-success"
               aria-hidden="true">
-              <CheckIcon className="size-6" />
+              <CheckIcon size={24} />
             </span>
             <h2
               className="mt-4 text-center text-xl font-medium tracking-display text-main-heading"

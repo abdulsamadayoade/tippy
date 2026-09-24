@@ -55,6 +55,10 @@ type Enrollment = {
   backupCodes: string[];
 };
 
+type AdminVerifyFormProps = {
+  mode: "enroll" | "verify";
+};
+
 type AdminContext = {
   session: { user: { id: string } };
   ip: string | null;
@@ -70,5 +74,6 @@ export type {
   CreatorDetailTab,
   CreatorDetailView,
   Enrollment,
+  AdminVerifyFormProps,
   AdminContext,
 };
