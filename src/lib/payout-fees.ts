@@ -93,6 +93,7 @@ function providerFeeDifference(creatorFee: number, actualFee: number): number {
 export {
   type PayoutEnvironment,
   type WithdrawalQuote,
+  getMonnifyPayoutFee,
   quotePayoutFromBalance,
   sameWithdrawalQuote,
   parseProviderFee,
