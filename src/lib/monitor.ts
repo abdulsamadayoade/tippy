@@ -1,7 +1,19 @@
 import * as Sentry from "@sentry/nextjs";
-import { and, eq, gt, inArray, lt, sum, asc, desc } from "drizzle-orm";
+import {
+  and,
+  eq,
+  gt,
+  inArray,
+  lt,
+  asc,
+  desc,
+  or,
+  isNull,
+  sql,
+} from "drizzle-orm";
 import { db } from "@/lib/db";
 import { payout, tip } from "@/lib/db/schema";
+import { computeCreatorLiability } from "@/lib/ledger";
 import { getWalletBalance } from "@/lib/monnify";
 import {
   reportError,
@@ -10,15 +22,11 @@ import {
 } from "@/lib/monitoring";
 import { reconcileTipWithMonnify } from "@/lib/tips";
 import { reconcilePayoutWithMonnify } from "@/lib/payouts";
+import { pruneRateLimits } from "@/lib/rate-limit";
+import { sweepRiskFlags, type RiskSummary } from "@/lib/risk-flags";
 
-/**
- * Sentry.withMonitor, production only. A single check-in from any other
- * environment would make Sentry expect that environment to keep the schedule
- * forever, raising missed-check-in issues for runs that were never going to
- * happen (e.g. a manual staging rehearsal of the Friday payout cron).
- * Lives here rather than in monitoring.ts because withMonitor is server-only
- * and monitoring.ts is shared with the client bundle.
- */
+export { computeCreatorLiability };
+
 export function withCronMonitor<T>(
   monitorSlug: string,
   callback: () => T,
@@ -28,10 +36,7 @@ export function withCronMonitor<T>(
   return Sentry.withMonitor(monitorSlug, callback, monitorConfig);
 }
 
-/** A paid tip should settle via webhook within seconds; older than this and
- *  still pending means either an abandoned checkout or a missed webhook. */
 const TIP_STALE_MS = 10 * 60_000;
-/** Pending tips Monnify has no payment for are expired (failed) after this. */
 const TIP_EXPIRE_MS = 24 * 60 * 60_000;
 const PAYOUT_STALE_MS = 15 * 60_000;
 const BATCH_LIMIT = 25;
@@ -62,6 +67,7 @@ export type MonitorSweepSummary = {
   tips: TipSummary;
   payouts: PayoutSummary;
   wallet: WalletSummary;
+  risk: RiskSummary;
 };
 
 function walletFloor(): number {
@@ -69,30 +75,6 @@ function walletFloor(): number {
   return Number.isFinite(parsed) ? parsed : 10_000;
 }
 
-/** Everything owed but not yet paid out: open payouts in flight plus every
- *  creator's undisbursed balance. The wallet must be able to cover this. */
-async function computeCreatorLiability(): Promise<number> {
-  const [[tipTotals], [paidTotals]] = await Promise.all([
-    db
-      .select({ total: sum(tip.amount) })
-      .from(tip)
-      .where(eq(tip.status, "success")),
-    db
-      .select({ total: sum(payout.amount) })
-      .from(payout)
-      .where(eq(payout.status, "paid")),
-  ]);
-
-  return Number(tipTotals?.total ?? 0) - Number(paidTotals?.total ?? 0);
-}
-
-/**
- * Reconciles pending tips old enough that their webhook should have long
- * arrived. Alerts ONLY when Monnify says the tip was PAID — money received
- * but the creator not credited (missed webhook). Plain abandoned checkouts
- * reconcile to pending/failed silently, and rows older than 24h that Monnify
- * has no payment for are expired to failed to keep the backlog bounded.
- */
 async function sweepTips(): Promise<TipSummary> {
   const summary: TipSummary = {
     checked: 0,
@@ -199,11 +181,6 @@ async function sweepTips(): Promise<TipSummary> {
   return summary;
 }
 
-/**
- * Reconciles payouts open longer than 15 minutes. reconcilePayoutWithMonnify
- * already fails pending rows Monnify never saw, so anything still open after
- * reconcile is genuinely stuck in flight — that's the alert.
- */
 async function sweepPayouts(): Promise<PayoutSummary> {
   const summary: PayoutSummary = {
     checked: 0,
@@ -216,11 +193,21 @@ async function sweepPayouts(): Promise<PayoutSummary> {
 
   const stalePayouts = await db.query.payout.findMany({
     where: and(
-      inArray(payout.status, ["pending", "processing"]),
-      lt(payout.createdAt, new Date(Date.now() - PAYOUT_STALE_MS)),
+      or(
+        and(
+          inArray(payout.status, ["pending", "processing"]),
+          lt(payout.createdAt, new Date(Date.now() - PAYOUT_STALE_MS)),
+        ),
+        and(
+          eq(payout.status, "paid"),
+          isNull(payout.actualProviderFeeAmount),
+          sql`${payout.environment} is not null`,
+          lt(payout.updatedAt, new Date(Date.now() - 86_400_000)),
+        ),
+      ),
     ),
     columns: { paymentReference: true, createdAt: true },
-    orderBy: [asc(payout.createdAt)],
+    orderBy: [asc(payout.updatedAt)],
     limit: BATCH_LIMIT,
   });
 
@@ -231,7 +218,8 @@ async function sweepPayouts(): Promise<PayoutSummary> {
       if (result === "pending" || result === "processing") {
         summary.stillOpen++;
         stuck.push(row.paymentReference);
-        oldestCreatedAt ??= row.createdAt;
+        if (!oldestCreatedAt || row.createdAt < oldestCreatedAt)
+          oldestCreatedAt = row.createdAt;
       } else {
         summary.closed++;
       }
@@ -262,7 +250,6 @@ async function sweepPayouts(): Promise<PayoutSummary> {
   return summary;
 }
 
-/** Warns when the wallet drops below what's owed to creators (or the floor). */
 async function checkWalletBalance(): Promise<WalletSummary> {
   try {
     const liability = await computeCreatorLiability();
@@ -289,11 +276,6 @@ async function checkWalletBalance(): Promise<WalletSummary> {
   }
 }
 
-/**
- * Pre-run check for the Friday cron: can the wallet cover everything the run
- * could disburse? Warn-only and swallows its own errors — a wallet-API blip
- * must never block payouts (individual transfer failures alert separately).
- */
 export async function checkWalletCoverageForAutoPayouts(): Promise<void> {
   try {
     const liability = await computeCreatorLiability();
@@ -315,7 +297,6 @@ export async function checkWalletCoverageForAutoPayouts(): Promise<void> {
   }
 }
 
-/** The full sweep. Each phase is isolated so one failure can't blind the rest. */
 export async function runMonitorSweep(): Promise<MonitorSweepSummary> {
   let tips: TipSummary = {
     checked: 0,
@@ -325,8 +306,14 @@ export async function runMonitorSweep(): Promise<MonitorSweepSummary> {
     stillPending: 0,
     errors: 0,
   };
-  let payouts: PayoutSummary = { checked: 0, closed: 0, stillOpen: 0, errors: 0 };
+  let payouts: PayoutSummary = {
+    checked: 0,
+    closed: 0,
+    stillOpen: 0,
+    errors: 0,
+  };
   let wallet: WalletSummary = { checked: false, low: false, errors: 0 };
+  let risk: RiskSummary = { candidates: 0, flagged: 0, errors: 0 };
 
   try {
     tips = await sweepTips();
@@ -352,5 +339,26 @@ export async function runMonitorSweep(): Promise<MonitorSweepSummary> {
 
   wallet = await checkWalletBalance();
 
-  return { tips, payouts, wallet };
+  try {
+    risk = await sweepRiskFlags();
+  } catch (error) {
+    risk.errors++;
+    reportError(error, {
+      category: "monitor.sweep",
+      tags: { phase: "risk" },
+      fingerprint: ["monitor-sweep-phase-failed", "risk"],
+    });
+  }
+
+  try {
+    await pruneRateLimits();
+  } catch (error) {
+    reportError(error, {
+      category: "monitor.sweep",
+      tags: { phase: "rate-limit" },
+      fingerprint: ["monitor-sweep-phase-failed", "rate-limit"],
+    });
+  }
+
+  return { tips, payouts, wallet, risk };
 }
