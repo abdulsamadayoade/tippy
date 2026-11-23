@@ -15,9 +15,9 @@ export function TipsIcon({ className, ...props }: ComponentProps<"svg">) {
       strokeLinejoin="round"
       aria-hidden="true"
       focusable="false"
-      className={cn("text-[#064e5b] dark:text-[#bce9e8]", className)}
+      className={cn("text-brand-ink", className)}
       {...props}>
-      <g className="fill-[#d6f1ef] dark:fill-[#17454d]" stroke="none">
+      <g className="fill-brand-tint" stroke="none">
         <path d="M12 8.6C10.6 7.6 8.7 6.2 8.7 4.7C8.7 3.1 10.7 2.4 12 4C13.3 2.4 15.3 3.1 15.3 4.7C15.3 6.2 13.4 7.6 12 8.6Z" />
       </g>
       <path d="M12 8.6C10.6 7.6 8.7 6.2 8.7 4.7C8.7 3.1 10.7 2.4 12 4C13.3 2.4 15.3 3.1 15.3 4.7C15.3 6.2 13.4 7.6 12 8.6Z" />

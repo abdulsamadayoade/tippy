@@ -1,3 +1,4 @@
+import { brand } from "@/data/brand";
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#064e5b",
+  themeColor: brand.primary,
 };
 
 export default function RootLayout({

@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "tippy-offline-";
-const CACHE_NAME = `${CACHE_PREFIX}v2`;
+const CACHE_NAME = `${CACHE_PREFIX}v3`;
 const OFFLINE_URL = "/offline.html";
 
 self.addEventListener("install", (event) => {

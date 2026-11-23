@@ -18,9 +18,9 @@ export function AutomaticPayoutsIcon({
       strokeLinejoin="round"
       aria-hidden="true"
       focusable="false"
-      className={cn("text-[#064e5b] dark:text-[#bce9e8]", className)}
+      className={cn("text-brand-ink", className)}
       {...props}>
-      <g className="fill-[#d6f1ef] dark:fill-[#17454d]" stroke="none">
+      <g className="fill-brand-tint" stroke="none">
         <path d="M3.5 10H20.5V17.5A3 3 0 0 1 17.5 20.5H6.5A3 3 0 0 1 3.5 17.5Z" />
       </g>
       <rect x="3.5" y="5.5" width="17" height="15" rx="3" />

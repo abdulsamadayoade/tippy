@@ -1,3 +1,4 @@
+import { brand } from "@/data/brand";
 import { ImageResponse } from "next/og";
 import sharp from "sharp";
 import { getCreatorByUsername } from "@/modules/profile/queries";
@@ -57,7 +58,7 @@ export default async function Image({
         height: "100%",
         display: "flex",
         padding: 60,
-        backgroundColor: "#f5f5f5",
+        backgroundColor: brand.paper,
       }}>
       <div
         style={{
@@ -88,7 +89,7 @@ export default async function Image({
               alignItems: "center",
               justifyContent: "center",
               borderRadius: 9999,
-              backgroundColor: "#0b2239",
+              backgroundColor: brand.heading,
               color: "#ffffff",
               fontSize: 72,
               fontWeight: 600,
@@ -103,7 +104,7 @@ export default async function Image({
               display: "flex",
               fontSize: 64,
               fontWeight: 700,
-              color: "#0b2239",
+              color: brand.heading,
             }}>
             {tipCreator.displayName}
           </div>
@@ -112,7 +113,7 @@ export default async function Image({
               display: "flex",
               fontSize: 30,
               marginTop: 12,
-              color: "#274c5e",
+              color: brand.body,
             }}>
             @{tipCreator.username} · {tipCreator.categoryName}
           </div>
@@ -121,7 +122,7 @@ export default async function Image({
               display: "flex",
               fontSize: 34,
               marginTop: 36,
-              color: "#274c5e",
+              color: brand.body,
             }}>
             Tip {tipCreator.displayName} on Tippy
           </div>
@@ -141,7 +142,7 @@ export default async function Image({
             width="40"
             height="40"
             fill="none"
-            stroke="#064E5B"
+            stroke={brand.primary}
             strokeWidth="1.5">
             <path
               d="M20 8C20 9.93293 18.433 11.5 16.5 11.5C14.567 11.5 13 9.93293 13 8C13 6.067 14.567 4.5 16.5 4.5C18.433 4.5 20 6.067 20 8Z"
@@ -162,7 +163,7 @@ export default async function Image({
               display: "flex",
               fontSize: 34,
               fontWeight: 600,
-              color: "#064e5b",
+              color: brand.primary,
             }}>
             tippy.
           </div>

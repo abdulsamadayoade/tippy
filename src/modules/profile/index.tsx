@@ -252,7 +252,7 @@ export function Profile({ creator, viewerSignedIn, monnify }: ProfileProps) {
               "mt-8 rounded-t-[18px] p-5 shadow-surface-raised",
             )}>
             <div>
-              <h2 className="text-base font-medium">
+              <h2 className="text-base font-medium text-main-heading">
                 Support {creator.displayName}
               </h2>
               <p className="text-ui-sm text-muted-text">

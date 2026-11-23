@@ -58,7 +58,7 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
           Open email app
         </a>
 
-        <p className="mt-5 text-sm text-muted-text dark:text-menu-bg">
+        <p className="mt-5 text-sm text-muted-text">
           Didn&apos;t get it?{" "}
           {secondsLeft > 0 ? (
             <span className="font-semibold text-main-heading">
@@ -75,7 +75,7 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
         </p>
 
         <button
-          className="mt-3 cursor-pointer text-sm font-medium text-muted-text dark:text-form-input-bg"
+          className="mt-3 cursor-pointer text-sm font-medium text-brand-ink"
           type="button"
           onClick={useDifferentEmail}>
           Use a different email
@@ -158,7 +158,7 @@ export function SignIn({ mode }: { mode: "sign-in" | "sign-up" }) {
         </Button>
       </form>
 
-      <p className="mt-5 text-ui-sm text-muted-text-2 dark:text-divider">
+      <p className="mt-5 text-ui-sm text-muted-text">
         By continuing you agree to Tippy&apos;s{" "}
         <Link
           className="font-medium text-main-heading hover:underline"

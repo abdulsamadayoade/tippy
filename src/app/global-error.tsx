@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@/data/brand";
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
@@ -35,7 +36,7 @@ export default function GlobalError({
                 padding: "10px 24px",
                 borderRadius: 999,
                 border: "none",
-                background: "#064e5b",
+                background: brand.primary,
                 color: "#ffffff",
                 fontSize: 14,
                 fontWeight: 600,

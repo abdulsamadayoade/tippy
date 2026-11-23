@@ -11,12 +11,7 @@ export function fireConfetti(canvas: HTMLCanvasElement | null) {
   canvas.height = bounds.height * dpr;
   context.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  const colors = [
-    "oklch(0.68 0.155 145)",
-    "oklch(0.88 0.09 145)",
-    "oklch(0.32 0.07 145)",
-    "oklch(0.76 0.16 145)",
-  ];
+  const colors = ["#49265c", "#dabee6", "#b48bca", "#efc478"];
   const centerX = bounds.width / 2;
   const centerY = bounds.height * 0.34;
   const particles = Array.from({ length: 130 }, (_, index) => {

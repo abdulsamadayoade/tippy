@@ -119,10 +119,6 @@ export function AppInstall({ className }: AppInstallProps) {
             </p>
           </div>
         </div>
-        <p className="mt-4 text-xs leading-relaxed text-center text-muted-text">
-          You&apos;ll still need an internet connection to view tips and make
-          payments.
-        </p>
       </Modal>
     </>
   );

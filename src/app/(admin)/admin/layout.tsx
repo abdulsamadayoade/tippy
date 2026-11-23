@@ -29,7 +29,7 @@ export default async function AdminLayout({
   if (gate.status === "forbidden") notFound();
 
   return (
-    <main className="min-h-screen bg-bg text-body-text" id="main-content">
+    <main className="min-h-screen bg-bg/90 text-body-text" id="main-content">
       <header className="sticky top-0 z-20 border-b border-divider bg-bg/90 backdrop-blur-[10px]">
         <div className="mx-auto flex max-w-240 flex-wrap items-center gap-4 px-5.5 py-3 max-dashboard:gap-2.5 max-dashboard:px-4">
           <Link className="flex shrink-0 items-center gap-2" href="/admin">

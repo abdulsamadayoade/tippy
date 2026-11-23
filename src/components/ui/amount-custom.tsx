@@ -37,8 +37,8 @@ export function AmountCustom({
         className={cn(
           "flex min-h-17.25 cursor-text flex-col justify-center gap-0.5 rounded-surface px-3.5 py-3.25 transition-[background-color,box-shadow,transform] duration-150",
           selected
-            ? "bg-primary text-white  shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_6px_rgba(0,0,0,0.18)] focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_6px_rgba(0,0,0,0.18),0_0_0_4px_rgba(6,78,91,0.16)]"
-            : "cursor-pointer bg-card-bg text-main-heading shadow-surface hover:-translate-y-px focus-within:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_rgba(6,78,91,0.12),0_4px_12px_rgba(6,78,91,0.08)]",
+            ? "bg-primary text-white  shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_6px_rgba(0,0,0,0.18)] focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_6px_rgba(0,0,0,0.18),0_0_0_4px_color-mix(in_srgb,var(--color-primary)_16%,transparent)]"
+            : "cursor-pointer bg-card-bg text-main-heading shadow-surface hover:-translate-y-px focus-within:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_color-mix(in_srgb,var(--color-primary)_12%,transparent),0_4px_12px_color-mix(in_srgb,var(--color-primary)_8%,transparent)]",
         )}
         data-cuelume-toggle={selected ? undefined : "tick"}
         onMouseDown={(event) => {

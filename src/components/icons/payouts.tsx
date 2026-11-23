@@ -22,13 +22,13 @@ export function PayoutsIcon({
       aria-hidden="true"
       focusable="false"
       className={cn(
-        isDuotone && "text-[#064e5b] dark:text-[#bce9e8]",
+        isDuotone && "text-brand-ink",
         className,
       )}
       {...props}>
       {isDuotone ? (
         <>
-          <g className="fill-[#d6f1ef] dark:fill-[#17454d]" stroke="none">
+          <g className="fill-brand-tint" stroke="none">
             <path d="M3.5 14H20.5V17.3Q20.5 20.5 17.3 20.5H6.7Q3.5 20.5 3.5 17.3Z" />
           </g>
           <path d="M3.5 14H20.5V17.3Q20.5 20.5 17.3 20.5H6.7Q3.5 20.5 3.5 17.3Z" />

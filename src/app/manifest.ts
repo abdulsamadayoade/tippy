@@ -1,3 +1,4 @@
+import { brand } from "@/data/brand";
 import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
@@ -13,8 +14,8 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "en-NG",
     categories: ["finance", "social"],
     prefer_related_applications: false,
-    background_color: "#f5f5f5",
-    theme_color: "#064e5b",
+    background_color: brand.paper,
+    theme_color: brand.primary,
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
       { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },

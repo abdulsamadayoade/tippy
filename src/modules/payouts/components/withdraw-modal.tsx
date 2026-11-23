@@ -176,7 +176,7 @@ export function WithdrawModal({
                 id="withdraw-amount"
                 className={cn(
                   "min-h-13 w-full rounded-xl bg-form-input-bg pr-20 pl-9 text-lg font-medium text-main-heading tabular-nums shadow-surface outline-none transition-shadow duration-150 ease-out placeholder:font-normal placeholder:text-muted-text",
-                  "focus:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_rgba(6,78,91,0.12),0_4px_12px_rgba(6,78,91,0.08)]",
+                  "focus:shadow-[inset_0_0_0_1px_var(--color-primary),0_0_0_4px_color-mix(in_srgb,var(--color-primary)_12%,transparent),0_4px_12px_color-mix(in_srgb,var(--color-primary)_8%,transparent)]",
                   (overBalance || belowMinimum) &&
                     "shadow-[inset_0_0_0_1px_var(--color-danger)]",
                 )}

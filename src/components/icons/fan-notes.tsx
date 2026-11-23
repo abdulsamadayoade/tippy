@@ -15,9 +15,9 @@ export function FanNotesIcon({ className, ...props }: ComponentProps<"svg">) {
       strokeLinejoin="round"
       aria-hidden="true"
       focusable="false"
-      className={cn("text-[#064e5b] dark:text-[#bce9e8]", className)}
+      className={cn("text-brand-ink", className)}
       {...props}>
-      <g className="fill-[#d6f1ef] dark:fill-[#17454d]" stroke="none">
+      <g className="fill-brand-tint" stroke="none">
         <path d="M6.5 4.5H17.5A3 3 0 0 1 20.5 7.5V14A3 3 0 0 1 17.5 17H11L6.8 20.3V17H6.5A3 3 0 0 1 3.5 14V7.5A3 3 0 0 1 6.5 4.5Z" />
       </g>
       <path d="M6.5 4.5H17.5A3 3 0 0 1 20.5 7.5V14A3 3 0 0 1 17.5 17H11L6.8 20.3V17H6.5A3 3 0 0 1 3.5 14V7.5A3 3 0 0 1 6.5 4.5Z" />

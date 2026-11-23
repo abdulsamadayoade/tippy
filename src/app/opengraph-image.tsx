@@ -1,3 +1,4 @@
+import { brand } from "@/data/brand";
 import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
@@ -16,7 +17,7 @@ export default function Image() {
           justifyContent: "center",
           alignItems: "flex-start",
           padding: 96,
-          backgroundColor: "#064e5b",
+          backgroundColor: brand.primary,
           color: "#ffffff",
         }}>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
@@ -61,7 +62,7 @@ export default function Image() {
             display: "flex",
             fontSize: 30,
             marginTop: 28,
-            color: "#9fc4cc",
+            color: brand.lilac,
           }}>
           www.tippy.cash
         </div>

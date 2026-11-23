@@ -15,9 +15,9 @@ export function PaySuccessIcon({ className, ...props }: ComponentProps<"svg">) {
       strokeLinejoin="round"
       aria-hidden="true"
       focusable="false"
-      className={cn("text-[#064e5b] dark:text-[#bce9e8]", className)}
+      className={cn("text-brand-ink", className)}
       {...props}>
-      <g className="fill-[#d6f1ef] dark:fill-[#17454d]" stroke="none">
+      <g className="fill-brand-tint" stroke="none">
         <circle cx="12" cy="12" r="8.5" />
       </g>
       <circle cx="12" cy="12" r="8.5" />

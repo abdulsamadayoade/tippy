@@ -1,3 +1,4 @@
+import { brand } from "@/data/brand";
 import { Resend } from "resend";
 import { reportError } from "@/lib/monitoring";
 import { SITE_URL } from "@/lib/site";
@@ -23,35 +24,35 @@ function formatEmailAmount(amount: number) {
 function magicLinkHtml(url: string) {
   return `<!doctype html>
 <html>
-  <body style="margin:0;padding:0;background-color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:32px 16px;">
+  <body style="margin:0;padding:0;background-color:${brand.paper};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${brand.paper};padding:32px 16px;">
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background-color:#ffffff;border-radius:18px;padding:36px 32px;">
             <tr>
-              <td align="left" style="font-size:20px;font-weight:700;color:#064e5b;padding-bottom:20px;">tippy.</td>
+              <td align="left" style="font-size:20px;font-weight:700;color:${brand.primary};padding-bottom:20px;">tippy.</td>
             </tr>
             <tr>
-              <td style="font-size:19px;font-weight:600;color:#0b2239;padding-bottom:10px;">Sign in to Tippy</td>
+              <td style="font-size:19px;font-weight:600;color:${brand.heading};padding-bottom:10px;">Sign in to Tippy</td>
             </tr>
             <tr>
-              <td style="font-size:14px;line-height:1.55;color:#274c5e;padding-bottom:24px;">
+              <td style="font-size:14px;line-height:1.55;color:${brand.body};padding-bottom:24px;">
                 Tap the button below to finish signing in. This link expires in
                 5 minutes and can only be used once.
               </td>
             </tr>
             <tr>
               <td align="center" style="padding-bottom:24px;">
-                <a href="${url}" style="display:block;background-color:#064e5b;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:14px 24px;border-radius:999px;text-align:center;">
+                <a href="${url}" style="display:block;background-color:${brand.primary};color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:14px 24px;border-radius:999px;text-align:center;">
                   Sign in to Tippy
                 </a>
               </td>
             </tr>
             <tr>
-              <td style="font-size:12px;line-height:1.55;color:#5b7280;">
+              <td style="font-size:12px;line-height:1.55;color:${brand.muted};">
                 If the button doesn&rsquo;t work, copy and paste this link into
                 your browser:<br />
-                <a href="${url}" style="color:#064e5b;word-break:break-all;">${url}</a>
+                <a href="${url}" style="color:${brand.primary};word-break:break-all;">${url}</a>
               </td>
             </tr>
           </table>
@@ -107,7 +108,7 @@ function noteBlockHtml(note: string, caption: string) {
               <td style="padding-bottom:24px;">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;border-radius:12px;">
                   <tr>
-                    <td style="font-size:14px;line-height:1.55;color:#274c5e;padding:14px 16px;">
+                    <td style="font-size:14px;line-height:1.55;color:${brand.body};padding:14px 16px;">
                       &ldquo;${escapeHtml(note)}&rdquo;<br />
                       <span style="font-size:12px;color:#7f7f7f;">${caption}</span>
                     </td>
@@ -128,27 +129,27 @@ function tipReceivedHtml({
 }) {
   return `<!doctype html>
 <html>
-  <body style="margin:0;padding:0;background-color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:32px 16px;">
+  <body style="margin:0;padding:0;background-color:${brand.paper};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${brand.paper};padding:32px 16px;">
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background-color:#ffffff;border-radius:18px;padding:36px 32px;">
             <tr>
-              <td align="left" style="font-size:20px;font-weight:700;color:#064e5b;padding-bottom:20px;">tippy.</td>
+              <td align="left" style="font-size:20px;font-weight:700;color:${brand.primary};padding-bottom:20px;">tippy.</td>
             </tr>
             <tr>
-              <td style="font-size:19px;font-weight:600;color:#0b2239;padding-bottom:10px;">You received a tip</td>
+              <td style="font-size:19px;font-weight:600;color:${brand.heading};padding-bottom:10px;">You received a tip</td>
             </tr>
             <tr>
-              <td style="font-size:14px;line-height:1.55;color:#274c5e;padding-bottom:24px;">
+              <td style="font-size:14px;line-height:1.55;color:${brand.body};padding-bottom:24px;">
                 <strong>${escapeHtml(tipperDisplayName)}</strong> sent you
-                <strong style="color:#064e5b;">${formatEmailAmount(amount)}</strong>.
+                <strong style="color:${brand.primary};">${formatEmailAmount(amount)}</strong>.
               </td>
             </tr>
             ${note ? noteBlockHtml(note, "They sent a note too") : ""}
             <tr>
               <td align="center">
-                <a href="${APP_URL}/overview" style="display:block;background-color:#064e5b;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:14px 24px;border-radius:999px;text-align:center;">
+                <a href="${APP_URL}/overview" style="display:block;background-color:${brand.primary};color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:14px 24px;border-radius:999px;text-align:center;">
                   View your dashboard
                 </a>
               </td>
@@ -184,20 +185,20 @@ function tipReceiptHtml({
 }) {
   return `<!doctype html>
 <html>
-  <body style="margin:0;padding:0;background-color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:32px 16px;">
+  <body style="margin:0;padding:0;background-color:${brand.paper};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${brand.paper};padding:32px 16px;">
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background-color:#ffffff;border-radius:18px;padding:36px 32px;">
             <tr>
-              <td align="left" style="font-size:20px;font-weight:700;color:#064e5b;padding-bottom:20px;">tippy.</td>
+              <td align="left" style="font-size:20px;font-weight:700;color:${brand.primary};padding-bottom:20px;">tippy.</td>
             </tr>
             <tr>
-              <td style="font-size:19px;font-weight:600;color:#0b2239;padding-bottom:10px;">Your tip to ${escapeHtml(creatorDisplayName)}</td>
+              <td style="font-size:19px;font-weight:600;color:${brand.heading};padding-bottom:10px;">Your tip to ${escapeHtml(creatorDisplayName)}</td>
             </tr>
             <tr>
-              <td style="font-size:14px;line-height:1.55;color:#274c5e;padding-bottom:24px;">
-                Your <strong style="color:#064e5b;">${formatEmailAmount(amount)}</strong>
+              <td style="font-size:14px;line-height:1.55;color:${brand.body};padding-bottom:24px;">
+                Your <strong style="color:${brand.primary};">${formatEmailAmount(amount)}</strong>
                 tip to ${escapeHtml(creatorDisplayName)} went through. Thanks for
                 the support.
               </td>
@@ -205,13 +206,13 @@ function tipReceiptHtml({
             ${note ? noteBlockHtml(note, "Your note was sent too") : ""}
             <tr>
               <td align="center" style="padding-bottom:24px;">
-                <a href="${APP_URL}/${creatorUsername}" style="display:block;background-color:#064e5b;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:14px 24px;border-radius:999px;text-align:center;">
+                <a href="${APP_URL}/${creatorUsername}" style="display:block;background-color:${brand.primary};color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:14px 24px;border-radius:999px;text-align:center;">
                   Tip ${escapeHtml(creatorDisplayName)} again
                 </a>
               </td>
             </tr>
             <tr>
-              <td style="font-size:12px;line-height:1.55;color:#5b7280;">
+              <td style="font-size:12px;line-height:1.55;color:${brand.muted};">
                 Receipt no. ${escapeHtml(paymentReference)}
               </td>
             </tr>
@@ -325,20 +326,20 @@ function payoutPaidHtml({
 }) {
   return `<!doctype html>
 <html>
-  <body style="margin:0;padding:0;background-color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:32px 16px;">
+  <body style="margin:0;padding:0;background-color:${brand.paper};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${brand.paper};padding:32px 16px;">
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background-color:#ffffff;border-radius:18px;padding:36px 32px;">
             <tr>
-              <td align="left" style="font-size:20px;font-weight:700;color:#064e5b;padding-bottom:20px;">tippy.</td>
+              <td align="left" style="font-size:20px;font-weight:700;color:${brand.primary};padding-bottom:20px;">tippy.</td>
             </tr>
             <tr>
-              <td style="font-size:19px;font-weight:600;color:#0b2239;padding-bottom:10px;">Your payout is on the way</td>
+              <td style="font-size:19px;font-weight:600;color:${brand.heading};padding-bottom:10px;">Your payout is on the way</td>
             </tr>
             <tr>
-              <td style="font-size:14px;line-height:1.55;color:#274c5e;padding-bottom:24px;">
-                <strong style="color:#064e5b;">${formatEmailAmount(amount)}</strong>
+              <td style="font-size:14px;line-height:1.55;color:${brand.body};padding-bottom:24px;">
+                <strong style="color:${brand.primary};">${formatEmailAmount(amount)}</strong>
                 is on its way to your ${escapeHtml(bankName)} account
                 ${maskedAccount}. Bank transfers usually land within minutes.<br>
                 Balance debit: ${formatEmailAmount(amount + creatorFeeAmount)}. Transfer fee: ${formatEmailAmount(creatorFeeAmount)}.
@@ -346,13 +347,13 @@ function payoutPaidHtml({
             </tr>
             <tr>
               <td align="center" style="padding-bottom:24px;">
-                <a href="${APP_URL}/payouts" style="display:block;background-color:#064e5b;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:14px 24px;border-radius:999px;text-align:center;">
+                <a href="${APP_URL}/payouts" style="display:block;background-color:${brand.primary};color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:14px 24px;border-radius:999px;text-align:center;">
                   View your payouts
                 </a>
               </td>
             </tr>
             <tr>
-              <td style="font-size:12px;line-height:1.55;color:#5b7280;">
+              <td style="font-size:12px;line-height:1.55;color:${brand.muted};">
                 Reference: ${escapeHtml(paymentReference)}
               </td>
             </tr>
@@ -423,8 +424,8 @@ function internalRelayHtml(rows: [string, string][]) {
       ${rows
         .map(
           ([label, value]) => `<tr>
-        <td style="font-size:12px;font-weight:600;color:#5b7280;padding:6px 16px 6px 0;vertical-align:top;white-space:nowrap;">${label}</td>
-        <td style="font-size:14px;line-height:1.55;color:#0b2239;padding:6px 0;">${escapeHtml(value)}</td>
+        <td style="font-size:12px;font-weight:600;color:${brand.muted};padding:6px 16px 6px 0;vertical-align:top;white-space:nowrap;">${label}</td>
+        <td style="font-size:14px;line-height:1.55;color:${brand.heading};padding:6px 0;">${escapeHtml(value)}</td>
       </tr>`,
         )
         .join("\n      ")}
